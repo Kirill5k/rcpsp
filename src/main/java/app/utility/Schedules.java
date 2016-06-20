@@ -1,126 +1,57 @@
 package app.utility;
 
-import app.asset.AbstractProject;
 import app.asset.Activity;
-import app.asset.ActivityList;
 import app.asset.EventList;
-import app.gui.SchedulePlot;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
- * Created by Kirill on 16/02/2016.
+ * Created by Kirill on 20/06/2016.
  */
 public class Schedules {
     private Schedules(){}
 
+    public static SortedMap<Integer, Set<Activity>> createSerialSchedule(EventList el, ScheduleType type) {
+        Map<Activity, Integer> finishTimes = new HashMap<>();
+        Map<Integer, Map<Integer, Integer>> resourceConsumptions = new HashMap<>();
+        el.getResources().forEach((k, v) -> resourceConsumptions.computeIfAbsent(k, HashMap::new).put(-1, v));
+        el.getActivities().stream().forEach(a -> scheduleActivity(a, finishTimes, resourceConsumptions, type));
 
-//    public static void plot(EventList el) {
-//        plotOnGraph(el.getCanvas());
-//        plotToConsole(el.getCanvas());
-//    }
+        SortedMap<Integer, Set<Activity>> schedule = new TreeMap<>();
+        finishTimes.forEach((a, ft) -> schedule.computeIfAbsent(ft-a.getDuration(), HashSet::new).add(a));
+        return schedule;
+    }
 
-//    public static double getDeviationFromCP(EventList el) {
-//        SortedMap<Activity, Integer> criticalPath = createSerialSchedule(el, ScheduleType.CRITICAL_PATH);
-//        int cpMakespan = criticalPath.get(criticalPath.lastKey());
-//        System.out.println("Critical path makespan: " + cpMakespan);
-//
-//        return (Math.abs(cpMakespan - el.getMakespan()) / (double) cpMakespan) * 100;
-//    }
+    private static void scheduleActivity(Activity activity, Map<Activity, Integer> finishTimes, Map<Integer, Map<Integer, Integer>> resourceConsumptions, ScheduleType type) {
+        if (activity.getNumber() == 0){
+            finishTimes.put(activity, 0);
+            return;
+        }
 
-    /*
-    --------------------------------------------- ACTIVITY LIST ----------------------------------------------------------
-     */
-//    public static SortedMap<Activity, Integer> createSerialSchedule(ActivityList al) {
-//        return createSerialSchedule(al, ScheduleType.FORWARD);
-//    }
+        int earliestStart = getEarliestPossibleStartingTime(activity, finishTimes);
+        while (type != ScheduleType.CRITICAL_PATH && checkSchedulability(earliestStart, activity, resourceConsumptions))
+            earliestStart++;
 
-    /*
-    --------------------------------------------- EVENT LIST -------------------------------------------------------------
-     */
-//    public static SortedMap<Integer, Set<Activity>> createSerialSchedule(EventList el) {
-//        SortedMap<Activity, Integer> forwardSchedule = createSerialSchedule(el, ScheduleType.FORWARD);
-//        SortedMap<Integer, Set<Activity>> schedule = new TreeMap<>();
-//
-//        for (Map.Entry<Activity, Integer> e : forwardSchedule.entrySet()) {
-//            if (schedule.get(e.getValue()) == null)
-//                schedule.put(e.getValue(), new TreeSet<>());
-//
-//            schedule.get(e.getValue()).add(e.getKey());
-//        }
-//
-//        return schedule;
-//    }
+        final int st = earliestStart;
+        finishTimes.put(activity, earliestStart+activity.getDuration());
 
-    /*
-    -------------------------------------------- GENERAL SCHEDULE OPERATIONS ---------------------------------------------
-     */
-//    private static <T extends AbstractProject> SortedMap<Activity, Integer> createSerialSchedule(T project, ScheduleType st) {
-//        final SortedMap<Activity, Integer> scheduledActivities = new TreeMap<>();
-//        final List<Activity> activities = new ArrayList<>(project.getActivities());
-//
-//        for (Activity a : activities)
-//            scheduleSerialy(project.getCanvas(), a, scheduledActivities, st);
-//
-//        return scheduledActivities;
-//    }
+        IntStream.range(st, st+activity.getDuration()).forEach(t ->
+                activity.getResourceReq().forEach((num, req) ->
+                        resourceConsumptions.get(num).put(t, resourceConsumptions.get(num).getOrDefault(t, 0)+ req)));
+    }
 
-//    private static void scheduleSerialy(List<Map<Integer, List<Integer>>> canvases, Activity a, Map<Activity, Integer> scheduledActivities, ScheduleType st) {
-//        int time = 0;
-//        for (Activity predecessor : a.getPredecessors())
-//            if (scheduledActivities.get(predecessor) + predecessor.getDuration() > time)
-//                time = scheduledActivities.get(predecessor) + predecessor.getDuration();
-//
-//        while (st != ScheduleType.CRITICAL_PATH && !checkSchedulability(canvases, a, time))
-//            time++;
-//
-//        final int finalTime = time;
-//        canvases.forEach(canvas->{
-//            for (int i = finalTime; i < finalTime + a.getDuration(); i++) {
-//                List<Integer> l;
-//                if (canvas.get(i) == null){
-//                    l = new ArrayList<>();
-//                    canvas.put(i,l);
-//                } else {
-//                    l = canvas.get(i);
-//                }
-//                for (int j = 0; j < a.getResourceReq()[canvases.indexOf(canvas)]; j++)
-//                    l.add(a.getNumber());
-//            }
-//        });
-//
-//        scheduledActivities.put(a, time);
-//    }
+    private static int getEarliestPossibleStartingTime(Activity activity, Map<Activity, Integer> finishTimes) {
+        return finishTimes.get(
+                activity.getPredecessors().stream()
+                .max((a1, a2) -> Integer.compare(finishTimes.get(a1), finishTimes.get(a2))).get()
+        );
+    }
 
-//    private static boolean checkSchedulability(List<Map<Integer, List<Integer>>> canvases, Activity a, int time) {
-//        for (int i = 0; i < a.getDuration(); i++) {
-//            for (Map<Integer, List<Integer>> canvas : canvases)
-//                if (canvas.get(time+i) != null && canvas.get(time+i).size() + a.getResourceReq()[canvases.indexOf(canvas)] > canvas.get(-1).size())
-//                    return false;
-//        }
-//
-//        return true;
-//    }
-
-    /*
-    -------------------------------------------- PLOT -------------------------------------------------------------------
-     */
-//    private static void plotToConsole(List<Map<Integer, List<Integer>>> canvases) {
-//        for (Map<Integer, List<Integer>> canvas : canvases) {
-//            Map<Integer, List<Integer>> c = new TreeMap<>(canvas);
-//            System.out.println("Resource " + (canvases.indexOf(canvas) + 1));
-//            for (Map.Entry<Integer, List<Integer>> line : c.entrySet()) {
-//                System.out.print(line.getKey() + " | ");
-//                System.out.print(line.getValue());
-//                System.out.println();
-//            }
-//            System.out.println();
-//        }
-//    }
-
-//    private static void plotOnGraph(List<Map<Integer, List<Integer>>> canvases) {
-//        new SchedulePlot(canvases, 11);
-//    }
-
-
+    private static boolean checkSchedulability(int time, Activity activity, Map<Integer, Map<Integer, Integer>> resourceConsumptions) {
+        return IntStream.range(time, time+activity.getDuration()).anyMatch(i ->
+            activity.getResourceReq().entrySet().stream().anyMatch(e ->
+                    resourceConsumptions.get(e.getKey()).getOrDefault(i, 0) + e.getValue() > resourceConsumptions.get(e.getKey()).get(-1)));
+    }
 }

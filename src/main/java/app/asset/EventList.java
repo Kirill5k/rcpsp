@@ -1,9 +1,5 @@
 package app.asset;
 
-import app.utility.Schedules;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-
 import java.util.*;
 
 /**
@@ -15,7 +11,7 @@ public class EventList extends AbstractProject implements Comparable<EventList> 
 
     public EventList(Map<Integer, Integer> resources, List<Activity> activities) {
         super(resources, activities);
-//        schedule = Schedules.createSerialSchedule(this);
+//        schedule = Schedules_Old.createSerialSchedule(this);
 //        makespan = schedule.lastKey();
     }
 

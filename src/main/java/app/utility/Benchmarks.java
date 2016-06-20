@@ -63,10 +63,10 @@ public class Benchmarks {
             } else if (rows.indexOf(row)>1){
                 int duration = row.get(0);
                 Map<Integer, Integer> resourceReq = new HashMap<>();
-                resourceReq.put(1, row.get(1));
-                resourceReq.put(2, row.get(2));
-                resourceReq.put(3, row.get(3));
-                resourceReq.put(4, row.get(4));
+                if (row.get(1) > 0) resourceReq.put(1, row.get(1));
+                if (row.get(2) > 0) resourceReq.put(2, row.get(2));
+                if (row.get(3) > 0) resourceReq.put(3, row.get(3));
+                if (row.get(4) > 0) resourceReq.put(4, row.get(4));
 
                 successors.put(number, new ArrayList<>());
                 for (int i=0; i<row.get(5); i++)

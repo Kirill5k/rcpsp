@@ -1,11 +1,7 @@
 package app.asset;
 
-import app.utility.Schedules;
-
 import java.util.List;
 import java.util.Map;
-import java.util.NavigableMap;
-import java.util.SortedMap;
 
 /**
  * Created by Kirill on 16/02/2016.
@@ -16,7 +12,7 @@ public class ActivityList extends AbstractProject implements Comparable<Activity
 
     public ActivityList(Map<Integer, Integer> resources, List<Activity> activities) {
         super(resources, activities);
-        //schedule = Schedules.createSerialSchedule(this);
+        //schedule = Schedules_Old.createSerialSchedule(this);
        // makespan = schedule.get(schedule.lastKey());
     }
 
