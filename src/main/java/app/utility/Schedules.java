@@ -1,6 +1,8 @@
 package app.utility;
 
+import app.asset.AbstractProject;
 import app.asset.Activity;
+import app.asset.ActivityList;
 import app.asset.EventList;
 
 import java.util.*;
@@ -14,14 +16,23 @@ public class Schedules {
     private Schedules(){}
 
     public static SortedMap<Integer, Set<Activity>> createSerialSchedule(EventList el, ScheduleType type) {
-        Map<Activity, Integer> finishTimes = new HashMap<>();
-        Map<Integer, Map<Integer, Integer>> resourceConsumptions = new HashMap<>();
-        el.getResources().forEach((k, v) -> resourceConsumptions.computeIfAbsent(k, HashMap::new).put(-1, v));
-        el.getActivities().stream().forEach(a -> scheduleActivity(a, finishTimes, resourceConsumptions, type));
-
+        Map<Activity, Integer> finishTimes = getFinishTimes(el, type);
         SortedMap<Integer, Set<Activity>> schedule = new TreeMap<>();
         finishTimes.forEach((a, ft) -> schedule.computeIfAbsent(ft-a.getDuration(), HashSet::new).add(a));
         return schedule;
+    }
+
+    public static SortedMap<Activity, Integer> createSerialSchedule(ActivityList al, ScheduleType type) {
+    return new TreeMap<>(getFinishTimes(al, type).entrySet().stream().collect(
+                Collectors.toMap(e -> e.getKey(), e -> e.getValue()-e.getKey().getDuration())));
+    }
+
+    private static <T extends AbstractProject> Map<Activity, Integer> getFinishTimes(T project, ScheduleType type) {
+        Map<Activity, Integer> finishTimes = new HashMap<>();
+        Map<Integer, Map<Integer, Integer>> resourceConsumptions = new HashMap<>();
+        project.getResources().forEach((k, v) -> resourceConsumptions.computeIfAbsent(k, HashMap::new).put(-1, v));
+        project.getActivities().stream().forEach(a -> scheduleActivity(a, finishTimes, resourceConsumptions, type));
+        return finishTimes;
     }
 
     private static void scheduleActivity(Activity activity, Map<Activity, Integer> finishTimes, Map<Integer, Map<Integer, Integer>> resourceConsumptions, ScheduleType type) {

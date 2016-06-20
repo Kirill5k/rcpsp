@@ -1,24 +1,28 @@
 package app.asset;
 
+import app.utility.ScheduleType;
+import app.utility.Schedules;
+
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 
 /**
  * Created by Kirill on 16/02/2016.
  */
 public class ActivityList extends AbstractProject implements Comparable<ActivityList> {
 
-    //final private SortedMap<Activity, Integer> schedule;
+    final private SortedMap<Activity, Integer> schedule;
 
     public ActivityList(Map<Integer, Integer> resources, List<Activity> activities) {
         super(resources, activities);
-        //schedule = Schedules_Old.createSerialSchedule(this);
-       // makespan = schedule.get(schedule.lastKey());
+        schedule = Schedules.createSerialSchedule(this, ScheduleType.FORWARD);
+        makespan = schedule.get(schedule.lastKey());
     }
 
-//    public Map<Activity, Integer> getSchedule() {
-//        return schedule;
-//    }
+    public SortedMap<Activity, Integer> getSchedule() {
+        return schedule;
+    }
 
     public Activity getRandomActivity() {
         int index = (int)(Math.random()*size()-2)+1;

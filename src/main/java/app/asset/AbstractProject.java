@@ -13,7 +13,6 @@ public abstract class AbstractProject {
     protected final long id;
     protected int makespan;
 
-
     public AbstractProject(Map<Integer, Integer> resources, List<Activity> activities) {
         this.resources = resources;
         this.activities = activities;

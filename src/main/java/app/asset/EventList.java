@@ -1,5 +1,8 @@
 package app.asset;
 
+import app.utility.ScheduleType;
+import app.utility.Schedules;
+
 import java.util.*;
 
 /**
@@ -7,38 +10,28 @@ import java.util.*;
  */
 public class EventList extends AbstractProject implements Comparable<EventList> {
 
-//    final private SortedMap<Integer, Set<Activity>> schedule;
+    final private SortedMap<Integer, Set<Activity>> schedule;
 
     public EventList(Map<Integer, Integer> resources, List<Activity> activities) {
         super(resources, activities);
-//        schedule = Schedules_Old.createSerialSchedule(this);
-//        makespan = schedule.lastKey();
+        schedule = Schedules.createSerialSchedule(this, ScheduleType.FORWARD);
+        makespan = schedule.lastKey();
     }
 
-//    public SortedMap<Integer, Set<Activity>> getSchedule() {
-//        return schedule;
-//    }
+    public SortedMap<Integer, Set<Activity>> getSchedule() {
+        return schedule;
+    }
 
-//    public Set<Activity> getRandomEvent() {
-//        List<Integer> keys = new ArrayList<>(schedule.keySet());
-//        int randNum = new Random().nextInt(keys.size()-2) +1;
-//        int randKey = keys.get(randNum);
-//        return schedule.get(randKey);
-//    }
+    public Set<Activity> getRandomEvent() {
+        List<Integer> keys = new ArrayList<>(schedule.keySet());
+        int randNum = new Random().nextInt(keys.size()-2) +1;
+        int randKey = keys.get(randNum);
+        return schedule.get(randKey);
+    }
 
-//    public int getEventsAmount() {
-//        return schedule.size();
-//    }
-
-//    public Map<Integer, Integer> getStartingTimes() {
-//        Map<Integer, Integer> startingTimes = new HashMap<>();
-//
-//        for (Map.Entry<Integer, Set<Activity>> e : getSchedule().entrySet())
-//            for (Activity a : e.getValue())
-//                startingTimes.put(a.getNumber(), e.getKey());
-//
-//        return startingTimes;
-//    }
+    public int getEventsAmount() {
+        return schedule.size();
+    }
 
     @Override
     public String toString() {
@@ -55,21 +48,19 @@ public class EventList extends AbstractProject implements Comparable<EventList> 
         return Integer.compare(this.makespan, o.makespan);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof EventList)) return false;
 
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (!(o instanceof EventList)) return false;
-//
-//        EventList eventList = (EventList) o;
-//        if (this.getId() == eventList.getId()) return true;
-//
-//        return getSchedule().equals(eventList.getSchedule());
-//
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return getSchedule().hashCode();
-//    }
+        EventList eventList = (EventList) o;
+        if (this.getId() == eventList.getId()) return true;
+
+        return getSchedule().equals(eventList.getSchedule());
+    }
+
+    @Override
+    public int hashCode() {
+        return getSchedule().hashCode();
+    }
 }

@@ -13,29 +13,29 @@ import java.util.*;
 public class CommonOperations {
     private CommonOperations(){}
 
-//    public static int getBestMakespan(List<EventList> population) {
-//        return getBestSolution(population).getMakespan();
-//    }
+    public static int getBestMakespan(List<EventList> population) {
+        return getBestSolution(population).getMakespan();
+    }
 
-//    public static EventList getBestSolution(List<EventList> population) {
-//        Collections.sort(population);
-//        return population.get(0);
-//    }
+    public static EventList getBestSolution(List<EventList> population) {
+        Collections.sort(population);
+        return population.get(0);
+    }
 
-//    public static List<EventList> initialisePopulation(BenchmarkInstance bi, int populationSize) {
-//        Map<Map<Integer, Set<Activity>>, Boolean> uniqueSchedules = new HashMap<>();
-//
-//        List<EventList> population = new ArrayList<>();
-//        while (population.size() < populationSize){
-//            EventList ind = Benchmarks.asRandomEventList(bi);
-//            if (uniqueSchedules.get(ind.getSchedule())== null || !uniqueSchedules.get(ind.getSchedule())) {
-//                population.add(ind);
-//                uniqueSchedules.put(ind.getSchedule(), true);
-//            }
-//        }
-//
-//        return population;
-//    }
+    public static List<EventList> initialisePopulation(BenchmarkInstance bi, int populationSize) {
+        Map<Map<Integer, Set<Activity>>, Boolean> uniqueSchedules = new HashMap<>();
+
+        List<EventList> population = new ArrayList<>();
+        while (population.size() < populationSize){
+            EventList ind = Benchmarks.asRandomEventList(bi);
+            if (uniqueSchedules.get(ind.getSchedule())== null || !uniqueSchedules.get(ind.getSchedule())) {
+                population.add(ind);
+                uniqueSchedules.put(ind.getSchedule(), true);
+            }
+        }
+
+        return population;
+    }
 
 //    public static int calculateDistance(EventList el1, EventList el2) {
 //        Map<Integer, Integer> startingTimeEl1 = el1.getStartingTimes();
@@ -49,43 +49,41 @@ public class CommonOperations {
 //        return sum;
 //    }
 
-//    public static EventList eventMove(EventList el) {
-//        EventList result = el;
-//        Set<Activity> event = el.getRandomEvent();
-//
-////        System.out.println("Chosen event");
-////        System.out.println(event);
-//
-//        for (int i = 0; i < 3; i++) {
-//            List<Activity> activities = new ArrayList<>(el.getActivities());
-//            for (Activity a : event) {
-//                activities.remove(a);
-//
-//                int minPos = 0;
-//                for (Activity predecessor : a.getPredecessors()) {
-//                    int newPos = activities.indexOf(predecessor);
-//                    if (newPos > minPos)
-//                        minPos = newPos;
-//                }
-//
-//                int maxPos = activities.size();
-//                for (Activity successor : a.getSuccessors()) {
-//                    int newPos = activities.indexOf(successor);
-//                    if (newPos < maxPos)
-//                        maxPos = newPos;
-//                }
-//
-//                minPos++;
-//                int randomNum = new Random().nextInt((maxPos - minPos) + 1) + minPos;
-//                activities.add(randomNum, a);
-//                EventList temp = new EventList(el.getResources(), activities);
-//                if (temp.getMakespan() < result.getMakespan())
-//                    result = temp;
-//            }
-//        }
-//
-//        return result;
-//    }
+    public static EventList eventMove(EventList el) {
+        EventList result = el;
+        Set<Activity> event = el.getRandomEvent();
+
+        for (int i = 0; i < 3; i++) {
+            List<Activity> activities = new ArrayList<>(el.getActivities());
+            for (Activity a : event) {
+                activities.remove(a);
+
+                int minPos = 0;
+                for (Activity predecessor : a.getPredecessors()) {
+                    int newPos = activities.indexOf(predecessor);
+                    if (newPos > minPos)
+                        minPos = newPos;
+                }
+                a.getPredecessors().stream().map(p -> activities.indexOf(p)).min((o1, o2) -> Integer.compare(o1, o2)).get();
+
+                int maxPos = activities.size();
+                for (Activity successor : a.getSuccessors()) {
+                    int newPos = activities.indexOf(successor);
+                    if (newPos < maxPos)
+                        maxPos = newPos;
+                }
+
+                minPos++;
+                int randomNum = new Random().nextInt((maxPos - minPos) + 1) + minPos;
+                activities.add(randomNum, a);
+                EventList temp = new EventList(el.getResources(), activities);
+                if (temp.getMakespan() < result.getMakespan())
+                    result = temp;
+            }
+        }
+
+        return result;
+    }
 
 //    public static EventList eventCrossover(EventList p1, EventList p2) {
 //        return eventCrossover(p1, p2, 0.4);

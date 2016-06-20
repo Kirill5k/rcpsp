@@ -38,6 +38,7 @@ public class Benchmarks {
     private static Map<String, BenchmarkInstance> getInstances(int size) throws FileNotFoundException {
         Map<String, BenchmarkInstance> instances = new TreeMap<>();
         File[] files = new File(PSPLIB_INSTANCES_PATH + size + "/").listFiles();
+
         for (File file : files) {
             String instanceName = file.getName();
             BenchmarkInstance benchmark = Benchmarks.get(size, instanceName);

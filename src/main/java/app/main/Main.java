@@ -21,13 +21,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Benchmarks.asRandomEventList(bi_30).getActivities().forEach(a -> System.out.println(a.getResourceReq()));
-
-        for (int i = 0; i < 100; i++) {
-            EventList el = Benchmarks.asRandomEventList(bi_30);
-            SortedMap<Integer, Set<Activity>> schedule = Schedules.createSerialSchedule(el, ScheduleType.FORWARD);
-            System.out.println(schedule);
-        }
+        EventList el = Benchmarks.asRandomEventList(bi_30);
+        SortedMap<Integer, Set<Activity>> schedule = Schedules.createSerialSchedule(el, ScheduleType.FORWARD);
 
     }
 
