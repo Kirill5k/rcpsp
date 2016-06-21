@@ -15,15 +15,16 @@ import java.util.stream.IntStream;
 public class Schedules {
     private Schedules(){}
 
-    public static SortedMap<Integer, Set<Activity>> createSerialSchedule(EventList el, ScheduleType type) {
+    public static SortedMap<Integer, List<Activity>> createSerialSchedule(EventList el, ScheduleType type) {
         Map<Activity, Integer> finishTimes = getFinishTimes(el, type);
-        SortedMap<Integer, Set<Activity>> schedule = new TreeMap<>();
-        finishTimes.forEach((a, ft) -> schedule.computeIfAbsent(ft-a.getDuration(), HashSet::new).add(a));
+        SortedMap<Integer, List<Activity>> schedule = new TreeMap<>();
+        finishTimes.forEach((a, ft) -> schedule.computeIfAbsent(ft-a.getDuration(), ArrayList::new).add(a));
+        schedule.entrySet().stream().parallel().forEach(e -> Collections.sort(e.getValue()));
         return schedule;
     }
 
     public static SortedMap<Activity, Integer> createSerialSchedule(ActivityList al, ScheduleType type) {
-    return new TreeMap<>(getFinishTimes(al, type).entrySet().stream().collect(
+        return new TreeMap<>(getFinishTimes(al, type).entrySet().stream().collect(
                 Collectors.toMap(e -> e.getKey(), e -> e.getValue()-e.getKey().getDuration())));
     }
 

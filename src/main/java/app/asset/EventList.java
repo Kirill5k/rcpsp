@@ -10,19 +10,22 @@ import java.util.*;
  */
 public class EventList extends AbstractProject implements Comparable<EventList> {
 
-    final private SortedMap<Integer, Set<Activity>> schedule;
+    final private SortedMap<Integer, List<Activity>> schedule;
+    final private Map<Activity, Integer> startingTimes = new HashMap<>();
 
     public EventList(Map<Integer, Integer> resources, List<Activity> activities) {
         super(resources, activities);
         schedule = Schedules.createSerialSchedule(this, ScheduleType.FORWARD);
+        schedule.entrySet().stream().forEach(e -> e.getValue().forEach(a -> startingTimes.put(a, e.getKey())));
         makespan = schedule.lastKey();
+
     }
 
-    public SortedMap<Integer, Set<Activity>> getSchedule() {
+    public SortedMap<Integer, List<Activity>> getSchedule() {
         return schedule;
     }
 
-    public Set<Activity> getRandomEvent() {
+    public List<Activity> getRandomEvent() {
         List<Integer> keys = new ArrayList<>(schedule.keySet());
         int randNum = new Random().nextInt(keys.size()-2) +1;
         int randKey = keys.get(randNum);
@@ -31,6 +34,10 @@ public class EventList extends AbstractProject implements Comparable<EventList> 
 
     public int getEventsAmount() {
         return schedule.size();
+    }
+
+    public Map<Activity, Integer> getStartingTimes() {
+        return startingTimes;
     }
 
     @Override

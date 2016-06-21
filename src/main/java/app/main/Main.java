@@ -1,5 +1,6 @@
 package app.main;
 
+import app.algorithm.CommonOperations;
 import app.asset.Activity;
 import app.asset.BenchmarkInstance;
 import app.asset.EventList;
@@ -21,8 +22,16 @@ public class Main {
 
     public static void main(String[] args) {
 
-        EventList el = Benchmarks.asRandomEventList(bi_30);
-        SortedMap<Integer, Set<Activity>> schedule = Schedules.createSerialSchedule(el, ScheduleType.FORWARD);
+        int count = 0;
+
+        for (int i = 0; i < 1000; i++) {
+            EventList el = Benchmarks.asRandomEventList(bi_30);
+            EventList newEl = CommonOperations.eventMove(el);
+            if (newEl.getMakespan() < el.getMakespan())
+                count++;
+        }
+
+        System.out.println(count);
 
     }
 
