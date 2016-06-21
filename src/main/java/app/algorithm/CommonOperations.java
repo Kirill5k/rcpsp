@@ -38,11 +38,7 @@ public class CommonOperations {
         return population;
     }
 
-    public static int calculateDistance(EventList el1, EventList el2) {
-        Map<Activity, Integer> stEl1 = el1.getStartingTimes();
-        Map<Activity, Integer> stEl2 = el2.getStartingTimes();
-        return stEl1.entrySet().stream().mapToInt(e -> Math.abs(e.getValue() - stEl2.get(e.getKey()))).sum();
-    }
+
 
     public static EventList eventMove(EventList el) {
         return IntStream.range(0, 5).boxed().parallel()

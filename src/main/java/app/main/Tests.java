@@ -1,5 +1,6 @@
 package app.main;
 
+import app.algorithm.Algorithm;
 import app.algorithm.Algorithms;
 import app.algorithm.CommonOperations;
 import app.asset.Activity;
@@ -19,6 +20,11 @@ public class Tests {
         return CommonOperations.getBestSolution(finalPop);
     }
 
+    public static EventList testNormalSCGA(BenchmarkInstance bi) {
+        List<EventList> finalPop = Algorithms.normalSCGA(bi, 100, 1000, 0.3);
+        return CommonOperations.getBestSolution(finalPop);
+    }
+
     public static EventList testParallelGA(BenchmarkInstance bi) {
         List<EventList> finalPop = Algorithms.parallelGA(bi, 100, 1000, 0.3);
         return CommonOperations.getBestSolution(finalPop);
@@ -27,6 +33,7 @@ public class Tests {
     public static void fullTestNormalGA(Set<Map.Entry<String, BenchmarkInstance>> instances) {
         int solved = 0;
         int count = 0;
+        double dev = 0;
 
         for (Map.Entry<String, BenchmarkInstance> inst : instances) {
             count++;
@@ -34,16 +41,19 @@ public class Tests {
             BenchmarkInstance bi = inst.getValue();
             int optima = Benchmarks.solutions.get(name);
 
-            EventList el = testNormalGA(bi);
+            EventList el = testNormalSCGA(bi);
             if (el.getMakespan() == Benchmarks.solutions.get(name))
                 solved++;
             System.out.println("#" + count);
             System.out.println("Received makespan: " + el.getMakespan() + " | expected makespan:  " + optima);
             System.out.println("Deviation: " +  CommonOperations.getDeviationFromOptima(el.getMakespan(), optima));
             System.out.println();
+
+            dev += CommonOperations.getDeviationFromOptima(el.getMakespan(), optima);
         }
 
         System.out.println("Solved " + solved + " out of " + instances.size());
+        System.out.println("Average dev  " + (dev/instances.size()));
     }
 
     public static BenchmarkInstance getTestBI() {

@@ -10,17 +10,17 @@ import java.util.List;
  * Created by Kirill on 23/02/2016.
  */
 public class Algorithms {
-//
+
 //    public static List<EventList> parallelSCGA(BenchmarkInstance bi, int popSize, int stopCrit, double mutRate, int speciesDist) {
 //        Algorithm alg = new ParallelSpeciesConservingGeneticAlgorithm(bi, popSize, stopCrit, mutRate, speciesDist);
 //        return solve(alg);
 //    }
-//
-//    public static List<EventList> normalSCGA(BenchmarkInstance bi, int popSize, int stopCrit, double mutRate, int speciesDist) {
-//        Algorithm alg = new SpeciesConservingGeneticAlgorithm(bi, popSize, stopCrit, mutRate, speciesDist);
-//        return solve(alg);
-//    }
-//
+
+    public static List<EventList> normalSCGA(BenchmarkInstance bi, int popSize, int stopCrit, double mutRate) {
+        Algorithm alg = new SpeciesConservingGeneticAlgorithm(bi, popSize, stopCrit, mutRate);
+        return solve(alg);
+    }
+
     public static List<EventList> parallelGA(BenchmarkInstance bi, int popSize, int stopCrit, double mutRate) {
         Algorithm alg = new ParallelGeneticAlgorithm(bi, popSize, stopCrit, mutRate);
         return solve(alg);
