@@ -6,6 +6,7 @@ import app.asset.EventList;
 import app.utility.Benchmarks;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -13,6 +14,10 @@ import java.util.stream.IntStream;
  */
 public class CommonOperations {
     private CommonOperations(){}
+
+    public static double getDeviationFromOptima(int result, int optima) {
+        return (double) (result - optima) / (double) optima * 100;
+    }
 
     public static int getBestMakespan(List<EventList> population) {
         return getBestSolution(population).getMakespan();
@@ -24,15 +29,10 @@ public class CommonOperations {
     }
 
     public static List<EventList> initialisePopulation(BenchmarkInstance bi, int populationSize) {
-        Map<Map<Integer, List<Activity>>, Boolean> uniqueSchedules = new HashMap<>();
-
         List<EventList> population = new ArrayList<>();
         while (population.size() < populationSize){
             EventList ind = Benchmarks.asRandomEventList(bi);
-            if (uniqueSchedules.get(ind.getSchedule())== null || !uniqueSchedules.get(ind.getSchedule())) {
-                population.add(ind);
-                uniqueSchedules.put(ind.getSchedule(), true);
-            }
+            population.add(ind);
         }
 
         return population;
@@ -61,7 +61,6 @@ public class CommonOperations {
         return new EventList(resources, activities);
     }
 
-
     public static EventList eventCrossover(EventList p1, EventList p2) {
         return eventCrossover(p1, p2, 0.4);
     }
@@ -75,27 +74,27 @@ public class CommonOperations {
         ---------------------------------------------------------- GET RIGHT EVENTS -------------------------------------
          */
 
-        Map<Set<Activity>, Integer> orderedEvents = new HashMap<>();
-        Map<Integer, Set<Set<Activity>>> sortedEvents = new TreeMap<>(Comparator.reverseOrder());
-        List<Set<Activity>> selectedEvents = new ArrayList<>();
+        Map<List<Activity>, Integer> orderedEvents = new HashMap<>();
+        Map<Integer, List<List<Activity>>> sortedEvents = new TreeMap<>(Comparator.reverseOrder());
+        List<List<Activity>> selectedEvents = new ArrayList<>();
 
-        for (Map.Entry<Integer, Set<Activity>> e : p1.getSchedule().entrySet()) {
-            Set<Activity> ev = e.getValue();
+        for (Map.Entry<Integer, List<Activity>> e : p1.getSchedule().entrySet()) {
+            List<Activity> ev = e.getValue();
             int eventSize = ev.size();
             orderedEvents.put(ev, eventCount);
             eventCount++;
 
             if (sortedEvents.get(eventSize)==null)
-                sortedEvents.put(eventSize, new HashSet<>());
+                sortedEvents.put(eventSize, new ArrayList<>());
 
             sortedEvents.get(eventSize).add(ev);
         }
 
-        for (Map.Entry<Integer, Set<Set<Activity>>> e : sortedEvents.entrySet()) {
+        for (Map.Entry<Integer, List<List<Activity>>> e : sortedEvents.entrySet()) {
             if (activityCount > activityAmount)
                 break;
 
-            for (Set<Activity> event : e.getValue())
+            for (List<Activity> event : e.getValue())
                 if (activityAmount > activityCount) {
                     selectedEvents.add(event);
                     activityCount = activityCount + e.getKey();
@@ -111,14 +110,14 @@ public class CommonOperations {
          */
 
         Set<Activity> eventActivities = new HashSet<>();
-        for (Set<Activity> event : selectedEvents) {
+        for (List<Activity> event : selectedEvents) {
             eventActivities.addAll(event);
 //            System.out.println("Selected event: " + event);
         }
 
         List<Activity> p2Activities = new ArrayList<>(p2.getActivities());
         List<Activity> childActivities = new ArrayList<>();
-        for (Set<Activity> event : selectedEvents) {
+        for (List<Activity> event : selectedEvents) {
             Set<Activity> predecessors = new HashSet<>();
             Set<Activity> successors = new HashSet<>();
             for (Activity a : event) {

@@ -18,10 +18,10 @@ public class TestGeneticAlgorithm {//extends GeneticAlgorithm {
     
 //    private final int speciesSize;
     
-    public TestGeneticAlgorithm(BenchmarkInstance benchmark, int populationSize, int stopCriterion, double mutationRate, int speciesSize) {
-//        super(benchmark, populationSize, stopCriterion, mutationRate);
-//        this.speciesSize = speciesSize;
-    }
+//    public TestGeneticAlgorithm(BenchmarkInstance benchmark, int populationSize, int stopCriterion, double mutationRate, int speciesSize) {
+////        super(benchmark, populationSize, stopCriterion, mutationRate);
+////        this.speciesSize = speciesSize;
+//    }
 
 //    public List<EventList> findSolution() {
 //        for (int i = 0; i < stopCriterion; i++) {

@@ -13,7 +13,7 @@ import java.util.concurrent.Executors;
 /**
  * Created by Kirill on 15/04/2016.
  */
-public class SpeciesConservingGeneticAlgorithm extends GeneticAlgorithm {
+public class SpeciesConservingGeneticAlgorithm {//extends GeneticAlgorithm {
 //
 //    protected final int speciesDistance;
 //

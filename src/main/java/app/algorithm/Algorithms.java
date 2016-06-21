@@ -21,28 +21,28 @@ public class Algorithms {
 //        return solve(alg);
 //    }
 //
-//    public static List<EventList> parallelGA(BenchmarkInstance bi, int popSize, int stopCrit, double mutRate) {
-//        Algorithm alg = new ParallelGeneticAlgorithm(bi, popSize, stopCrit, mutRate);
-//        return solve(alg);
-//    }
-//
-//    public static List<EventList> normalGA(BenchmarkInstance bi, int popSize, int stopCrit, double mutRate) {
-//        Algorithm alg = new GeneticAlgorithm(bi, popSize, stopCrit, mutRate);
-//        return solve(alg);
-//    }
-//
+    public static List<EventList> parallelGA(BenchmarkInstance bi, int popSize, int stopCrit, double mutRate) {
+        Algorithm alg = new ParallelGeneticAlgorithm(bi, popSize, stopCrit, mutRate);
+        return solve(alg);
+    }
+
+    public static List<EventList> normalGA(BenchmarkInstance bi, int popSize, int stopCrit, double mutRate) {
+        Algorithm alg = new GeneticAlgorithm(bi, popSize, stopCrit, mutRate);
+        return solve(alg);
+    }
+
 //    public static List<EventList> testGA(BenchmarkInstance bi, int popSize, int stopCrit, double mutRate, int speciesSize) {
 //        Algorithm alg = new TestGeneticAlgorithm(bi, popSize, stopCrit, mutRate, speciesSize);
 //        return solve(alg);
 //    }
-//
-//    private static List<EventList> solve(Algorithm alg) {
-//        final long start = System.nanoTime();
-//        List<EventList> finalPopulation = alg.findSolution();
-//        final long end = System.nanoTime();
-//        System.out.println("Took: " + ((end - start) / 1000000) + "ms");
-//        return finalPopulation;
-//    }
+
+    private static List<EventList> solve(Algorithm alg) {
+        final long start = System.nanoTime();
+        List<EventList> finalPopulation = alg.findSolution();
+        final long end = System.nanoTime();
+        System.out.println("Took: " + ((end - start) / 1000000) + "ms");
+        return finalPopulation;
+    }
 
     /*
     public static EventList cuckooSearch(BenchmarkInstance benchmark, int populationSize, int stopCriterion, double pa, double pc) {

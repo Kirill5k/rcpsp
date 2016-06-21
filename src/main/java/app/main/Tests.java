@@ -1,17 +1,50 @@
 package app.main;
 
+import app.algorithm.Algorithms;
+import app.algorithm.CommonOperations;
 import app.asset.Activity;
 import app.asset.BenchmarkInstance;
+import app.asset.EventList;
+import app.utility.Benchmarks;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Kirill on 20/06/2016.
  */
 public class Tests {
+
+    public static EventList testNormalGA(BenchmarkInstance bi) {
+        List<EventList> finalPop = Algorithms.normalGA(bi, 100, 1000, 0.3);
+        return CommonOperations.getBestSolution(finalPop);
+    }
+
+    public static EventList testParallelGA(BenchmarkInstance bi) {
+        List<EventList> finalPop = Algorithms.parallelGA(bi, 100, 1000, 0.3);
+        return CommonOperations.getBestSolution(finalPop);
+    }
+
+    public static void fullTestNormalGA(Set<Map.Entry<String, BenchmarkInstance>> instances) {
+        int solved = 0;
+        int count = 0;
+
+        for (Map.Entry<String, BenchmarkInstance> inst : instances) {
+            count++;
+            String name = inst.getKey();
+            BenchmarkInstance bi = inst.getValue();
+            int optima = Benchmarks.solutions.get(name);
+
+            EventList el = testNormalGA(bi);
+            if (el.getMakespan() == Benchmarks.solutions.get(name))
+                solved++;
+            System.out.println("#" + count);
+            System.out.println("Received makespan: " + el.getMakespan() + " | expected makespan:  " + optima);
+            System.out.println("Deviation: " +  CommonOperations.getDeviationFromOptima(el.getMakespan(), optima));
+            System.out.println();
+        }
+
+        System.out.println("Solved " + solved + " out of " + instances.size());
+    }
 
     public static BenchmarkInstance getTestBI() {
         Map<Integer, Integer> resources = new HashMap<>();

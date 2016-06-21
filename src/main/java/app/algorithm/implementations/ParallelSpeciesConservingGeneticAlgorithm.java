@@ -12,7 +12,7 @@ import java.util.List;
  * Created by Kirill on 18/04/2016.
  */
 
-public class ParallelSpeciesConservingGeneticAlgorithm extends ParallelGeneticAlgorithm {
+public class ParallelSpeciesConservingGeneticAlgorithm {//extends ParallelGeneticAlgorithm {
 //    private final int speciesDistance;
 //    public ParallelSpeciesConservingGeneticAlgorithm(BenchmarkInstance bi, int populationSize, int stopCriterion, double mutationRate, int speciesDistance) {
 //        super(bi, populationSize, stopCriterion, mutationRate);
