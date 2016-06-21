@@ -19,10 +19,6 @@ public class CommonOperations {
         return (double) (result - optima) / (double) optima * 100;
     }
 
-    public static int getBestMakespan(List<EventList> population) {
-        return getBestSolution(population).getMakespan();
-    }
-
     public static EventList getBestSolution(List<EventList> population) {
         Collections.sort(population);
         return population.get(0);
@@ -37,8 +33,6 @@ public class CommonOperations {
 
         return population;
     }
-
-
 
     public static EventList eventMove(EventList el) {
         return IntStream.range(0, 5).boxed().parallel()
@@ -56,6 +50,19 @@ public class CommonOperations {
         });
         return new EventList(resources, activities);
     }
+
+    public static EventList newEventCrossover(EventList p1, EventList p2, double threshold) {
+        List<List<Activity>> selectedEvents = p1.getSchedule().values().stream()
+                .sorted((e1, e2) -> Integer.compare(e2.size(), e1.size()))
+                .limit(Math.round(threshold * p1.getEventsAmount()))
+                .sorted((e1, e2) -> Integer.compare(p1.getStartingTimes().get(e1.get(0)), p1.getStartingTimes().get(e2.get(0))))
+                .collect(Collectors.toList());
+
+
+
+        return p2;
+    }
+
 
     public static EventList eventCrossover(EventList p1, EventList p2) {
         return eventCrossover(p1, p2, 0.4);
@@ -108,7 +115,6 @@ public class CommonOperations {
         Set<Activity> eventActivities = new HashSet<>();
         for (List<Activity> event : selectedEvents) {
             eventActivities.addAll(event);
-//            System.out.println("Selected event: " + event);
         }
 
         List<Activity> p2Activities = new ArrayList<>(p2.getActivities());
@@ -143,15 +149,9 @@ public class CommonOperations {
             if (!childActivities.contains(a))
                 childActivities.add(a);
 
-        //System.out.println(childActivities);
-
         return new EventList(p1.getResources(), childActivities);
     }
 
-
-    /*
-    --------------------------------------------------------------------- LOCAL FUNCTIONS
-     */
     private static boolean checkPredecessors(List<Activity> as, Activity a) {
         boolean check = true;
 

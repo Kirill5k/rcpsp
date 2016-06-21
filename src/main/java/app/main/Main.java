@@ -21,6 +21,10 @@ public class Main {
     private static BenchmarkInstance bi_120 = Benchmarks.instances120.get("J12019_4.RCP");
 
     public static void main(String[] args) {
-        Tests.fullTestNormalGA(Benchmarks.instances30.entrySet());
+        //Tests.fullTestNormalGA(Benchmarks.instances30.entrySet());
+
+        EventList el1 = Benchmarks.asRandomEventList(bi_30);
+        EventList el2 = Benchmarks.asRandomEventList(bi_30);
+        EventList el3 = CommonOperations.newEventCrossover(el1, el2, 0.35);
     }
 }

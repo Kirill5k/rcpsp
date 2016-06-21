@@ -78,10 +78,8 @@ public class Benchmarks {
                 number++;
             }
 
-        for (Map.Entry<Integer, List<Integer>> e : successors.entrySet())
-            for (Integer i : e.getValue())
-                activities.get(e.getKey()).getSuccessors().add(activities.get(i));
-
+        successors.forEach((k, v) -> v.forEach(i -> activities.get(k).getSuccessors().add(activities.get(i))));
+        activities.forEach(a -> a.getSuccessors().forEach(s -> s.getPredecessors().add(a)));
         return new BenchmarkInstance(projectName, resources, activities);
     }
 
@@ -97,15 +95,7 @@ public class Benchmarks {
     private static Map<String, Integer> getSolutions(int size) throws FileNotFoundException {
         Map<String, Integer> solutions = new HashMap<>();
         List<List<Integer>> rows = readPSPLIBfile(PSPLIB_SOLUTIONS_PATH + "j" + size + ".sm");
-
-        for (List<Integer> row : rows) {
-            if (row.size() < 3)
-                continue;
-
-            String name = "J" + size + row.get(0) + "_" + row.get(1) + ".RCP";
-            solutions.put(name, row.get(2));
-        }
-
+        rows.stream().filter(r -> r.size() >= 3).forEach(r -> solutions.put("J" + size + r.get(0) + "_" + r.get(1) + ".RCP", r.get(2)));
         return solutions;
     }
 

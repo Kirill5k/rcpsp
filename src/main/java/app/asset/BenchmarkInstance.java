@@ -14,8 +14,6 @@ public class BenchmarkInstance extends AbstractProject {
     public BenchmarkInstance(String name, Map<Integer, Integer> resources, List<Activity> activities) {
         super(resources, activities);
         this.name = name;
-
-        activities.forEach(a -> a.getSuccessors().forEach(s -> s.getPredecessors().add(a)));
     }
 
     public String getName() {

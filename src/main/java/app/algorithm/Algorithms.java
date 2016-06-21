@@ -54,45 +54,5 @@ public class Algorithms {
         System.out.println("Took: " + ((end - start) / 1000000) + "ms");
         return cs.getBestSolution();
     }
-
-    public static List<EventList> GA(BenchmarkInstance benchmark, int populationSize, int stopCriterion, double mutationRate) {
-        final long start = System.nanoTime();
-        Algorithm ga = new GeneticAlgorithm(benchmark, populationSize, stopCriterion, mutationRate);
-        finalPopulation = ga.findSolution();
-        final long end = System.nanoTime();
-        System.out.println("Took: " + ((end - start) / 1000000) + "ms");
-        return finalPopulation;
-    }
-
-    public static List<EventList> GA(BenchmarkInstance benchmark, int populationSize, int stopCriterion, double mutationRate) {
-        final long start = System.nanoTime();
-        Algorithm ga = new ParallelGeneticAlgorithm(benchmark, populationSize, stopCriterion, mutationRate);
-        finalPopulation = ga.findSolution();
-        final long end = System.nanoTime();
-        System.out.println("Took: " + ((end - start) / 1000000) + "ms");
-        return finalPopulation;
-    }
-
-    public static List<EventList> SCGA(BenchmarkInstance benchmark, int populationSize, int stopCriterion, double mutationRate, int speciesDistance) {
-        final long start = System.nanoTime();
-        Algorithm scga = new SpeciesConservingGeneticAlgorithm(benchmark, populationSize, stopCriterion, mutationRate, speciesDistance);
-        finalPopulation = scga.findSolution();
-
-        final long end = System.nanoTime();
-        System.out.println("Took: " + ((end - start) / 1000000) + "ms");
-//        return ga.getFinalPopulation();
-        return finalPopulation;
-    }
-
-    public static List<EventList> SCGA(BenchmarkInstance benchmark, int populationSize, int stopCriterion, double mutationRate, int speciesDistance) {
-        final long start = System.nanoTime();
-        Algorithm scga = new ParallelSpeciesConservingGeneticAlgorithm(benchmark, populationSize, stopCriterion, mutationRate, speciesDistance);
-        finalPopulation = scga.findSolution();
-
-        final long end = System.nanoTime();
-        System.out.println("Took: " + ((end - start) / 1000000) + "ms");
-//        return ga.getFinalPopulation();
-        return finalPopulation;
-    }
     */
 }
