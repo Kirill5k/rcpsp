@@ -51,136 +51,25 @@ public class CommonOperations {
         return new EventList(resources, activities);
     }
 
-    public static EventList newEventCrossover(EventList p1, EventList p2, double threshold) {
+    public static EventList eventCrossover(EventList p1, EventList p2) {
+        return eventCrossover(p1, p2, 0.15);
+    }
+
+    public static EventList eventCrossover(EventList p1, EventList p2, double threshold) {
         List<List<Activity>> selectedEvents = p1.getSchedule().values().stream()
                 .sorted((e1, e2) -> Integer.compare(e2.size(), e1.size()))
                 .limit(Math.round(threshold * p1.getEventsAmount()))
                 .sorted((e1, e2) -> Integer.compare(p1.getStartingTimes().get(e1.get(0)), p1.getStartingTimes().get(e2.get(0))))
                 .collect(Collectors.toList());
 
+        List<Activity> childActivities = selectedEvents.stream().flatMap(e -> e.stream()).collect(Collectors.toList());
+        List<Activity> p2Activities = p2.getActivities().stream().filter(a -> !childActivities.contains(a)).collect(Collectors.toList());
 
-
-        return p2;
-    }
-
-
-    public static EventList eventCrossover(EventList p1, EventList p2) {
-        return eventCrossover(p1, p2, 0.4);
-    }
-
-    public static EventList eventCrossover(EventList p1, EventList p2, double threshold) {
-        int activityAmount = (int)(threshold * p1.getActivities().size());
-        int activityCount = 0;
-        int eventCount = 0;
-
-        /*
-        ---------------------------------------------------------- GET RIGHT EVENTS -------------------------------------
-         */
-
-        Map<List<Activity>, Integer> orderedEvents = new HashMap<>();
-        Map<Integer, List<List<Activity>>> sortedEvents = new TreeMap<>(Comparator.reverseOrder());
-        List<List<Activity>> selectedEvents = new ArrayList<>();
-
-        for (Map.Entry<Integer, List<Activity>> e : p1.getSchedule().entrySet()) {
-            List<Activity> ev = e.getValue();
-            int eventSize = ev.size();
-            orderedEvents.put(ev, eventCount);
-            eventCount++;
-
-            if (sortedEvents.get(eventSize)==null)
-                sortedEvents.put(eventSize, new ArrayList<>());
-
-            sortedEvents.get(eventSize).add(ev);
-        }
-
-        for (Map.Entry<Integer, List<List<Activity>>> e : sortedEvents.entrySet()) {
-            if (activityCount > activityAmount)
-                break;
-
-            for (List<Activity> event : e.getValue())
-                if (activityAmount > activityCount) {
-                    selectedEvents.add(event);
-                    activityCount = activityCount + e.getKey();
-                } else
-                    break;
-        }
-
-        Collections.sort(selectedEvents, (o1, o2) -> Integer.compare(orderedEvents.get(o1), orderedEvents.get(o2)));
-
-
-        /*
-        ----------------------------------------------------------- ADD MISSING ACTIVITIES FROM PARENT2 ----------------------
-         */
-
-        Set<Activity> eventActivities = new HashSet<>();
-        for (List<Activity> event : selectedEvents) {
-            eventActivities.addAll(event);
-        }
-
-        List<Activity> p2Activities = new ArrayList<>(p2.getActivities());
-        List<Activity> childActivities = new ArrayList<>();
-        for (List<Activity> event : selectedEvents) {
-            Set<Activity> predecessors = new HashSet<>();
-            Set<Activity> successors = new HashSet<>();
-            for (Activity a : event) {
-                predecessors.addAll(getAllPredecessors(predecessors, a));
-                successors.addAll(getAllSuccessors(successors, a));
-            }
-
-            childActivities.forEach(p2Activities::remove);
-            childActivities.forEach(predecessors::remove);
-
-            for (Activity a : p2Activities) {
-                if (!eventActivities.contains(a) && !successors.contains(a) && !childActivities.contains(a)) {
-                    if (checkPredecessors(childActivities, a)) {
-                        childActivities.add(a);
-                        predecessors.remove(a);
-                    }
-                }
-
-                if (predecessors.isEmpty())
-                    break;
-            }
-
-            childActivities.addAll(event);
-        }
-
-        for (Activity a : p2Activities)
-            if (!childActivities.contains(a))
-                childActivities.add(a);
+        p2Activities.stream().forEach(a ->{
+            int pos = a.getPredecessors().stream().map(p -> childActivities.indexOf(p)).max((o1, o2) -> Integer.compare(o1, o2)).get();
+            childActivities.add(pos+1, a);
+        });
 
         return new EventList(p1.getResources(), childActivities);
-    }
-
-    private static boolean checkPredecessors(List<Activity> as, Activity a) {
-        boolean check = true;
-
-        for (Activity predecessor : a.getPredecessors())
-            if (!as.contains(predecessor))
-                check = false;
-
-        return check;
-    }
-
-    private static Set<Activity> getAllPredecessors(Set<Activity> predecessors, Activity a) {
-        for (Activity predecessor : a.getPredecessors())
-            if (predecessor.getPredecessors().size() > 0) {
-                predecessors.add(predecessor);
-                getAllPredecessors(predecessors, predecessor);
-            } else
-                predecessors.add(predecessor);
-
-        return predecessors;
-    }
-
-    private static Set<Activity> getAllSuccessors(Set<Activity> successors, Activity a) {
-        for (Activity successor : a.getSuccessors())
-            if (successor.getSuccessors().size() > 0) {
-                successors.add(successor);
-                getAllSuccessors(successors, successor);
-            } else
-                successors.add(successor);
-
-        return successors;
     }
 }
