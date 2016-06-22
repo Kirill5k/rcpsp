@@ -1,11 +1,13 @@
 package app.main;
 
 import app.algorithm.Algorithm;
+import app.algorithm.AlgorithmType;
 import app.algorithm.Algorithms;
 import app.algorithm.CommonOperations;
 import app.asset.Activity;
 import app.asset.BenchmarkInstance;
 import app.asset.EventList;
+import app.exceptions.IncorrectAlgorithmTypeException;
 import app.utility.Benchmarks;
 
 import java.util.*;
@@ -15,22 +17,21 @@ import java.util.*;
  */
 public class Tests {
 
-    public static EventList testNormalGA(BenchmarkInstance bi) {
-        List<EventList> finalPop = Algorithms.normalGA(bi, 100, 1000, 0.3);
+    public static EventList testGA(BenchmarkInstance bi, int popSize, int stopCrit, double mutationRate, AlgorithmType type) {
+        List<EventList> finalPop;
+        switch (type){
+            case NORMAL_GA: finalPop = Algorithms.normalGA(bi, popSize, stopCrit, mutationRate); break;
+            case NORMAL_SCGA: finalPop = Algorithms.normalSCGA(bi, popSize, stopCrit, mutationRate); break;
+            case PARALLEL_GA: finalPop = Algorithms.parallelGA(bi, popSize, stopCrit, mutationRate); break;
+            default: throw new IncorrectAlgorithmTypeException(type + " is not supported");
+        }
+
         return CommonOperations.getBestSolution(finalPop);
     }
 
-    public static EventList testNormalSCGA(BenchmarkInstance bi) {
-        List<EventList> finalPop = Algorithms.normalSCGA(bi, 100, 1000, 0.3);
-        return CommonOperations.getBestSolution(finalPop);
-    }
-
-    public static EventList testParallelGA(BenchmarkInstance bi) {
-        List<EventList> finalPop = Algorithms.parallelGA(bi, 100, 1000, 0.3);
-        return CommonOperations.getBestSolution(finalPop);
-    }
-
-    public static void fullTestNormalGA(Set<Map.Entry<String, BenchmarkInstance>> instances) {
+    public static void fullTestGA(Set<Map.Entry<String, BenchmarkInstance>> instances, int popSize, int stopCrit, double mutationRate, AlgorithmType type) {
+        System.out.println(type + "-----------------------------------------");
+        System.out.println();
         int solved = 0;
         int count = 0;
         double dev = 0;
@@ -41,7 +42,7 @@ public class Tests {
             BenchmarkInstance bi = inst.getValue();
             int optima = Benchmarks.solutions.get(name);
 
-            EventList el = testNormalSCGA(bi);
+            EventList el = testGA(bi, popSize, stopCrit, mutationRate, type);
             if (el.getMakespan() == Benchmarks.solutions.get(name))
                 solved++;
             System.out.println("#" + count);

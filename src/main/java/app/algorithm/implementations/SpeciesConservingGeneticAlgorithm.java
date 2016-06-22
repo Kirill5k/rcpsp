@@ -9,13 +9,14 @@ import app.asset.EventList;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 /**
  * Created by Kirill on 15/04/2016.
  */
 public class SpeciesConservingGeneticAlgorithm extends GeneticAlgorithm {
 
-    protected final int speciesDistance;
+    protected int speciesDistance;
 
     public SpeciesConservingGeneticAlgorithm(BenchmarkInstance bi, int populationSize, int stopCriterion, double mutationRate) {
         super(bi, populationSize, stopCriterion, mutationRate);
@@ -24,32 +25,21 @@ public class SpeciesConservingGeneticAlgorithm extends GeneticAlgorithm {
 
     public List<EventList> findSolution() {
         for (int i = 0; i < stopCriterion; i++) {
+
             // DETERMINE SPECIES SEEDS
             List<EventList> speciesSeeds = SpeciesConservation.findSpeciesSeeds(population, speciesDistance);
 
             // DO CROSSOVER AND MUTATION
-            Collections.shuffle(population);
-            for (int j = 0; j < populationSize-1; j+=2)
-                crossover(population.get(j), population.get(j + 1));
+            selectionBasedOnDistance();
+            evolvePopulation();
 
             // FIND NEW SPECIES SEEDS
             List<EventList> newGeneration = SpeciesConservation.conserveSpecies(population, speciesSeeds, speciesDistance);
 
-            if (newGeneration.size() > populationSize) {
-                System.out.println("Too many species " + newGeneration.size());
-                Collections.sort(newGeneration, Comparator.reverseOrder());
-                while (newGeneration.size() > 100)
-                    newGeneration.remove(0);
-            } else {
-                // REMOVE WORST INDIVIDUALS
-                Collections.sort(population);
-                while (newGeneration.size() < populationSize) {
-                    if (!newGeneration.contains(population.get(0)))
-                        newGeneration.add(population.get(0));
-                    else
-                        population.remove(0);
-                }
-            }
+            if (newGeneration.size() > populationSize)
+                newGeneration = newGeneration.stream().sorted().limit(populationSize).collect(Collectors.toList());
+            else
+                newGeneration.addAll(population.stream().sorted().limit(populationSize - newGeneration.size()).collect(Collectors.toList()));
 
             population.clear();
             population.addAll(newGeneration);

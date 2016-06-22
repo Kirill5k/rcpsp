@@ -2,12 +2,16 @@ package app.algorithm.implementations;
 
 import app.algorithm.Algorithm;
 import app.algorithm.CommonOperations;
+import app.algorithm.SpeciesConservation;
 import app.asset.BenchmarkInstance;
 import app.asset.EventList;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Created by Kirill on 24/02/2016.
@@ -17,7 +21,7 @@ public class GeneticAlgorithm implements Algorithm {
     protected final int populationSize;
     protected final int stopCriterion;
     protected final double mutationRate;
-    protected final List<EventList> population;
+    protected List<EventList> population;
 
     public GeneticAlgorithm(BenchmarkInstance benchmark, int populationSize, int stopCriterion, double mutationRate) {
         this.populationSize = populationSize;
@@ -29,24 +33,40 @@ public class GeneticAlgorithm implements Algorithm {
 
     public List<EventList> findSolution() {
         for (int i = 0; i < stopCriterion; i++) {
-            Collections.shuffle(population);
-            for (int j = 0; j < populationSize-1; j+=2)
-                crossover(population.get(j), population.get(j + 1));
-
-            Collections.sort(population, Comparator.reverseOrder());
-            while (populationSize < population.size())
-                population.remove(0);
+            selectionBasedOnDistance();
+            evolvePopulation();
+            population = population.stream().sorted().limit(populationSize).collect(Collectors.toList());
         }
 
         return population;
     }
-//
-    protected void crossover(EventList mom, EventList dad) {
-        EventList son = CommonOperations.eventCrossover(mom, dad);
-        EventList daughter = CommonOperations.eventCrossover(dad, mom);
 
-        population.add(mutation(son));
-        population.add(mutation(daughter));
+
+    protected void evolvePopulation() {
+        for (int j = 0; j < populationSize-1; j+=2)
+            crossover(population.get(j), population.get(j + 1));
+    }
+
+    protected void selectionBasedOnDistance() {
+        Collections.sort(population);
+        List<EventList> pairs = new ArrayList<>();
+        while (population.size() > 1) {
+            EventList ind1 = population.remove(0);
+            EventList ind2 = population.stream().min((i1, i2) -> Integer.compare(SpeciesConservation.calculateDistance(i1, ind1), SpeciesConservation.calculateDistance(i2, ind1))).get();
+            pairs.add(ind1);
+            pairs.add(ind2);
+            population.remove(ind2);
+        }
+        population.clear();
+        population.addAll(pairs);
+    }
+
+    protected void crossover(EventList p1, EventList p2) {
+        EventList o1 = CommonOperations.eventCrossover(p1, p2);
+        EventList o2 = CommonOperations.eventCrossover(p2, p1);
+
+        population.add(mutation(o1));
+        population.add(mutation(o2));
     }
 
     protected EventList mutation(EventList individual){
