@@ -12,15 +12,10 @@ import java.util.SortedMap;
  */
 public class ActivityList extends AbstractProject implements Comparable<ActivityList> {
 
-    private SortedMap<Activity, Integer> schedule;
+    private final SortedMap<Activity, Integer> schedule;
 
-    public ActivityList(Map<Integer, Integer> resourceCapacties, List<Activity> activities) {
-        super(activities, resourceCapacties);
-        initialise();
-    }
-
-    @Override
-    protected void initialise(){
+    public ActivityList(Map<Integer, Integer> resourceCapacities, List<Activity> activities) {
+        super(activities, resourceCapacities);
         schedule = Schedules.createSerialSchedule(this, ScheduleType.FORWARD);
         makespan = schedule.get(schedule.lastKey());
     }

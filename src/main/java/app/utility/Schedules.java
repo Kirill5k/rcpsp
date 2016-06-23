@@ -4,6 +4,7 @@ import app.asset.AbstractProject;
 import app.asset.Activity;
 import app.asset.ActivityList;
 import app.asset.EventList;
+import app.asset.casestudy.SpecialEventList;
 import app.exceptions.InfeasibleScheduleException;
 import app.exceptions.StartingActivityNotFoundException;
 
@@ -16,6 +17,12 @@ import java.util.stream.IntStream;
  */
 public class Schedules {
     private Schedules(){}
+
+    public static SortedMap<Double, List<Activity>> createSerialSchedule(SpecialEventList sel, ScheduleType type) {
+
+
+        return new TreeMap<>();
+    }
 
     public static SortedMap<Integer, List<Activity>> createSerialSchedule(EventList el, ScheduleType type) {
         Map<Activity, Integer> finishTimes = getFinishTimes(el, type);

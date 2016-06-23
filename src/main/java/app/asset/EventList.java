@@ -10,16 +10,11 @@ import java.util.*;
  */
 public class EventList extends AbstractProject implements Comparable<EventList> {
 
-    private SortedMap<Integer, List<Activity>> schedule;
-    private Map<Activity, Integer> startingTimes = new HashMap<>();
+    private final SortedMap<Integer, List<Activity>> schedule;
+    private final Map<Activity, Integer> startingTimes = new HashMap<>();
 
     public EventList(List<Activity> activities, Map<Integer, Integer> resourceCapacities) {
         super(activities, resourceCapacities);
-        initialise();
-    }
-
-    @Override
-    protected void initialise() {
         schedule = Schedules.createSerialSchedule(this, ScheduleType.FORWARD);
         schedule.entrySet().stream().forEach(e -> e.getValue().forEach(a -> startingTimes.put(a, e.getKey())));
         makespan = schedule.lastKey();

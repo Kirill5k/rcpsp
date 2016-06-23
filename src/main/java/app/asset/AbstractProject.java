@@ -18,8 +18,6 @@ public abstract class AbstractProject {
         this.id = COUNTER++;
     }
 
-    protected void initialise(){}
-
     public long getId() {
         return id;
     }

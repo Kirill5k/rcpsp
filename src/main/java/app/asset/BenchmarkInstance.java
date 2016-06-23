@@ -14,11 +14,6 @@ public class BenchmarkInstance extends AbstractProject {
     public BenchmarkInstance(List<Activity> activities, Map<Integer, Integer> resourceCapacities, String name) {
         super(activities, resourceCapacities);
         this.name = name;
-        initialise();
-    }
-
-    protected void initialise(){
-
     }
 
     public String getName() {
