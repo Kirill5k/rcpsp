@@ -16,7 +16,7 @@ import java.util.stream.IntStream;
 /**
  * Created by Kirill on 24/02/2016.
  */
-public class GeneticAlgorithm implements Algorithm {
+class GeneticAlgorithm implements Algorithm {
     protected final BenchmarkInstance benchmark;
     protected final int populationSize;
     protected final int stopCriterion;
@@ -33,7 +33,7 @@ public class GeneticAlgorithm implements Algorithm {
 
     public List<EventList> findSolution() {
         for (int i = 0; i < stopCriterion; i++) {
-            selectionBasedOnDistance();
+            establishPairsForSelectionBasedOnDistance();
             evolvePopulation();
             population = population.stream().sorted().limit(populationSize).collect(Collectors.toList());
         }
@@ -47,7 +47,7 @@ public class GeneticAlgorithm implements Algorithm {
             crossover(population.get(j), population.get(j + 1));
     }
 
-    protected void selectionBasedOnDistance() {
+    protected void establishPairsForSelectionBasedOnDistance() {
         Collections.sort(population);
         List<EventList> pairs = new ArrayList<>();
         while (population.size() > 1) {

@@ -17,7 +17,7 @@ import java.util.concurrent.Executors;
 /**
  * Created by Kirill on 23/02/2016.
  */
-public class CuckooSearch {
+class CuckooSearch {
 
     private final int populationSize;
     private final BenchmarkInstance benchmarkInstance;

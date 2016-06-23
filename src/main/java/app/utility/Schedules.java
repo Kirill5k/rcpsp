@@ -4,6 +4,8 @@ import app.asset.AbstractProject;
 import app.asset.Activity;
 import app.asset.ActivityList;
 import app.asset.EventList;
+import app.exceptions.InfeasibleScheduleException;
+import app.exceptions.StartingActivityNotFoundException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,6 +31,8 @@ public class Schedules {
     }
 
     private static <T extends AbstractProject> Map<Activity, Integer> getFinishTimes(T project, ScheduleType type) {
+        checkFeasability(project);
+
         Map<Activity, Integer> finishTimes = new HashMap<>();
         Map<Integer, Map<Integer, Integer>> resourceConsumptions = new HashMap<>();
         project.getResources().forEach((k, v) -> resourceConsumptions.computeIfAbsent(k, HashMap::new).put(-1, v));
@@ -37,7 +41,10 @@ public class Schedules {
     }
 
     private static void scheduleActivity(Activity activity, Map<Activity, Integer> finishTimes, Map<Integer, Map<Integer, Integer>> resourceConsumptions, ScheduleType type) {
-        if (activity.getNumber() == 0){
+        if (finishTimes.isEmpty()){
+            if (activity.getNumber() != 0)
+                throw new StartingActivityNotFoundException("Project started with activity " + activity.getNumber());
+
             finishTimes.put(activity, 0);
             return;
         }
@@ -65,5 +72,17 @@ public class Schedules {
         return IntStream.range(time, time+activity.getDuration()).anyMatch(i ->
             activity.getResourceReq().entrySet().stream().anyMatch(e ->
                     resourceConsumptions.get(e.getKey()).getOrDefault(i, 0) + e.getValue() > resourceConsumptions.get(e.getKey()).get(-1)));
+    }
+
+    private static <T extends AbstractProject> void  checkFeasability(T project){
+        List<Activity> checkedActivities = new ArrayList<>();
+        for (Activity a : project.getActivities()) {
+            if (a.getPredecessors().stream().filter(p -> !checkedActivities.contains(p)).count()>0)
+                throw new InfeasibleScheduleException();
+
+            checkedActivities.add(a);
+        }
+
+
     }
 }

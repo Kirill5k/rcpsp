@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 /**
  * Created by Kirill on 18/04/2016.
  */
-public class ParallelGeneticAlgorithm extends GeneticAlgorithm {
+class ParallelGeneticAlgorithm extends GeneticAlgorithm {
     protected final ExecutorService executorService = Executors.newFixedThreadPool(25);
 
     public ParallelGeneticAlgorithm(BenchmarkInstance benchmark, int populationSize, int stopCriterion, double mutationRate) {

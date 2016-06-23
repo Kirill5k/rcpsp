@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 /**
  * Created by Kirill on 15/04/2016.
  */
-public class SpeciesConservingGeneticAlgorithm extends GeneticAlgorithm {
+class SpeciesConservingGeneticAlgorithm extends GeneticAlgorithm {
 
     protected int speciesDistance;
 
@@ -30,7 +30,7 @@ public class SpeciesConservingGeneticAlgorithm extends GeneticAlgorithm {
             List<EventList> speciesSeeds = SpeciesConservation.findSpeciesSeeds(population, speciesDistance);
 
             // DO CROSSOVER AND MUTATION
-            selectionBasedOnDistance();
+            establishPairsForSelectionBasedOnDistance();
             evolvePopulation();
 
             // FIND NEW SPECIES SEEDS

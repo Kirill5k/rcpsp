@@ -1,8 +1,7 @@
 package app.main;
 
-import app.algorithm.Algorithm;
 import app.algorithm.AlgorithmType;
-import app.algorithm.Algorithms;
+import app.algorithm.implementations.Algorithms;
 import app.algorithm.CommonOperations;
 import app.asset.Activity;
 import app.asset.BenchmarkInstance;
@@ -17,35 +16,26 @@ import java.util.*;
  */
 public class Tests {
 
-    public static EventList testGA(BenchmarkInstance bi, int popSize, int stopCrit, double mutationRate, AlgorithmType type) {
-        List<EventList> finalPop;
-        switch (type){
-            case NORMAL_GA: finalPop = Algorithms.normalGA(bi, popSize, stopCrit, mutationRate); break;
-            case NORMAL_SCGA: finalPop = Algorithms.normalSCGA(bi, popSize, stopCrit, mutationRate); break;
-            case PARALLEL_GA: finalPop = Algorithms.parallelGA(bi, popSize, stopCrit, mutationRate); break;
-            default: throw new IncorrectAlgorithmTypeException(type + " is not supported");
-        }
-
-        return CommonOperations.getBestSolution(finalPop);
+    public static EventList testGA(AlgorithmType type, BenchmarkInstance bi, int popSize, int stopCrit, double mutationRate) {
+        return CommonOperations.getBestSolution(Algorithms.GA(type, bi, popSize, stopCrit, mutationRate));
     }
 
     public static void fullTestGA(Set<Map.Entry<String, BenchmarkInstance>> instances, int popSize, int stopCrit, double mutationRate, AlgorithmType type) {
-        System.out.println(type + "-----------------------------------------");
+        System.out.println("----- " + type + " -----");
         System.out.println();
         int solved = 0;
         int count = 0;
         double dev = 0;
 
         for (Map.Entry<String, BenchmarkInstance> inst : instances) {
-            count++;
+            System.out.println("#" + (++count));
             String name = inst.getKey();
             BenchmarkInstance bi = inst.getValue();
             int optima = Benchmarks.solutions.get(name);
 
-            EventList el = testGA(bi, popSize, stopCrit, mutationRate, type);
+            EventList el = testGA(type, bi, popSize, stopCrit, mutationRate);
             if (el.getMakespan() == Benchmarks.solutions.get(name))
                 solved++;
-            System.out.println("#" + count);
             System.out.println("Received makespan: " + el.getMakespan() + " | expected makespan:  " + optima);
             System.out.println("Deviation: " +  CommonOperations.getDeviationFromOptima(el.getMakespan(), optima));
             System.out.println();
