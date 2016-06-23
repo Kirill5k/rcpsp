@@ -82,7 +82,5 @@ public class Schedules {
 
             checkedActivities.add(a);
         }
-
-
     }
 }

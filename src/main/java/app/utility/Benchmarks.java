@@ -80,7 +80,7 @@ public class Benchmarks {
 
         successors.forEach((k, v) -> v.forEach(i -> activities.get(k).getSuccessors().add(activities.get(i))));
         activities.forEach(a -> a.getSuccessors().forEach(s -> s.getPredecessors().add(a)));
-        return new BenchmarkInstance(projectName, resources, activities);
+        return new BenchmarkInstance(activities, resources, projectName);
     }
 
     private static Map<String, Integer> getAllSolutions() throws FileNotFoundException {
@@ -139,7 +139,7 @@ public class Benchmarks {
     }
 
     public static EventList asEventList(BenchmarkInstance bi) {
-        return new EventList(bi.getResources(), bi.getActivities());
+        return new EventList(bi.getActivities(), bi.getResources());
     }
 
     public static ActivityList asRandomActivityList(BenchmarkInstance bi) {
@@ -147,7 +147,7 @@ public class Benchmarks {
     }
 
     public static EventList asRandomEventList(BenchmarkInstance bi) {
-        return new EventList(bi.getResources(), randomise(bi.getActivities()));
+        return new EventList(randomise(bi.getActivities()), bi.getResources());
     }
 
     private static List<Activity> randomise(List<Activity> activities) {

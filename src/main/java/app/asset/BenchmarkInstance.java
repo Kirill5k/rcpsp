@@ -11,9 +11,14 @@ import java.util.Map;
 public class BenchmarkInstance extends AbstractProject {
     private final String name;
 
-    public BenchmarkInstance(String name, Map<Integer, Integer> resources, List<Activity> activities) {
-        super(resources, activities);
+    public BenchmarkInstance(List<Activity> activities, Map<Integer, Integer> resourceCapacities, String name) {
+        super(activities, resourceCapacities);
         this.name = name;
+        initialise();
+    }
+
+    protected void initialise(){
+
     }
 
     public String getName() {
@@ -22,7 +27,7 @@ public class BenchmarkInstance extends AbstractProject {
 
     @Override
     public String toString() {
-        String s = "BenchmarkInstance " + name + ":\r\n\tResources = "+ resources;
+        String s = "BenchmarkInstance " + name + ":\r\n\tResources = "+ resourceCapacities;
 
         for (Activity a : this.activities)
             s += "\r\n\t" + a.toString();

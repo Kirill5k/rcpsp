@@ -52,7 +52,7 @@ public class CommonOperations {
             final int randomPos = new Random().nextInt(maxPos - minPos) + minPos+1;
             activities.add(randomPos, a);
         });
-        return new EventList(resources, activities);
+        return new EventList(activities, resources);
     }
 
     public static EventList eventCrossover(EventList p1, EventList p2) {
@@ -96,7 +96,7 @@ public class CommonOperations {
         }
 
         p2Activities.stream().filter(a -> !childActivities.contains(a)).forEach(childActivities::add);
-        return new EventList(p1.getResources(), childActivities);
+        return new EventList(childActivities, p1.getResources());
     }
 
     private static boolean checkPredecessors(List<Activity> as, Activity a) {

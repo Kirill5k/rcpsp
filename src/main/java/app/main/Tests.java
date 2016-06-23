@@ -205,7 +205,7 @@ public class Tests {
 
         a19.getSuccessors().add(a20);
 
-        BenchmarkInstance bi = new BenchmarkInstance("Test instance", resources, activities);
+        BenchmarkInstance bi = new BenchmarkInstance(activities, resources, "Test instance");
 
         return bi;
     }

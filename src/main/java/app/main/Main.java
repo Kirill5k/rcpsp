@@ -20,7 +20,7 @@ public class Main {
     private static final BenchmarkInstance BI_120 = Benchmarks.instances120.get("J12019_4.RCP");
 
     public static void main(String[] args) {
-//        Tests.fullTestGA(Benchmarks.instances30.entrySet(), 100, 1000, 0.3, AlgorithmType.NORMAL_SCGA);
+        Tests.fullTestGA(Benchmarks.instances30.entrySet(), 100, 1000, 0.3, AlgorithmType.NORMAL_SCGA);
 
 //        int success = 0;
 //        long start = new Date().getTime();

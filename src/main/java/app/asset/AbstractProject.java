@@ -7,17 +7,18 @@ import java.util.*;
  */
 public abstract class AbstractProject {
     protected static long COUNTER = 0;
-
     protected final List<Activity> activities;
-    protected final Map<Integer, Integer> resources;
+    protected final Map<Integer, Integer> resourceCapacities;
     protected final long id;
     protected int makespan;
 
-    public AbstractProject(Map<Integer, Integer> resources, List<Activity> activities) {
-        this.resources = resources;
+    public AbstractProject(List<Activity> activities, Map<Integer, Integer> resourceCapacities) {
+        this.resourceCapacities = resourceCapacities;
         this.activities = activities;
         this.id = COUNTER++;
     }
+
+    protected void initialise(){}
 
     public long getId() {
         return id;
@@ -44,6 +45,6 @@ public abstract class AbstractProject {
     }
 
     public Map<Integer, Integer> getResources() {
-        return resources;
+        return resourceCapacities;
     }
 }
