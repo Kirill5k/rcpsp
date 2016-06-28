@@ -1,5 +1,6 @@
 package app.algorithm;
 
+import app.asset.AbstractProject;
 import app.asset.Activity;
 import app.asset.BenchmarkInstance;
 import app.asset.EventList;
@@ -24,11 +25,11 @@ public class CommonOperations {
         return population.get(0);
     }
 
-    public static List<EventList> initialisePopulation(BenchmarkInstance bi, int populationSize) {
+    public static <T extends AbstractProject> List<EventList> initialisePopulation(T projectInstance, int populationSize) {
         List<Map<Activity, Integer>> uniqueSchedules = new ArrayList<>();
         List<EventList> population = new ArrayList<>();
         while (population.size() < populationSize){
-            EventList ind = Benchmarks.asRandomEventList(bi);
+            EventList ind = Benchmarks.asRandomEventList(projectInstance);
             if (!uniqueSchedules.contains(ind)) {
                 population.add(ind);
                 uniqueSchedules.add(ind.getStartingTimes());

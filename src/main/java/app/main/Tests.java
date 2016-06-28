@@ -26,21 +26,25 @@ public class Tests {
         int solved = 0;
         int count = 0;
         double dev = 0;
+        double devSum = 0;
 
         for (Map.Entry<String, BenchmarkInstance> inst : instances) {
-            System.out.println("#" + (++count));
             String name = inst.getKey();
-            BenchmarkInstance bi = inst.getValue();
-            int optima = Benchmarks.solutions.get(name);
+            System.out.println("#" + (++count) + " " + name);
 
+            BenchmarkInstance bi = inst.getValue();
             EventList el = testGA(type, bi, popSize, stopCrit, mutationRate);
             if (el.getMakespan() == Benchmarks.solutions.get(name))
                 solved++;
-            System.out.println("Received makespan: " + el.getMakespan() + " | expected makespan:  " + optima);
-            System.out.println("Deviation: " +  CommonOperations.getDeviationFromOptima(el.getMakespan(), optima));
-            System.out.println();
 
-            dev += CommonOperations.getDeviationFromOptima(el.getMakespan(), optima);
+            int optima = Benchmarks.solutions.get(name);
+            dev = CommonOperations.getDeviationFromOptima(el.getMakespan(), optima);
+            if (dev > 0) {
+                System.out.println("Received makespan: " + el.getMakespan() + " | expected makespan:  " + optima);
+                System.out.println("Deviation: " + dev);
+                devSum += dev;
+            }
+            System.out.println();
         }
 
         System.out.println("Solved " + solved + " out of " + instances.size());

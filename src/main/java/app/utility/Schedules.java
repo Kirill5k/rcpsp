@@ -85,7 +85,7 @@ public class Schedules {
         List<Activity> checkedActivities = new ArrayList<>();
         for (Activity a : project.getActivities()) {
             if (a.getPredecessors().stream().filter(p -> !checkedActivities.contains(p)).count()>0)
-                throw new InfeasibleScheduleException();
+                throw new InfeasibleScheduleException(a.getNumber() + "");
 
             checkedActivities.add(a);
         }

@@ -1,9 +1,6 @@
 package app.utility;
 
-import app.asset.Activity;
-import app.asset.ActivityList;
-import app.asset.BenchmarkInstance;
-import app.asset.EventList;
+import app.asset.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -146,8 +143,8 @@ public class Benchmarks {
         return new ActivityList(bi.getResources(), randomise(bi.getActivities()));
     }
 
-    public static EventList asRandomEventList(BenchmarkInstance bi) {
-        return new EventList(randomise(bi.getActivities()), bi.getResources());
+    public static <T extends AbstractProject> EventList asRandomEventList(T bi) {
+        return new EventList(randomise(new ArrayList<>(bi.getActivities())), new HashMap<>(bi.getResources()));
     }
 
     private static List<Activity> randomise(List<Activity> activities) {
@@ -172,7 +169,4 @@ public class Benchmarks {
 
         return result;
     }
-    /*
-    ----------------------------------------------------------------------------------------------------------------------
-     */
 }

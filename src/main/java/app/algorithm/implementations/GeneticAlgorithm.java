@@ -3,6 +3,7 @@ package app.algorithm.implementations;
 import app.algorithm.Algorithm;
 import app.algorithm.CommonOperations;
 import app.algorithm.SpeciesConservation;
+import app.asset.AbstractProject;
 import app.asset.BenchmarkInstance;
 import app.asset.EventList;
 
@@ -17,18 +18,18 @@ import java.util.stream.IntStream;
  * Created by Kirill on 24/02/2016.
  */
 class GeneticAlgorithm implements Algorithm {
-    protected final BenchmarkInstance benchmark;
+    protected final BenchmarkInstance bi;
     protected final int populationSize;
     protected final int stopCriterion;
     protected final double mutationRate;
     protected List<EventList> population;
 
-    public GeneticAlgorithm(BenchmarkInstance benchmark, int populationSize, int stopCriterion, double mutationRate) {
+    public GeneticAlgorithm(BenchmarkInstance bi, int populationSize, int stopCriterion, double mutationRate) {
         this.populationSize = populationSize;
-        this.benchmark = benchmark;
+        this.bi = bi;
         this.stopCriterion = stopCriterion;
         this.mutationRate = mutationRate;
-        population = CommonOperations.initialisePopulation(benchmark, populationSize);
+        population = CommonOperations.initialisePopulation(bi, populationSize);
     }
 
     public List<EventList> findSolution() {

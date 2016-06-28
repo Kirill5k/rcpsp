@@ -2,6 +2,7 @@ package app.algorithm.implementations;
 
 import app.algorithm.implementations.GeneticAlgorithm;
 import app.algorithm.SpeciesConservation;
+import app.asset.AbstractProject;
 import app.asset.Activity;
 import app.asset.BenchmarkInstance;
 import app.asset.EventList;

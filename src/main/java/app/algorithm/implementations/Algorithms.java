@@ -3,6 +3,7 @@ package app.algorithm.implementations;
 import app.algorithm.Algorithm;
 import app.algorithm.AlgorithmType;
 import app.algorithm.implementations.*;
+import app.asset.AbstractProject;
 import app.asset.BenchmarkInstance;
 import app.asset.EventList;
 import app.exceptions.IncorrectAlgorithmTypeException;
@@ -15,7 +16,7 @@ import java.util.List;
 public class Algorithms {
     private Algorithms(){}
 
-    public static List<EventList> GA(AlgorithmType type, BenchmarkInstance bi, int popSize, int stopCrit, double mutRate) {
+    public static <T extends AbstractProject> List<EventList> GA(AlgorithmType type, BenchmarkInstance bi, int popSize, int stopCrit, double mutRate) {
         Algorithm alg;
         switch (type){
             case NORMAL_GA: alg = new GeneticAlgorithm(bi, popSize, stopCrit, mutRate); break;
