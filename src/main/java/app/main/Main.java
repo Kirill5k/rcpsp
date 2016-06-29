@@ -41,15 +41,18 @@ public class Main {
         BenchmarkInstance bi = CaseStudyProject.asBenchmarkInstance();
 
         System.out.println("Random");
-        for (int i = 0; i < 10; i++) {
+        int ms = 0;
+        for (int i = 0; i < 25; i++) {
             EventList el1 = Benchmarks.asRandomEventList(bi);
             System.out.println(el1.getSchedule());
+            ms += el1.getMakespan();
         }
+        System.out.println("Average makespan: " + ms/25.);
 
         System.out.println();
         System.out.println("Solved");
         for (int i = 0; i < 3; i++) {
-            EventList el2 = Tests.testGA(AlgorithmType.NORMAL_SCGA, bi, 100, 1000, 0.3);
+            EventList el2 = Tests.testGA(AlgorithmType.NORMAL_SCGA, bi, 150, 1000, 0.3);
             System.out.println(el2.getSchedule());
         }
     }
