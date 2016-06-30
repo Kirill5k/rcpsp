@@ -13,8 +13,8 @@ public class EventList extends AbstractProject implements Comparable<EventList> 
     private final SortedMap<Integer, List<Activity>> schedule;
     private final Map<Activity, Integer> startingTimes = new HashMap<>();
 
-    public EventList(List<Activity> activities, Map<Integer, Integer> resourceCapacities) {
-        super(activities, resourceCapacities);
+    public EventList(List<Activity> activitySequence, Map<Integer, Integer> resourceCapacities) {
+        super(activitySequence, resourceCapacities);
         schedule = Schedules.createSerialSchedule(this, ScheduleType.FORWARD);
         schedule.entrySet().stream().forEach(e -> e.getValue().forEach(a -> startingTimes.put(a, e.getKey())));
         makespan = schedule.lastKey();
@@ -43,7 +43,7 @@ public class EventList extends AbstractProject implements Comparable<EventList> 
     public String toString() {
         String s = "[";
 
-        for (Activity a : activities)
+        for (Activity a : activitySequence)
             s += a.getNumber() + " ";
 
         return s.trim() + "]";

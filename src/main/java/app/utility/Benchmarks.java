@@ -70,8 +70,7 @@ public class Benchmarks {
                 for (int i=0; i<row.get(5); i++)
                     successors.get(number).add(row.get(6 + i) - 1);
 
-                Activity activity = new Activity(number, duration, resourceReq);
-                activities.add(activity);
+                activities.add(new Activity(number, duration, resourceReq));
                 number++;
             }
 
@@ -126,47 +125,5 @@ public class Benchmarks {
         List<BenchmarkInstance> benchmarks = new ArrayList<>(Benchmarks.instances30.values());
         Collections.shuffle(benchmarks);
         return benchmarks.get(0);
-    }
-
-    /*
-    --------------------------------------------- LIST ----------------------------------------------------------
-     */
-    public static ActivityList asActivityList(BenchmarkInstance bi) {
-        return new ActivityList(bi.getResources(), bi.getActivities());
-    }
-
-    public static EventList asEventList(BenchmarkInstance bi) {
-        return new EventList(bi.getActivities(), bi.getResources());
-    }
-
-    public static ActivityList asRandomActivityList(BenchmarkInstance bi) {
-        return new ActivityList(bi.getResources(), randomise(bi.getActivities()));
-    }
-
-    public static <T extends AbstractProject> EventList asRandomEventList(T bi) {
-        return new EventList(randomise(new ArrayList<>(bi.getActivities())), new HashMap<>(bi.getResources()));
-    }
-
-    private static List<Activity> randomise(List<Activity> activities) {
-        List<Activity> result = new ArrayList<>();
-
-        List<Activity> dependencies = new ArrayList<>();
-        for (Activity a : activities)
-            if (a.getNumber()==0)
-                result.add(a);
-            else
-                dependencies.addAll(a.getSuccessors());
-
-        while (activities.size() != result.size()) {
-            Activity a = activities.get((int)(Math.random() * activities.size()));
-            if (!result.contains(a)) {
-                if (!dependencies.contains(a)) {
-                    result.add(a);
-                    a.getSuccessors().forEach(dependencies::remove);
-                }
-            }
-        }
-
-        return result;
     }
 }

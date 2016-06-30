@@ -1,10 +1,6 @@
 package app.asset;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -17,12 +13,12 @@ public class Activity implements Comparable<Activity>{
     private final List<Activity> predecessors;
     private final List<Activity> successors;
     private final int duration;
-    private final Map<Integer, Integer> resourceReq;
+    private final Map<Integer, Integer> resReq;
 
-    public Activity(int number, int duration, Map<Integer, Integer> resourceReq) {
+    public Activity(int number, int duration, Map<Integer, Integer> resReq) {
         this.number = number;
         this.duration = duration;
-        this.resourceReq = resourceReq;
+        this.resReq = resReq;
 
         this.successors = new ArrayList<>();
         this.predecessors = new ArrayList<>();
@@ -40,8 +36,8 @@ public class Activity implements Comparable<Activity>{
         return duration;
     }
 
-    public Map<Integer, Integer> getResourceReq() {
-        return resourceReq;
+    public Map<Integer, Integer> getResReq() {
+        return resReq;
     }
 
     public List<Activity> getPredecessors() {
@@ -66,7 +62,7 @@ public class Activity implements Comparable<Activity>{
             return false;
         if (getSuccessors() != null ? !getSuccessors().equals(activity.getSuccessors()) : activity.getSuccessors() != null)
             return false;
-        return getResourceReq().equals(activity.getResourceReq());
+        return getResReq().equals(activity.getResReq());
 
     }
 
@@ -74,7 +70,7 @@ public class Activity implements Comparable<Activity>{
     public int hashCode() {
         int result = getNumber();
         result = 31 * result + getDuration();
-        result = 31 * result + getResourceReq().hashCode();
+        result = 31 * result + getResReq().hashCode();
         return result;
     }
 

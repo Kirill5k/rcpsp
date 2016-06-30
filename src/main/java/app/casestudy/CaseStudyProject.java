@@ -1,9 +1,9 @@
-package app.asset.casestudy;
+package app.casestudy;
 
 import app.asset.Activity;
 import app.asset.BenchmarkInstance;
 import app.asset.EventList;
-import app.utility.Benchmarks;
+import app.utility.Projects;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,33 +24,33 @@ public class CaseStudyProject {
     }
 
     public static EventList asRandomEventList() {
-        return Benchmarks.asRandomEventList(asEventList());
+        return Projects.asRandomEventList(asEventList());
     }
 
     private static Map<Integer, Integer> getResourceCapacities(){
         Map<Integer, Integer> capacities = new HashMap<>();
-        capacities.put(1, 7);
-        capacities.put(2, 6);
-        capacities.put(3, 8);
-        capacities.put(4, 8);
+        capacities.put(1, 4);
+        capacities.put(2, 9);
+        capacities.put(3, 5);
+        capacities.put(4, 5);
         return capacities;
     }
 
     private static Map<Integer, Double> getResourceEfficiencies() {
         Map<Integer, Double> efficiencies = new HashMap<>();
-        efficiencies.put(1, 10.);
-        efficiencies.put(2, 10.);
-        efficiencies.put(3, 10.);
-        efficiencies.put(4, 10.);
+        efficiencies.put(1, 0.25);
+        efficiencies.put(2, 0.35);
+        efficiencies.put(3, 0.40);
+        efficiencies.put(4, 0.55);
         return efficiencies;
     }
 
-    private static Map<Integer, Double> getResourceLearnabilities(){
-        Map<Integer, Double> learnabilities = new HashMap<>();
-        learnabilities.put(1, 1.);
-        learnabilities.put(2, 1.);
-        learnabilities.put(3, 1.);
-        learnabilities.put(4, 1.);
+    private static Map<Integer, Integer> getResourceLearnabilities(){
+        Map<Integer, Integer> learnabilities = new HashMap<>();
+        learnabilities.put(1, 15);
+        learnabilities.put(2, 15);
+        learnabilities.put(3, 20);
+        learnabilities.put(4, 25);
         return learnabilities;
     }
 
@@ -63,8 +63,8 @@ public class CaseStudyProject {
         Map<Integer, Integer> resReq1 = new HashMap<>();
         resReq1.put(1, 3);
         resReq1.put(2, 3);
-        resReq1.put(3, 2);
-        resReq1.put(4, 2);
+        resReq1.put(3, 1);
+        resReq1.put(4, 1);
         Activity a1 = new Activity(1, 4, resReq1);
 
         Map<Integer, Integer> resReq2 = new HashMap<>();
@@ -77,54 +77,55 @@ public class CaseStudyProject {
         Map<Integer, Integer> resReq3 = new HashMap<>();
         resReq3.put(1, 2);
         resReq3.put(2, 2);
-        resReq3.put(3, 1);
-        resReq3.put(4, 1);
+        resReq3.put(3, 2);
+        resReq3.put(4, 2);
         Activity a3 = new Activity(3, 2, resReq3);
 
         Map<Integer, Integer> resReq4 = new HashMap<>();
-        resReq4.put(3, 3);
-        resReq4.put(4, 4);
+        resReq4.put(3, 2);
+        resReq4.put(4, 3);
         Activity a4 = new Activity(4, 3, resReq4);
 
         Map<Integer, Integer> resReq5 = new HashMap<>();
         resReq5.put(1, 1);
-        resReq5.put(2, 2);
+        resReq5.put(2, 1);
         resReq5.put(3, 2);
-        resReq5.put(4, 1);
+        resReq5.put(4, 2);
         Activity a5 = new Activity(5, 4, resReq5);
 
         Map<Integer, Integer> resReq6 = new HashMap<>();
-        resReq6.put(3, 3);
+        resReq6.put(3, 2);
         resReq6.put(4, 4);
         Activity a6 = new Activity(6, 2, resReq6);
 
         Map<Integer, Integer> resReq7 = new HashMap<>();
-        resReq7.put(1, 3);
-        resReq7.put(2, 3);
+        resReq7.put(1, 2);
+        resReq7.put(2, 2);
         resReq7.put(3, 1);
         resReq7.put(4, 1);
         Activity a7 = new Activity(7, 6, resReq7);
 
         Map<Integer, Integer> resReq8 = new HashMap<>();
-        resReq8.put(2, 2);
-        resReq8.put(3, 3);
-        resReq8.put(4, 1);
+        resReq8.put(3, 2);
+        resReq8.put(4, 2);
         Activity a8 = new Activity(8, 2, resReq8);
 
         Map<Integer, Integer> resReq9 = new HashMap<>();
         resReq9.put(2, 1);
+        resReq9.put(3, 1);
         resReq9.put(4, 3);
         Activity a9 = new Activity(9, 2, resReq9);
 
         Map<Integer, Integer> resReq10 = new HashMap<>();
-        resReq10.put(1, 3);
-        resReq10.put(2, 4);
-        resReq10.put(3, 2);
+        resReq10.put(1, 1);
+        resReq10.put(2, 3);
+        resReq10.put(3, 3);
+        resReq10.put(4, 1);
         Activity a10 = new Activity(10, 7, resReq10);
 
         Map<Integer, Integer> resReq11 = new HashMap<>();
-        resReq11.put(2, 2);
-        resReq11.put(3, 3);
+        resReq11.put(2, 1);
+        resReq11.put(3, 2);
         resReq11.put(4, 3);
         Activity a11 = new Activity(11, 6, resReq11);
 
@@ -134,15 +135,14 @@ public class CaseStudyProject {
         Activity a12 = new Activity(12, 7, resReq12);
 
         Map<Integer, Integer> resReq13 = new HashMap<>();
-        resReq13.put(1, 2);
         resReq13.put(2, 2);
-        resReq13.put(3, 1);
-        resReq13.put(4, 1);
+        resReq13.put(3, 2);
+        resReq13.put(4, 2);
         Activity a13 = new Activity(13, 5, resReq13);
 
         Map<Integer, Integer> resReq14 = new HashMap<>();
         resReq14.put(2, 2);
-        resReq14.put(4, 2);
+        resReq14.put(3, 2);
         Activity a14 = new Activity(14, 3, resReq14);
 
         Map<Integer, Integer> resReq15 = new HashMap<>();
@@ -152,48 +152,46 @@ public class CaseStudyProject {
 
         Map<Integer, Integer> resReq16 = new HashMap<>();
         resReq16.put(3, 2);
-        resReq16.put(4, 2);
+        resReq16.put(4, 3);
         Activity a16 = new Activity(16, 3, resReq16);
 
         Map<Integer, Integer> resReq17 = new HashMap<>();
-        resReq17.put(1, 2);
-        resReq17.put(2, 1);
-        resReq17.put(4, 3);
+        resReq17.put(1, 3);
+        resReq17.put(2, 3);
         Activity a17 = new Activity(17, 9, resReq17);
 
         Map<Integer, Integer> resReq18 = new HashMap<>();
-        resReq18.put(2, 5);
-        resReq18.put(3, 4);
-        resReq18.put(4, 3);
+        resReq18.put(2, 4);
+        resReq18.put(3, 2);
+        resReq18.put(4, 1);
         Activity a18 = new Activity(18, 8, resReq18);
 
         Map<Integer, Integer> resReq19 = new HashMap<>();
-        resReq19.put(3, 2);
+        resReq19.put(2, 1);
+        resReq19.put(3, 1);
         resReq19.put(4, 3);
         Activity a19 = new Activity(19, 2, resReq19);
 
         Map<Integer, Integer> resReq20 = new HashMap<>();
-        resReq20.put(2, 4);
-        resReq20.put(3, 3);
-        resReq20.put(4, 3);
-        Activity a20 = new Activity(20, 3, resReq20);
+        resReq20.put(2, 2);
+        resReq20.put(3, 2);
+        Activity a20 = new Activity(20, 2, resReq20);
 
         Map<Integer, Integer> resReq21 = new HashMap<>();
         resReq21.put(2, 3);
         resReq21.put(3, 1);
         resReq21.put(4, 2);
-        Activity a21 = new Activity(21, 6, resReq21);
+        Activity a21 = new Activity(21, 4, resReq21);
 
         Map<Integer, Integer> resReq22 = new HashMap<>();
-        resReq22.put(2, 2);
+        resReq22.put(2, 3);
         resReq22.put(3, 3);
-        resReq22.put(4, 2);
-        Activity a22 = new Activity(22, 8, resReq22);
+        resReq22.put(4, 1);
+        Activity a22 = new Activity(22, 6, resReq22);
 
         Map<Integer, Integer> resReq23 = new HashMap<>();
-        resReq23.put(2, 5);
+        resReq23.put(2, 4);
         resReq23.put(3, 2);
-        resReq23.put(4, 2);
         Activity a23 = new Activity(23, 10, resReq23);
 
         Map<Integer, Integer> resReq24 = new HashMap<>();
@@ -204,84 +202,81 @@ public class CaseStudyProject {
 
         Map<Integer, Integer> resReq25 = new HashMap<>();
         resReq25.put(1, 1);
-        resReq25.put(2, 3);
-        resReq25.put(3, 3);
+        resReq25.put(2, 2);
+        resReq25.put(3, 1);
         Activity a25 = new Activity(25, 2, resReq25);
 
         Map<Integer, Integer> resReq26 = new HashMap<>();
-        resReq26.put(2, 2);
+        resReq26.put(2, 1);
         resReq26.put(3, 1);
         resReq26.put(4, 3);
         Activity a26 = new Activity(26, 2, resReq26);
 
         Map<Integer, Integer> resReq27 = new HashMap<>();
         resReq27.put(2, 2);
-        resReq27.put(3, 4);
+        resReq27.put(3, 2);
         resReq27.put(4, 3);
         Activity a27 = new Activity(27, 5, resReq27);
 
         Map<Integer, Integer> resReq28 = new HashMap<>();
-        resReq28.put(1, 2);
+        resReq28.put(1, 1);
         resReq28.put(2, 1);
-        resReq28.put(3, 1);
-        resReq28.put(4, 4);
-        Activity a28 = new Activity(28, 4, resReq28);
+        resReq28.put(4, 3);
+        Activity a28 = new Activity(28, 3, resReq28);
 
         Map<Integer, Integer> resReq29 = new HashMap<>();
         resReq29.put(2, 2);
-        resReq29.put(3, 3);
-        resReq29.put(4, 2);
-        Activity a29 = new Activity(29, 4, resReq29);
+        resReq29.put(3, 2);
+        resReq29.put(4, 1);
+        Activity a29 = new Activity(29, 2, resReq29);
 
         Map<Integer, Integer> resReq30 = new HashMap<>();
-        resReq30.put(3, 3);
-        resReq30.put(4, 3);
-        Activity a30 = new Activity(30, 3, resReq30);
+        resReq30.put(3, 2);
+        resReq30.put(4, 4);
+        Activity a30 = new Activity(30, 4, resReq30);
 
         Map<Integer, Integer> resReq31 = new HashMap<>();
-        resReq31.put(1, 6);
+        resReq31.put(1, 4);
         resReq31.put(3, 3);
-        resReq31.put(4, 1);
-        Activity a31 = new Activity(31, 10, resReq31);
+        Activity a31 = new Activity(31, 6, resReq31);
 
         Map<Integer, Integer> resReq32 = new HashMap<>();
-        resReq32.put(1, 4);
+        resReq32.put(1, 3);
         resReq32.put(2, 1);
-        resReq32.put(3, 2);
-        Activity a32 = new Activity(32, 7, resReq32);
+        resReq32.put(3, 3);
+        Activity a32 = new Activity(32, 6, resReq32);
 
         Map<Integer, Integer> resReq33 = new HashMap<>();
-        resReq33.put(1, 4);
-        resReq33.put(2, 1);
+        resReq33.put(1, 3);
         resReq33.put(3, 1);
         resReq33.put(4, 1);
-        Activity a33 = new Activity(33, 4, resReq33);
+        Activity a33 = new Activity(33, 2, resReq33);
 
         Map<Integer, Integer> resReq34 = new HashMap<>();
-        resReq34.put(1, 3);
+        resReq34.put(1, 2);
+        resReq34.put(3, 1);
         resReq34.put(4, 2);
-        Activity a34 = new Activity(34, 5, resReq34);
+        Activity a34 = new Activity(34, 3, resReq34);
 
         Map<Integer, Integer> resReq35 = new HashMap<>();
-        resReq35.put(1, 3);
-        resReq35.put(3, 3);
+        resReq35.put(1, 2);
+        resReq35.put(3, 1);
         resReq35.put(4, 3);
-        Activity a35 = new Activity(35, 7, resReq35);
+        Activity a35 = new Activity(35, 3, resReq35);
 
         Map<Integer, Integer> resReq36 = new HashMap<>();
         resReq36.put(1, 3);
         resReq36.put(3, 1);
-        resReq36.put(4, 2);
-        Activity a36 = new Activity(36, 5, resReq36);
+        Activity a36 = new Activity(36, 2, resReq36);
 
         Map<Integer, Integer> resReq37 = new HashMap<>();
-        resReq37.put(2, 5);
+        resReq37.put(2, 4);
         resReq37.put(3, 1);
         resReq37.put(4, 2);
-        Activity a37 = new Activity(37, 8, resReq37);
+        Activity a37 = new Activity(37, 6, resReq37);
 
         Map<Integer, Integer> resReq38 = new HashMap<>();
-        resReq38.put(1, 5);
+        resReq38.put(1, 4);
         resReq38.put(3, 1);
         resReq38.put(4, 2);
         Activity a38 = new Activity(38, 5, resReq38);
@@ -291,73 +286,67 @@ public class CaseStudyProject {
         resReq39.put(2, 3);
         resReq39.put(3, 2);
         resReq39.put(4, 2);
-        Activity a39 = new Activity(39, 9, resReq39);
+        Activity a39 = new Activity(39, 7, resReq39);
 
         Map<Integer, Integer> resReq40 = new HashMap<>();
-        resReq40.put(1, 1);
-        resReq40.put(2, 3);
-        resReq40.put(3, 1);
+        resReq40.put(2, 2);
         resReq40.put(4, 3);
         Activity a40 = new Activity(40, 5, resReq40);
 
         Map<Integer, Integer> resReq41 = new HashMap<>();
-        resReq41.put(1, 2);
-        resReq41.put(2, 1);
-        resReq41.put(3, 4);
+        resReq41.put(1, 1);
+        resReq41.put(2, 3);
+        resReq41.put(3, 1);
         resReq41.put(4, 3);
-        Activity a41 = new Activity(41, 5, resReq41);
+        Activity a41 = new Activity(41, 4, resReq41);
 
         Map<Integer, Integer> resReq42 = new HashMap<>();
         resReq42.put(1, 2);
-        resReq42.put(2, 2);
         resReq42.put(3, 3);
         resReq42.put(4, 2);
-        Activity a42 = new Activity(42, 4, resReq42);
+        Activity a42 = new Activity(42, 3, resReq42);
 
         Map<Integer, Integer> resReq43 = new HashMap<>();
         resReq43.put(1, 2);
-        resReq43.put(2, 2);
         resReq43.put(3, 3);
-        resReq43.put(4, 5);
-        Activity a43 = new Activity(43, 4, resReq43);
+        resReq43.put(4, 2);
+        Activity a43 = new Activity(43, 3, resReq43);
 
         Map<Integer, Integer> resReq44 = new HashMap<>();
-        resReq44.put(1, 3);
-        resReq44.put(2, 1);
-        resReq44.put(3, 4);
-        resReq44.put(4, 5);
+        resReq44.put(3, 3);
+        resReq44.put(4, 3);
         Activity a44 = new Activity(44, 5, resReq44);
 
         Map<Integer, Integer> resReq45 = new HashMap<>();
-        resReq45.put(1, 5);
+        resReq45.put(1, 4);
         resReq45.put(3, 1);
-        resReq45.put(4, 1);
-        Activity a45 = new Activity(45, 6, resReq45);
+        resReq45.put(4, 2);
+        Activity a45 = new Activity(45, 5, resReq45);
 
         Map<Integer, Integer> resReq46 = new HashMap<>();
-        resReq46.put(1, 5);
+        resReq46.put(1, 2);
         resReq46.put(2, 1);
         resReq46.put(3, 2);
         resReq46.put(4, 1);
         Activity a46 = new Activity(46, 3, resReq46);
 
         Map<Integer, Integer> resReq47 = new HashMap<>();
-        resReq47.put(2, 3);
-        resReq47.put(3, 3);
-        resReq47.put(4, 5);
+        resReq47.put(2, 1);
+        resReq47.put(3, 2);
+        resReq47.put(4, 2);
         Activity a47 = new Activity(47, 3, resReq47);
 
         Map<Integer, Integer> resReq48 = new HashMap<>();
         resReq48.put(1, 2);
-        resReq48.put(2, 1);
-        resReq48.put(3, 5);
+        resReq48.put(2, 2);
+        resReq48.put(3, 2);
         resReq48.put(4, 1);
         Activity a48 = new Activity(48, 3, resReq48);
 
         Map<Integer, Integer> resReq49 = new HashMap<>();
-        resReq49.put(1, 4);
+        resReq49.put(1, 2);
         resReq49.put(2, 2);
-        resReq49.put(4, 4);
+        resReq49.put(4, 3);
         Activity a49 = new Activity(49, 2, resReq49);
 
         Map<Integer, Integer> resReq50 = new HashMap<>();
@@ -368,8 +357,8 @@ public class CaseStudyProject {
         Activity a50 = new Activity(50, 7, resReq50);
 
         Map<Integer, Integer> resReq51 = new HashMap<>();
-        resReq51.put(1, 3);
-        resReq51.put(2, 3);
+        resReq51.put(1, 2);
+        resReq51.put(2, 2);
         resReq51.put(3, 3);
         resReq51.put(4, 3);
         Activity a51 = new Activity(51, 4, resReq51);

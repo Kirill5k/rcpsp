@@ -4,7 +4,6 @@ import app.asset.AbstractProject;
 import app.asset.Activity;
 import app.asset.ActivityList;
 import app.asset.EventList;
-import app.asset.casestudy.SpecialEventList;
 import app.exceptions.InfeasibleScheduleException;
 import app.exceptions.StartingActivityNotFoundException;
 
@@ -17,12 +16,6 @@ import java.util.stream.IntStream;
  */
 public class Schedules {
     private Schedules(){}
-
-    public static SortedMap<Double, List<Activity>> createSerialSchedule(SpecialEventList sel, ScheduleType type) {
-
-
-        return new TreeMap<>();
-    }
 
     public static SortedMap<Integer, List<Activity>> createSerialSchedule(EventList el, ScheduleType type) {
         Map<Activity, Integer> finishTimes = getFinishTimes(el, type);
@@ -42,8 +35,8 @@ public class Schedules {
 
         Map<Activity, Integer> finishTimes = new HashMap<>();
         Map<Integer, Map<Integer, Integer>> resourceConsumptions = new HashMap<>();
-        project.getResources().forEach((k, v) -> resourceConsumptions.computeIfAbsent(k, HashMap::new).put(-1, v));
-        project.getActivities().stream().forEach(a -> scheduleActivity(a, finishTimes, resourceConsumptions, type));
+        project.getResCapacities().forEach((k, v) -> resourceConsumptions.computeIfAbsent(k, HashMap::new).put(-1, v));
+        project.getSequence().stream().forEach(a -> scheduleActivity(a, finishTimes, resourceConsumptions, type));
         return finishTimes;
     }
 
@@ -64,7 +57,7 @@ public class Schedules {
         finishTimes.put(activity, earliestStart+activity.getDuration());
 
         IntStream.range(st, st+activity.getDuration()).forEach(t ->
-                activity.getResourceReq().forEach((num, req) ->
+                activity.getResReq().forEach((num, req) ->
                         resourceConsumptions.get(num).put(t, resourceConsumptions.get(num).getOrDefault(t, 0)+ req)));
     }
 
@@ -77,13 +70,13 @@ public class Schedules {
 
     private static boolean checkSchedulability(int time, Activity activity, Map<Integer, Map<Integer, Integer>> resourceConsumptions) {
         return IntStream.range(time, time+activity.getDuration()).anyMatch(i ->
-            activity.getResourceReq().entrySet().stream().anyMatch(e ->
+            activity.getResReq().entrySet().stream().anyMatch(e ->
                     resourceConsumptions.get(e.getKey()).getOrDefault(i, 0) + e.getValue() > resourceConsumptions.get(e.getKey()).get(-1)));
     }
 
     private static <T extends AbstractProject> void  checkFeasability(T project){
         List<Activity> checkedActivities = new ArrayList<>();
-        for (Activity a : project.getActivities()) {
+        for (Activity a : project.getSequence()) {
             if (a.getPredecessors().stream().filter(p -> !checkedActivities.contains(p)).count()>0)
                 throw new InfeasibleScheduleException(a.getNumber() + "");
 

@@ -2,9 +2,8 @@ package app.algorithm;
 
 import app.asset.AbstractProject;
 import app.asset.Activity;
-import app.asset.BenchmarkInstance;
 import app.asset.EventList;
-import app.utility.Benchmarks;
+import app.utility.Projects;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,7 +28,7 @@ public class CommonOperations {
         List<Map<Activity, Integer>> uniqueSchedules = new ArrayList<>();
         List<EventList> population = new ArrayList<>();
         while (population.size() < populationSize){
-            EventList ind = Benchmarks.asRandomEventList(projectInstance);
+            EventList ind = Projects.asRandomEventList(projectInstance);
             if (!uniqueSchedules.contains(ind)) {
                 population.add(ind);
                 uniqueSchedules.add(ind.getStartingTimes());
@@ -41,7 +40,7 @@ public class CommonOperations {
 
     public static EventList eventMove(EventList el) {
         return IntStream.range(0, 5).boxed().parallel()
-                .map(i -> relocateEvent(new ArrayList<>(el.getActivities()), new ArrayList<>(el.getRandomEvent()), el.getResources()))
+                .map(i -> relocateEvent(new ArrayList<>(el.getSequence()), new ArrayList<>(el.getRandomEvent()), el.getResCapacities()))
                 .min((e1, e2) -> e1.compareTo(e2)).get();
     }
 
@@ -68,7 +67,7 @@ public class CommonOperations {
                 .collect(Collectors.toList());
 
         List<Activity> p1Activities = p1Events.stream().flatMap(e -> e.stream()).collect(Collectors.toList());
-        List<Activity> p2Activities = p2.getActivities().stream().filter(a -> !p1Activities.contains(a)).collect(Collectors.toList());
+        List<Activity> p2Activities = p2.getSequence().stream().filter(a -> !p1Activities.contains(a)).collect(Collectors.toList());
         List<Activity> childActivities = new ArrayList<>();
         for (List<Activity> event : p1Events) {
             Set<Activity> predecessors = new HashSet<>();
@@ -97,7 +96,7 @@ public class CommonOperations {
         }
 
         p2Activities.stream().filter(a -> !childActivities.contains(a)).forEach(childActivities::add);
-        return new EventList(childActivities, p1.getResources());
+        return new EventList(childActivities, p1.getResCapacities());
     }
 
     private static boolean checkPredecessors(List<Activity> as, Activity a) {

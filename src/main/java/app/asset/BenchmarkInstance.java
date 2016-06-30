@@ -1,7 +1,5 @@
 package app.asset;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -11,8 +9,8 @@ import java.util.Map;
 public class BenchmarkInstance extends AbstractProject {
     private final String name;
 
-    public BenchmarkInstance(List<Activity> activities, Map<Integer, Integer> resourceCapacities, String name) {
-        super(activities, resourceCapacities);
+    public BenchmarkInstance(List<Activity> activitySequence, Map<Integer, Integer> resourceCapacities, String name) {
+        super(activitySequence, resourceCapacities);
         this.name = name;
     }
 
@@ -22,10 +20,9 @@ public class BenchmarkInstance extends AbstractProject {
 
     @Override
     public String toString() {
-        String s = "BenchmarkInstance " + name + ":\r\n\tResources = "+ resourceCapacities;
+        String s = "BenchmarkInstance " + name + ":\r\n\tResources = "+ resCapacities;
 
-        for (Activity a : this.activities)
-            s += "\r\n\t" + a.toString();
+        s += "\r\n\t" + activities.toString();
 
         return s;
     }
