@@ -1,15 +1,10 @@
 package app.algorithm.implementations;
 
-import app.algorithm.implementations.GeneticAlgorithm;
 import app.algorithm.SpeciesConservation;
-import app.asset.AbstractProject;
-import app.asset.Activity;
 import app.asset.BenchmarkInstance;
 import app.asset.EventList;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 /**

@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 /**
  * Created by Kirill on 16/02/2016.
  */
-public abstract class AbstractProject {
+public abstract class Project {
     protected static long COUNTER = 0;
 
     protected final Map<Integer, Integer> resCapacities;
@@ -14,7 +14,7 @@ public abstract class AbstractProject {
     protected final List<Activity> activitySequence;
     protected final long id;
 
-    public AbstractProject(List<Activity> activitySequence, Map<Integer, Integer> resCapacities) {
+    public Project(List<Activity> activitySequence, Map<Integer, Integer> resCapacities) {
         this.id = COUNTER++;
         this.resCapacities = resCapacities;
         this.activities = activitySequence.stream().collect(Collectors.toMap(a -> a.getNumber(), a -> a));

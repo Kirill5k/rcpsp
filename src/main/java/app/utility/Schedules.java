@@ -1,10 +1,7 @@
 package app.utility;
 
-import app.asset.AbstractProject;
-import app.asset.Activity;
-import app.asset.ActivityList;
-import app.asset.EventList;
-import app.exceptions.InfeasibleScheduleException;
+import app.asset.*;
+import app.exceptions.InfeasibleActivitySequenceException;
 import app.exceptions.StartingActivityNotFoundException;
 
 import java.util.*;
@@ -17,26 +14,31 @@ import java.util.stream.IntStream;
 public class Schedules {
     private Schedules(){}
 
-    public static SortedMap<Integer, List<Activity>> mergeIntoEvents(EventList el) {
-        SortedMap<Integer, List<Activity>> events = new TreeMap<>();
-        el.getFinishTimes().forEach((a, ft) -> events.computeIfAbsent(ft-a.getDuration(), ArrayList::new).add(a));
+    public static <T extends Project> boolean checkFeasibility(T project){
+        List<Activity> checkedActivities = new ArrayList<>();
+        for (Activity a : project.getSequence()) {
+            if (a.getPredecessors().stream().filter(p -> !checkedActivities.contains(p)).count()>0)
+                throw new InfeasibleActivitySequenceException("Could not find predecessors of activity " + a.getNumber());
+
+            checkedActivities.add(a);
+        }
+
+        return true;
+    }
+
+    public static Map<Integer, List<Activity>> mergeIntoEvents(EventList el) {
+        Map<Integer, List<Activity>> events = new TreeMap<>();
+        el.getStartingTimes().forEach((a, st) -> events.computeIfAbsent(st, ArrayList::new).add(a));
         events.entrySet().stream().parallel().forEach(e -> Collections.sort(e.getValue()));
         return events;
     }
 
-    public static SortedMap<Activity, Integer> createSerialSchedule(ActivityList al, ScheduleType type) {
-        assignFinishTimes(al, type);
-
-        return new TreeMap<>(al.getFinishTimes().entrySet().stream().collect(
-                Collectors.toMap(e -> e.getKey(), e -> e.getValue()-e.getKey().getDuration())));
-    }
-
-    private static void assignFinishTimes(ActivityList al, ScheduleType type) {
-        checkFeasability(al);
+    public static <AL extends ActivityList> void createSerialSchedule(AL al, ScheduleType type) {
+        checkFeasibility(al);
         al.getSequence().stream().forEach(a -> scheduleActivity(a, al, type));
     }
 
-    private static void scheduleActivity(Activity a, ActivityList al, ScheduleType type) {
+    private static <AL extends ActivityList> void scheduleActivity(Activity a, AL al, ScheduleType type) {
         if (al.getFinishTimes().isEmpty()){
             if (a.getNumber() != 0)
                 throw new StartingActivityNotFoundException("Project started with activity " + a.getNumber());
@@ -45,16 +47,19 @@ public class Schedules {
             return;
         }
 
+        final int st = getStartingTime(a, al, type);
+        assignStartingTime(st, a, al, type);
+    }
+
+    private static <AL extends ActivityList> int getStartingTime(Activity a, AL al, ScheduleType type) {
         int earliestStart = getEarliestPossibleStartingTime(a, al);
-        while (type != ScheduleType.CRITICAL_PATH && checkSchedulability(earliestStart, a, al))
+        if (type == ScheduleType.CRITICAL_PATH)
+            return earliestStart;
+
+        while (checkSchedulability(earliestStart, a, al, type))
             earliestStart++;
 
-        final int st = earliestStart;
-        al.getFinishTimes().put(a, earliestStart+a.getDuration());
-
-        IntStream.range(st, st+a.getDuration()).forEach(t ->
-                a.getResReq().forEach((num, req) ->
-                        al.getResConsumptions().get(num).put(t, al.getResConsumptions().get(num).getOrDefault(t, 0)+ req)));
+        return earliestStart;
     }
 
     private static int getEarliestPossibleStartingTime(Activity a, ActivityList al) {
@@ -64,19 +69,61 @@ public class Schedules {
         );
     }
 
-    private static boolean checkSchedulability(int time, Activity a, ActivityList al) {
-        return IntStream.range(time, time+a.getDuration()).anyMatch(i ->
+    private static <AL extends ActivityList> boolean checkSchedulability(int t, Activity a, AL al, ScheduleType st) {
+        final int d = getActivityDuration(t, a, al, st);
+        return IntStream.range(t, t+d).anyMatch(i ->
             a.getResReq().entrySet().stream().anyMatch(e ->
                     al.getResConsumptions().get(e.getKey()).getOrDefault(i, 0) + e.getValue() > al.getResCapacities().get(e.getKey())));
     }
 
-    private static <T extends AbstractProject> void  checkFeasability(T project){
-        List<Activity> checkedActivities = new ArrayList<>();
-        for (Activity a : project.getSequence()) {
-            if (a.getPredecessors().stream().filter(p -> !checkedActivities.contains(p)).count()>0)
-                throw new InfeasibleScheduleException(a.getNumber() + "");
+    private static void assignStartingTime(int t, Activity a, ActivityList al, ScheduleType st){
+        final int d = getActivityDuration(t, a, al, st);
+        al.getStartingTimes().put(a, t);
+        al.getFinishTimes().put(a, t+d);
 
-            checkedActivities.add(a);
+        IntStream.range(t, t+d).forEach(i ->
+                a.getResReq().forEach((num, req) ->
+                        al.getResConsumptions().get(num).put(i, al.getResConsumptions().get(num).getOrDefault(i, 0)+ req)));
+    }
+
+    /*
+     * CASE STUDY METHODS
+     */
+
+    private static <AL extends ActivityList> int getActivityDuration(int t, Activity a, AL al, ScheduleType type) {
+        return type == ScheduleType.CASE_STUDY && t > 0 && al instanceof CaseStudyActivityList
+                ? getOptimisedDuration(t, a, (CaseStudyActivityList) al) : a.getDuration();
+    }
+
+    private static int getOptimisedDuration(int t, Activity a, CaseStudyActivityList csal){
+
+        Map<Integer, Double> resWork = a.getResReq().keySet().stream()
+                .collect(Collectors.toMap(Integer::valueOf, k -> calculateResWork(t, csal.getResConsumptions().get(k), csal.getResCapacities().get(k))));
+
+        Map<Integer, Double> resEffectiveness = resWork.entrySet().stream()
+                .collect(Collectors.toMap(e -> e.getKey(), e -> calculateResEffectiveness(e.getValue(), csal.getResEfficiencies().get(e.getKey()), csal.getResLearnabilities().get(e.getKey()))));
+
+        double meanEfficiency = resEffectiveness.entrySet().stream().mapToDouble(Map.Entry::getValue).sum()/resEffectiveness.size();
+        //double meanEfficiency = resEffectiveness.entrySet().stream().mapToDouble(e -> e.getValue() * csal.getResCapacities().get(e.getKey()) / activity.getResReq().get(e.getKey())).sum();
+
+        final int d = roundUp(a.getDuration() / meanEfficiency);
+        csal.getOptimisedDurations().put(a, d);
+        return d;
+    }
+
+    private static double calculateResWork(int t, Map<Integer, Integer> resConsumption, int resCapacity) {
+        double work = 0;
+        for (int i = 0; i < t; i++) {
+            work += resConsumption.getOrDefault(i, 0);
         }
+        return work / 5 / resCapacity ;
+    }
+
+    private static double calculateResEffectiveness(double work, double efficiency, double learnability) {
+        return 1.0 + efficiency / (learnability * work);
+    }
+
+    private static int roundUp(double d) {
+        return (int)Math.round(d);
     }
 }

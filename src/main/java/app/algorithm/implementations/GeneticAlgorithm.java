@@ -3,16 +3,13 @@ package app.algorithm.implementations;
 import app.algorithm.Algorithm;
 import app.algorithm.CommonOperations;
 import app.algorithm.SpeciesConservation;
-import app.asset.AbstractProject;
 import app.asset.BenchmarkInstance;
 import app.asset.EventList;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Created by Kirill on 24/02/2016.

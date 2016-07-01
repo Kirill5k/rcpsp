@@ -1,36 +1,24 @@
 package app.asset;
 
-import app.utility.ScheduleType;
-import app.utility.Schedules;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
+import java.util.*;
 
 /**
- * Created by Kirill on 16/02/2016.
+ * Created by Kirill on 01/07/2016.
  */
-public class ActivityList extends AbstractProject implements Comparable<ActivityList> {
+public abstract class ActivityList extends Project implements Comparable<ActivityList> {
 
-    protected final SortedMap<Activity, Integer> startingTimes;
-    protected final int makespan;
 
-    protected final Map<Integer, Map<Integer, Integer>> resConsumptions = new HashMap<>();
-    protected final Map<Activity, Integer> finishTimes = new HashMap<>();
+    protected int makespan;
+    protected Map<Activity, Integer> startingTimes = new TreeMap<>();
+    protected Map<Integer, Map<Integer, Integer>> resConsumptions = new HashMap<>();
+    protected Map<Activity, Integer> finishTimes = new HashMap<>();
 
-    public ActivityList(List<Activity> activitySequence, Map<Integer, Integer> resourceCapacities, ScheduleType type) {
-        super(activitySequence, resourceCapacities);
+    public ActivityList(List<Activity> activitySequence, Map<Integer, Integer> resCapacities) {
+        super(activitySequence, resCapacities);
         resCapacities.keySet().forEach(k -> resConsumptions.put(k, new HashMap<>()));
-        startingTimes = Schedules.createSerialSchedule(this, type);
-        makespan = startingTimes.get(startingTimes.lastKey());
     }
 
-    public ActivityList(List<Activity> activitySequence, Map<Integer, Integer> resourceCapacities) {
-        this(activitySequence, resourceCapacities, ScheduleType.FORWARD);
-    }
-
-    public SortedMap<Activity, Integer> getStartingTimes() {
+    public Map<Activity, Integer> getStartingTimes() {
         return startingTimes;
     }
 

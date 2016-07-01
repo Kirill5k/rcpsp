@@ -1,6 +1,6 @@
 package app.algorithm;
 
-import app.asset.AbstractProject;
+import app.asset.Project;
 import app.asset.Activity;
 import app.asset.EventList;
 import app.utility.Projects;
@@ -25,7 +25,7 @@ public class CommonOperations {
         return population.get(0);
     }
 
-    public static <T extends AbstractProject> List<EventList> initialisePopulation(T projectInstance, int populationSize) {
+    public static <T extends Project> List<EventList> initialisePopulation(T projectInstance, int populationSize) {
         List<Map<Activity, Integer>> uniqueSchedules = new ArrayList<>();
         List<EventList> population = new ArrayList<>();
         while (population.size() < populationSize){

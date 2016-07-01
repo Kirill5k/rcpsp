@@ -11,14 +11,16 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class EventList extends ActivityList implements Comparable<ActivityList> {
 
-    private final SortedMap<Integer, List<Activity>> events;
+    private Map<Integer, List<Activity>> events;
 
     public EventList(List<Activity> activitySequence, Map<Integer, Integer> resourceCapacities) {
         super(activitySequence, resourceCapacities);
+        Schedules.createSerialSchedule(this, ScheduleType.FORWARD);
+        makespan = startingTimes.get(activities.get(activities.size()-1));
         events = Schedules.mergeIntoEvents(this);
     }
 
-    public SortedMap<Integer, List<Activity>> getEvents() {
+    public Map<Integer, List<Activity>> getEvents() {
         return events;
     }
 

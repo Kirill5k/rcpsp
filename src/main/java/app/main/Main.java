@@ -1,8 +1,9 @@
 package app.main;
 
+import app.algorithm.AlgorithmType;
 import app.asset.BenchmarkInstance;
 import app.asset.CaseStudyActivityList;
-import app.casestudy.CaseStudyProject;
+import app.utility.CaseStudyProject;
 import app.utility.Benchmarks;
 
 /**
@@ -19,6 +20,8 @@ public class Main {
 //        Benchmarks.instances60.entrySet().forEach((e) -> System.out.println(e.getKey() + ": " + e.getValue().getResCapacities()));
 
         CaseStudyActivityList csal = CaseStudyProject.asCaseStudyActivityList();
+
+//        Tests.testGA(AlgorithmType.NORMAL_SCGA, CaseStudyProject.asBenchmarkInstance(), 100, 1000, 0.3);
     }
 
 }
