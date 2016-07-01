@@ -20,6 +20,7 @@ public class Main {
 //        Benchmarks.instances60.entrySet().forEach((e) -> System.out.println(e.getKey() + ": " + e.getValue().getResCapacities()));
 
         CaseStudyActivityList csal = CaseStudyProject.asCaseStudyActivityList();
+        csal.compareMeanVsOptimisedDurations();
 
 //        Tests.testGA(AlgorithmType.NORMAL_SCGA, CaseStudyProject.asBenchmarkInstance(), 100, 1000, 0.3);
     }

@@ -96,19 +96,13 @@ public class Schedules {
     }
 
     private static int getOptimisedDuration(int t, Activity a, CaseStudyActivityList csal){
-
         Map<Integer, Double> resWork = a.getResReq().keySet().stream()
                 .collect(Collectors.toMap(Integer::valueOf, k -> calculateResWork(t, csal.getResConsumptions().get(k), csal.getResCapacities().get(k))));
 
         Map<Integer, Double> resEffectiveness = resWork.entrySet().stream()
                 .collect(Collectors.toMap(e -> e.getKey(), e -> calculateResEffectiveness(e.getValue(), csal.getResEfficiencies().get(e.getKey()), csal.getResLearnabilities().get(e.getKey()))));
 
-        double meanEfficiency = resEffectiveness.entrySet().stream().mapToDouble(Map.Entry::getValue).sum()/resEffectiveness.size();
-        //double meanEfficiency = resEffectiveness.entrySet().stream().mapToDouble(e -> e.getValue() * csal.getResCapacities().get(e.getKey()) / activity.getResReq().get(e.getKey())).sum();
-
-        final int d = roundUp(a.getDuration() / meanEfficiency);
-        csal.getOptimisedDurations().put(a, d);
-        return d;
+        return calculateNewDuration(resEffectiveness, a, csal);
     }
 
     private static double calculateResWork(int t, Map<Integer, Integer> resConsumption, int resCapacity) {
@@ -116,11 +110,21 @@ public class Schedules {
         for (int i = 0; i < t; i++) {
             work += resConsumption.getOrDefault(i, 0);
         }
-        return work / 5 / resCapacity ;
+        return work / resCapacity / CaseStudyProject.DAYS;
     }
 
     private static double calculateResEffectiveness(double work, double efficiency, double learnability) {
-        return 1.0 + efficiency / (learnability * work);
+        return 1.0 + efficiency / Math.exp(learnability / work);
+    }
+
+    private static int calculateNewDuration(Map<Integer, Double> resEffectiveness, Activity a, CaseStudyActivityList csal){
+        double meanEff = a.getResReq().entrySet().stream()
+                .mapToDouble(e -> resEffectiveness.get(e.getKey()) ).sum()/a.getResReq().size();
+
+
+        final int d = roundUp(a.getDuration() / meanEff);
+        csal.getOptimisedDurations().put(a, d);
+        return d;
     }
 
     private static int roundUp(double d) {

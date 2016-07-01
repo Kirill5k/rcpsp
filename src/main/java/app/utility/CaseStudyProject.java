@@ -15,7 +15,7 @@ import java.util.Map;
  * Created by Kirill on 23/06/2016.
  */
 public class CaseStudyProject {
-    private static final int DAYS = 5;
+    public static final int DAYS = 5;
 
     public static CaseStudyActivityList asCaseStudyActivityList(){
         return new CaseStudyActivityList(Projects.randomiseActivitySequence(getActivities()), getResCapacities(), getResEfficiencies(), getResLearnabilities());
