@@ -17,61 +17,57 @@ import java.util.stream.IntStream;
 public class Schedules {
     private Schedules(){}
 
-    public static SortedMap<Integer, List<Activity>> createSerialSchedule(EventList el, ScheduleType type) {
-        Map<Activity, Integer> finishTimes = getFinishTimes(el, type);
-        SortedMap<Integer, List<Activity>> schedule = new TreeMap<>();
-        finishTimes.forEach((a, ft) -> schedule.computeIfAbsent(ft-a.getDuration(), ArrayList::new).add(a));
-        schedule.entrySet().stream().parallel().forEach(e -> Collections.sort(e.getValue()));
-        return schedule;
+    public static SortedMap<Integer, List<Activity>> mergeIntoEvents(EventList el) {
+        SortedMap<Integer, List<Activity>> events = new TreeMap<>();
+        el.getFinishTimes().forEach((a, ft) -> events.computeIfAbsent(ft-a.getDuration(), ArrayList::new).add(a));
+        events.entrySet().stream().parallel().forEach(e -> Collections.sort(e.getValue()));
+        return events;
     }
 
     public static SortedMap<Activity, Integer> createSerialSchedule(ActivityList al, ScheduleType type) {
-        return new TreeMap<>(getFinishTimes(al, type).entrySet().stream().collect(
+        assignFinishTimes(al, type);
+
+        return new TreeMap<>(al.getFinishTimes().entrySet().stream().collect(
                 Collectors.toMap(e -> e.getKey(), e -> e.getValue()-e.getKey().getDuration())));
     }
 
-    private static <T extends AbstractProject> Map<Activity, Integer> getFinishTimes(T project, ScheduleType type) {
-        checkFeasability(project);
-
-        Map<Activity, Integer> finishTimes = new HashMap<>();
-        Map<Integer, Map<Integer, Integer>> resourceConsumptions = new HashMap<>();
-        project.getResCapacities().forEach((k, v) -> resourceConsumptions.computeIfAbsent(k, HashMap::new).put(-1, v));
-        project.getSequence().stream().forEach(a -> scheduleActivity(a, finishTimes, resourceConsumptions, type));
-        return finishTimes;
+    private static void assignFinishTimes(ActivityList al, ScheduleType type) {
+        checkFeasability(al);
+        al.getSequence().stream().forEach(a -> scheduleActivity(a, al, type));
     }
 
-    private static void scheduleActivity(Activity activity, Map<Activity, Integer> finishTimes, Map<Integer, Map<Integer, Integer>> resourceConsumptions, ScheduleType type) {
-        if (finishTimes.isEmpty()){
-            if (activity.getNumber() != 0)
-                throw new StartingActivityNotFoundException("Project started with activity " + activity.getNumber());
+    private static void scheduleActivity(Activity a, ActivityList al, ScheduleType type) {
+        if (al.getFinishTimes().isEmpty()){
+            if (a.getNumber() != 0)
+                throw new StartingActivityNotFoundException("Project started with activity " + a.getNumber());
 
-            finishTimes.put(activity, 0);
+            al.getFinishTimes().put(a, 0);
             return;
         }
 
-        int earliestStart = getEarliestPossibleStartingTime(activity, finishTimes);
-        while (type != ScheduleType.CRITICAL_PATH && checkSchedulability(earliestStart, activity, resourceConsumptions))
+        int earliestStart = getEarliestPossibleStartingTime(a, al);
+        while (type != ScheduleType.CRITICAL_PATH && checkSchedulability(earliestStart, a, al))
             earliestStart++;
 
         final int st = earliestStart;
-        finishTimes.put(activity, earliestStart+activity.getDuration());
+        al.getFinishTimes().put(a, earliestStart+a.getDuration());
 
-        IntStream.range(st, st+activity.getDuration()).forEach(t ->
-                activity.getResReq().forEach((num, req) ->
-                        resourceConsumptions.get(num).put(t, resourceConsumptions.get(num).getOrDefault(t, 0)+ req)));
+        IntStream.range(st, st+a.getDuration()).forEach(t ->
+                a.getResReq().forEach((num, req) ->
+                        al.getResConsumptions().get(num).put(t, al.getResConsumptions().get(num).getOrDefault(t, 0)+ req)));
     }
 
-    private static int getEarliestPossibleStartingTime(Activity activity, Map<Activity, Integer> finishTimes) {
-        return finishTimes.get(
-                activity.getPredecessors().stream()
-                .max((a1, a2) -> Integer.compare(finishTimes.get(a1), finishTimes.get(a2))).get()
+    private static int getEarliestPossibleStartingTime(Activity a, ActivityList al) {
+        return al.getFinishTimes().get(
+                a.getPredecessors().stream()
+                .max((a1, a2) -> Integer.compare(al.getFinishTimes().get(a1), al.getFinishTimes().get(a2))).get()
         );
     }
 
-    private static boolean checkSchedulability(int time, Activity activity, Map<Integer, Map<Integer, Integer>> resourceConsumptions) {
-        return IntStream.range(time, time+activity.getDuration()).anyMatch(i ->
-            activity.getResReq().entrySet().stream().anyMatch(e ->
-                    resourceConsumptions.get(e.getKey()).getOrDefault(i, 0) + e.getValue() > resourceConsumptions.get(e.getKey()).get(-1)));
+    private static boolean checkSchedulability(int time, Activity a, ActivityList al) {
+        return IntStream.range(time, time+a.getDuration()).anyMatch(i ->
+            a.getResReq().entrySet().stream().anyMatch(e ->
+                    al.getResConsumptions().get(e.getKey()).getOrDefault(i, 0) + e.getValue() > al.getResCapacities().get(e.getKey())));
     }
 
     private static <T extends AbstractProject> void  checkFeasability(T project){

@@ -13,7 +13,6 @@ public abstract class AbstractProject {
     protected final Map<Integer, Activity> activities;
     protected final List<Activity> activitySequence;
     protected final long id;
-    protected int makespan;
 
     public AbstractProject(List<Activity> activitySequence, Map<Integer, Integer> resCapacities) {
         this.id = COUNTER++;
@@ -24,10 +23,6 @@ public abstract class AbstractProject {
 
     public long getId() {
         return id;
-    }
-
-    public int getMakespan() {
-        return makespan;
     }
 
     public int size(){

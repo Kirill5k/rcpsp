@@ -6,6 +6,7 @@ import app.asset.EventList;
 import app.utility.Projects;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -49,7 +50,8 @@ public class CommonOperations {
             activities.remove(a);
             final int minPos = a.getPredecessors().stream().map(p -> activities.indexOf(p)).max((o1, o2) -> Integer.compare(o1, o2)).get();
             final int maxPos = a.getSuccessors().stream().map(s -> activities.indexOf(s)).min((o1, o2) -> Integer.compare(o1, o2)).get();
-            final int randomPos = new Random().nextInt(maxPos - minPos) + minPos+1;
+            //final int randomPos = new Random().nextInt(maxPos - minPos) + minPos+1;
+            final int randomPos = ThreadLocalRandom.current().nextInt(minPos, maxPos)+1;
             activities.add(randomPos, a);
         });
         return new EventList(activities, resources);
@@ -60,7 +62,7 @@ public class CommonOperations {
     }
 
     public static EventList eventCrossover(EventList p1, EventList p2, double threshold) {
-        List<List<Activity>> p1Events = p1.getSchedule().values().stream()
+        List<List<Activity>> p1Events = p1.getEvents().values().stream()
                 .sorted((e1, e2) -> Integer.compare(e2.size(), e1.size()))
                 .limit(Math.round(threshold * p1.getEventsAmount()))
                 .sorted((e1, e2) -> Integer.compare(p1.getStartingTimes().get(e1.get(0)), p1.getStartingTimes().get(e2.get(0))))

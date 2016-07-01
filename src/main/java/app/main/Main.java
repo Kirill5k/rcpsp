@@ -1,6 +1,8 @@
 package app.main;
 
 import app.asset.BenchmarkInstance;
+import app.asset.CaseStudyActivityList;
+import app.casestudy.CaseStudyProject;
 import app.utility.Benchmarks;
 
 /**
@@ -12,9 +14,11 @@ public class Main {
     private static final BenchmarkInstance BI_120 = Benchmarks.instances120.get("J12019_4.RCP");
 
     public static void main(String[] args) {
-        //Tests.fullTestGA(Benchmarks.instances30.entrySet(), 100, 1000, 0.3, AlgorithmType.NORMAL_SCGA);
+//        Tests.fullTestGA(Benchmarks.instances30.entrySet(), 100, 1000, 0.3, AlgorithmType.NORMAL_SCGA);
 
 //        Benchmarks.instances60.entrySet().forEach((e) -> System.out.println(e.getKey() + ": " + e.getValue().getResCapacities()));
+
+        CaseStudyActivityList csal = CaseStudyProject.asCaseStudyActivityList();
     }
 
 }

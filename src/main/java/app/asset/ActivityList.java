@@ -3,6 +3,7 @@ package app.asset;
 import app.utility.ScheduleType;
 import app.utility.Schedules;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -12,26 +13,42 @@ import java.util.SortedMap;
  */
 public class ActivityList extends AbstractProject implements Comparable<ActivityList> {
 
-    private final SortedMap<Activity, Integer> schedule;
+    protected final SortedMap<Activity, Integer> startingTimes;
+    protected final int makespan;
 
-    public ActivityList(List<Activity> activitySequence, Map<Integer, Integer> resourceCapacities) {
+    protected final Map<Integer, Map<Integer, Integer>> resConsumptions = new HashMap<>();
+    protected final Map<Activity, Integer> finishTimes = new HashMap<>();
+
+    public ActivityList(List<Activity> activitySequence, Map<Integer, Integer> resourceCapacities, ScheduleType type) {
         super(activitySequence, resourceCapacities);
-        schedule = Schedules.createSerialSchedule(this, ScheduleType.FORWARD);
-        makespan = schedule.get(schedule.lastKey());
+        resCapacities.keySet().forEach(k -> resConsumptions.put(k, new HashMap<>()));
+        startingTimes = Schedules.createSerialSchedule(this, type);
+        makespan = startingTimes.get(startingTimes.lastKey());
     }
 
-    public SortedMap<Activity, Integer> getSchedule() {
-        return schedule;
+    public ActivityList(List<Activity> activitySequence, Map<Integer, Integer> resourceCapacities) {
+        this(activitySequence, resourceCapacities, ScheduleType.FORWARD);
+    }
+
+    public SortedMap<Activity, Integer> getStartingTimes() {
+        return startingTimes;
+    }
+
+    public Map<Integer, Map<Integer, Integer>> getResConsumptions() {
+        return resConsumptions;
+    }
+
+    public Map<Activity, Integer> getFinishTimes() {
+        return finishTimes;
+    }
+
+    public int getMakespan() {
+        return makespan;
     }
 
     @Override
     public String toString() {
-        String s = "[";
-
-        for (Activity a : activitySequence)
-            s += a.getNumber() + " ";
-
-        return s.trim() + "]";
+        return startingTimes.toString();
     }
 
     @Override

@@ -10,18 +10,15 @@ import java.util.Map;
 public class Activity implements Comparable<Activity>{
 
     private final int number;
-    private final List<Activity> predecessors;
-    private final List<Activity> successors;
     private final int duration;
     private final Map<Integer, Integer> resReq;
+    private final List<Activity> predecessors = new ArrayList<>();
+    private final List<Activity> successors = new ArrayList<>();
 
     public Activity(int number, int duration, Map<Integer, Integer> resReq) {
         this.number = number;
         this.duration = duration;
         this.resReq = resReq;
-
-        this.successors = new ArrayList<>();
-        this.predecessors = new ArrayList<>();
     }
 
     public int getNumber() {

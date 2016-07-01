@@ -2,6 +2,7 @@ package app.casestudy;
 
 import app.asset.Activity;
 import app.asset.BenchmarkInstance;
+import app.asset.CaseStudyActivityList;
 import app.asset.EventList;
 import app.utility.Projects;
 
@@ -15,19 +16,23 @@ import java.util.Map;
  */
 public class CaseStudyProject {
 
+    public static CaseStudyActivityList asCaseStudyActivityList(){
+        return new CaseStudyActivityList(getActivities(), getResCapacities(), getResEfficiencies(), getResLearnabilities());
+    }
+
     public static BenchmarkInstance asBenchmarkInstance(){
-        return new BenchmarkInstance(getActivities(), getResourceCapacities(), "Case study");
+        return new BenchmarkInstance(getActivities(), getResCapacities(), "Case study");
     }
 
     public static EventList asEventList() {
-        return new EventList(getActivities(), getResourceCapacities());
+        return new EventList(getActivities(), getResCapacities());
     }
 
     public static EventList asRandomEventList() {
         return Projects.asRandomEventList(asEventList());
     }
 
-    private static Map<Integer, Integer> getResourceCapacities(){
+    private static Map<Integer, Integer> getResCapacities(){
         Map<Integer, Integer> capacities = new HashMap<>();
         capacities.put(1, 4);
         capacities.put(2, 9);
@@ -36,7 +41,7 @@ public class CaseStudyProject {
         return capacities;
     }
 
-    private static Map<Integer, Double> getResourceEfficiencies() {
+    private static Map<Integer, Double> getResEfficiencies() {
         Map<Integer, Double> efficiencies = new HashMap<>();
         efficiencies.put(1, 0.25);
         efficiencies.put(2, 0.35);
@@ -45,7 +50,7 @@ public class CaseStudyProject {
         return efficiencies;
     }
 
-    private static Map<Integer, Integer> getResourceLearnabilities(){
+    private static Map<Integer, Integer> getResLearnabilities(){
         Map<Integer, Integer> learnabilities = new HashMap<>();
         learnabilities.put(1, 15);
         learnabilities.put(2, 15);
