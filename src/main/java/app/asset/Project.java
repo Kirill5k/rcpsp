@@ -29,6 +29,14 @@ public abstract class Project {
         return activities.size();
     }
 
+    public Activity getDummyStartActivity(){
+        return activities.get(0);
+    }
+
+    public Activity getDummyEndActivity(){
+        return activities.get(activities.size()-1);
+    }
+
     public Map<Integer, Activity> getActivities() {
         return activities;
     }

@@ -16,7 +16,7 @@ public class Projects {
     }
 
     public static <T extends Project> EventList asEventList(T project) {
-        return new EventList(new ArrayList<>(project.getSequence()), project.getResCapacities());
+        return new SimpleEventList(new ArrayList<>(project.getSequence()), project.getResCapacities());
     }
 
     public static <T extends Project> SimpleActivityList asRandomActivityList(T project) {
@@ -24,7 +24,7 @@ public class Projects {
     }
 
     public static <T extends Project> EventList asRandomEventList(T project) {
-        return new EventList(randomiseActivitySequence(project.getSequence()), project.getResCapacities());
+        return new SimpleEventList(randomiseActivitySequence(project.getSequence()), project.getResCapacities());
     }
 
     public static List<Activity> randomiseActivitySequence(List<Activity> activitySequence) {

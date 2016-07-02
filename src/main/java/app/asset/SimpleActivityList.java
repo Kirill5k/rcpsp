@@ -13,14 +13,11 @@ import java.util.SortedMap;
  */
 public class SimpleActivityList extends ActivityList implements Comparable<ActivityList> {
 
-    public SimpleActivityList(List<Activity> activitySequence, Map<Integer, Integer> resourceCapacities, ScheduleType type) {
-        super(activitySequence, resourceCapacities);
-        Schedules.createSerialSchedule(this, type);
-        makespan = startingTimes.get(activities.get(activities.size()-1));
-    }
-
     public SimpleActivityList(List<Activity> activitySequence, Map<Integer, Integer> resourceCapacities) {
-        this(activitySequence, resourceCapacities, ScheduleType.FORWARD);
+        super(activitySequence, resourceCapacities);
+
+        Schedules.createSerialSchedule(this, ScheduleType.FORWARD);
+        makespan = startingTimes.get(getDummyEndActivity());
     }
 
     @Override

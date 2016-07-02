@@ -5,6 +5,7 @@ import app.algorithm.AlgorithmType;
 import app.asset.Project;
 import app.asset.BenchmarkInstance;
 import app.asset.EventList;
+import app.asset.SimpleEventList;
 import app.exceptions.IncorrectAlgorithmTypeException;
 
 import java.util.List;
@@ -16,11 +17,15 @@ public class Algorithms {
     private Algorithms(){}
 
     public static <T extends Project> List<EventList> GA(AlgorithmType type, BenchmarkInstance bi, int popSize, int stopCrit, double mutRate) {
+        return GA(type, new SimpleEventList(bi.getSequence(), bi.getResCapacities()), popSize, stopCrit, mutRate);
+    }
+
+    public static <T extends Project> List<EventList> GA(AlgorithmType type, EventList el, int popSize, int stopCrit, double mutRate) {
         Algorithm alg;
         switch (type){
-            case NORMAL_GA: alg = new GeneticAlgorithm(bi, popSize, stopCrit, mutRate); break;
-            case NORMAL_SCGA: alg = new SpeciesConservingGeneticAlgorithm(bi, popSize, stopCrit, mutRate); break;
-            case PARALLEL_GA: alg = new ParallelGeneticAlgorithm(bi, popSize, stopCrit, mutRate); break;
+            case NORMAL_GA: alg = new GeneticAlgorithm(el, popSize, stopCrit, mutRate); break;
+            case NORMAL_SCGA: alg = new SpeciesConservingGeneticAlgorithm(el, popSize, stopCrit, mutRate); break;
+            case PARALLEL_GA: alg = new ParallelGeneticAlgorithm(el, popSize, stopCrit, mutRate); break;
             default: throw new IncorrectAlgorithmTypeException(type + " is not supported");
         }
 

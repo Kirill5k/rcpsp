@@ -17,8 +17,8 @@ import java.util.concurrent.Executors;
 class ParallelGeneticAlgorithm extends GeneticAlgorithm {
     protected final ExecutorService executorService = Executors.newFixedThreadPool(25);
 
-    public ParallelGeneticAlgorithm(BenchmarkInstance benchmark, int populationSize, int stopCriterion, double mutationRate) {
-        super(benchmark, populationSize, stopCriterion, mutationRate);
+    public ParallelGeneticAlgorithm(EventList initialEL, int populationSize, int stopCriterion, double mutationRate) {
+        super(initialEL, populationSize, stopCriterion, mutationRate);
     }
 
     @Override

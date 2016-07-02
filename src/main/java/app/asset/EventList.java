@@ -1,23 +1,19 @@
 package app.asset;
 
-import app.utility.ScheduleType;
-import app.utility.Schedules;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Created by Kirill on 16/02/2016.
+ * Created by Kirill on 01/07/2016.
  */
-public class EventList extends ActivityList implements Comparable<ActivityList> {
+public abstract class EventList extends ActivityList {
 
-    private Map<Integer, List<Activity>> events;
+    protected Map<Integer, List<Activity>> events;
 
-    public EventList(List<Activity> activitySequence, Map<Integer, Integer> resourceCapacities) {
-        super(activitySequence, resourceCapacities);
-        Schedules.createSerialSchedule(this, ScheduleType.FORWARD);
-        makespan = startingTimes.get(activities.get(activities.size()-1));
-        events = Schedules.mergeIntoEvents(this);
+    public EventList(List<Activity> activitySequence, Map<Integer, Integer> resCapacities) {
+        super(activitySequence, resCapacities);
     }
 
     public Map<Integer, List<Activity>> getEvents() {
@@ -32,26 +28,5 @@ public class EventList extends ActivityList implements Comparable<ActivityList> 
 
     public int getEventsAmount() {
         return events.size();
-    }
-
-    @Override
-    public String toString() {
-        return events.toString();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof EventList)) return false;
-
-        EventList eventList = (EventList) o;
-        if (this.getId() == eventList.getId()) return true;
-
-        return getEvents().equals(eventList.getEvents());
-    }
-
-    @Override
-    public int hashCode() {
-        return getEvents().hashCode();
     }
 }

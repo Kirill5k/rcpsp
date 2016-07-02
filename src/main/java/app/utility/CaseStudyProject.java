@@ -1,10 +1,6 @@
 package app.utility;
 
-import app.asset.Activity;
-import app.asset.BenchmarkInstance;
-import app.asset.CaseStudyActivityList;
-import app.asset.EventList;
-import app.utility.Projects;
+import app.asset.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,20 +13,16 @@ import java.util.Map;
 public class CaseStudyProject {
     public static final int DAYS = 5;
 
-    public static CaseStudyActivityList asCaseStudyActivityList(){
-        return new CaseStudyActivityList(Projects.randomiseActivitySequence(getActivities()), getResCapacities(), getResEfficiencies(), getResLearnabilities());
+    public static CaseStudyEventList asCaseStudyActivityList(){
+        return new CaseStudyEventList(Projects.randomiseActivitySequence(getActivities()), getResCapacities(), getResEfficiencies(), getResLearnabilities());
     }
 
     public static BenchmarkInstance asBenchmarkInstance(){
-        return new BenchmarkInstance(getActivities(), getResCapacities(), "Case study");
+        return new BenchmarkInstance(Projects.randomiseActivitySequence(getActivities()), getResCapacities(), "Case study");
     }
 
     public static EventList asEventList() {
-        return new EventList(getActivities(), getResCapacities());
-    }
-
-    public static EventList asRandomEventList() {
-        return new EventList(Projects.randomiseActivitySequence(getActivities()), getResCapacities());
+        return new SimpleEventList(Projects.randomiseActivitySequence(getActivities()), getResCapacities());
     }
 
     private static Map<Integer, Integer> getResCapacities(){

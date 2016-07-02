@@ -1,8 +1,6 @@
 package app.algorithm;
 
-import app.asset.Project;
-import app.asset.Activity;
-import app.asset.EventList;
+import app.asset.*;
 import app.utility.Projects;
 
 import java.util.*;
@@ -25,7 +23,7 @@ public class CommonOperations {
         return population.get(0);
     }
 
-    public static <T extends Project> List<EventList> initialisePopulation(T projectInstance, int populationSize) {
+    public static <T extends ActivityList> List<EventList> initialisePopulation(T projectInstance, int populationSize) {
         List<Map<Activity, Integer>> uniqueSchedules = new ArrayList<>();
         List<EventList> population = new ArrayList<>();
         while (population.size() < populationSize){
@@ -54,7 +52,7 @@ public class CommonOperations {
             final int randomPos = ThreadLocalRandom.current().nextInt(minPos, maxPos)+1;
             activities.add(randomPos, a);
         });
-        return new EventList(activities, resources);
+        return new SimpleEventList(activities, resources);
     }
 
     public static EventList eventCrossover(EventList p1, EventList p2) {
@@ -98,7 +96,7 @@ public class CommonOperations {
         }
 
         p2Activities.stream().filter(a -> !childActivities.contains(a)).forEach(childActivities::add);
-        return new EventList(childActivities, p1.getResCapacities());
+        return new SimpleEventList(childActivities, p1.getResCapacities());
     }
 
     private static boolean checkPredecessors(List<Activity> as, Activity a) {

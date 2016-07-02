@@ -91,11 +91,11 @@ public class Schedules {
      */
 
     private static <AL extends ActivityList> int getActivityDuration(int t, Activity a, AL al, ScheduleType type) {
-        return type == ScheduleType.CASE_STUDY && t > 0 && al instanceof CaseStudyActivityList
-                ? getOptimisedDuration(t, a, (CaseStudyActivityList) al) : a.getDuration();
+        return type == ScheduleType.CASE_STUDY && t > 0 && al instanceof CaseStudyEventList
+                ? getOptimisedDuration(t, a, (CaseStudyEventList) al) : a.getDuration();
     }
 
-    private static int getOptimisedDuration(int t, Activity a, CaseStudyActivityList csal){
+    private static int getOptimisedDuration(int t, Activity a, CaseStudyEventList csal){
         Map<Integer, Double> resWork = a.getResReq().keySet().stream()
                 .collect(Collectors.toMap(Integer::valueOf, k -> calculateResWork(t, csal.getResConsumptions().get(k), csal.getResCapacities().get(k))));
 
@@ -117,7 +117,7 @@ public class Schedules {
         return 1.0 + efficiency / Math.exp(learnability / work);
     }
 
-    private static int calculateNewDuration(Map<Integer, Double> resEffectiveness, Activity a, CaseStudyActivityList csal){
+    private static int calculateNewDuration(Map<Integer, Double> resEffectiveness, Activity a, CaseStudyEventList csal){
         double meanEff = a.getResReq().entrySet().stream()
                 .mapToDouble(e -> resEffectiveness.get(e.getKey()) ).sum()/a.getResReq().size();
 

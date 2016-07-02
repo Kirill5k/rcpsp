@@ -12,18 +12,20 @@ import java.util.stream.Collectors;
 /**
  * Created by Kirill on 23/06/2016.
  */
-public class CaseStudyActivityList extends ActivityList implements Comparable<ActivityList> {
+public class CaseStudyEventList extends EventList implements Comparable<ActivityList> {
 
     private final Map<Integer, Double> resEfficiencies;
     private final Map<Integer, Integer> resLearnabilities;
     private final Map<Activity, Integer> optimisedDurations = new HashMap<>();
 
-    public CaseStudyActivityList(List<Activity> activitySequence, Map<Integer, Integer> resCapacities, Map<Integer, Double> resEfficiencies, Map<Integer, Integer> resLearnabilities) {
+    public CaseStudyEventList(List<Activity> activitySequence, Map<Integer, Integer> resCapacities, Map<Integer, Double> resEfficiencies, Map<Integer, Integer> resLearnabilities) {
         super(activitySequence, resCapacities);
         this.resEfficiencies = resEfficiencies;
         this.resLearnabilities = resLearnabilities;
-        optimisedDurations.put(activities.get(0), 0);
+
         Schedules.createSerialSchedule(this, ScheduleType.CASE_STUDY);
+        events = Schedules.mergeIntoEvents(this);
+        makespan = startingTimes.get(getDummyEndActivity());
     }
 
 
@@ -41,7 +43,7 @@ public class CaseStudyActivityList extends ActivityList implements Comparable<Ac
 
     public void compareMeanVsOptimisedDurations(){
         System.out.println("Schedule: ");
-        System.out.println(startingTimes);
+        System.out.println(events);
         System.out.println("Original: ");
         Map<Activity, Integer> m = activitySequence.stream().collect(Collectors.toMap(a -> a, Activity::getDuration));
         System.out.println(new TreeMap<>(m));

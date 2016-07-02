@@ -15,18 +15,18 @@ import java.util.stream.Collectors;
  * Created by Kirill on 24/02/2016.
  */
 class GeneticAlgorithm implements Algorithm {
-    protected final BenchmarkInstance bi;
+    protected final EventList initialEL;
     protected final int populationSize;
     protected final int stopCriterion;
     protected final double mutationRate;
     protected List<EventList> population;
 
-    public GeneticAlgorithm(BenchmarkInstance bi, int populationSize, int stopCriterion, double mutationRate) {
+    public GeneticAlgorithm(EventList initialEL, int populationSize, int stopCriterion, double mutationRate) {
         this.populationSize = populationSize;
-        this.bi = bi;
+        this.initialEL = initialEL;
         this.stopCriterion = stopCriterion;
         this.mutationRate = mutationRate;
-        population = CommonOperations.initialisePopulation(bi, populationSize);
+        population = CommonOperations.initialisePopulation(initialEL, populationSize);
     }
 
     public List<EventList> findSolution() {
