@@ -3,7 +3,9 @@ package app.utility;
 import app.asset.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by Kirill on 29/06/2016.
@@ -28,25 +30,25 @@ public class Projects {
     }
 
     public static List<Activity> randomiseActivitySequence(List<Activity> activitySequence) {
+        List<Activity> activities = new ArrayList<>(activitySequence);
         List<Activity> result = new ArrayList<>();
 
-        List<Activity> dependencies = new ArrayList<>();
-        for (Activity a : activitySequence)
-            if (a.getNumber()==0)
-                result.add(a);
-            else
-                dependencies.addAll(a.getSuccessors());
+        Activity a0 = activities.stream().filter(a -> a.getNumber() == 0).findAny().get();
+        result.add(a0);
+        activities.remove(a0);
 
-        while (activitySequence.size() != result.size()) {
-            Activity a = activitySequence.get((int)(Math.random() * activitySequence.size()));
-            if (!result.contains(a)) {
-                if (!dependencies.contains(a)) {
-                    result.add(a);
-                    a.getSuccessors().forEach(dependencies::remove);
-                }
+        while (!activities.isEmpty()){
+            Activity a = activities.get(ThreadLocalRandom.current().nextInt(activities.size()));
+            if (checkPredecessors(a, result)){
+                result.add(a);
+                activities.remove(a);
             }
         }
 
         return result;
+    }
+
+    private static boolean checkPredecessors(Activity activity, List<Activity> activitySequence){
+        return !activity.getPredecessors().stream().filter(a -> !activitySequence.contains(a)).findAny().isPresent();
     }
 }

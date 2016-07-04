@@ -29,4 +29,9 @@ public abstract class EventList extends ActivityList {
     public int getEventsAmount() {
         return events.size();
     }
+
+    @Override
+    public String toString() {
+        return events.toString();
+    }
 }

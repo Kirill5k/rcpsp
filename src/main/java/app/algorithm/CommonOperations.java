@@ -1,6 +1,7 @@
 package app.algorithm;
 
 import app.asset.*;
+import app.utility.CaseStudyProject;
 import app.utility.Projects;
 
 import java.util.*;
@@ -19,16 +20,29 @@ public class CommonOperations {
     }
 
     public static EventList getBestSolution(List<EventList> population) {
-        Collections.sort(population);
-        return population.get(0);
+        return population.stream().min(EventList::compareTo).get();
     }
 
-    public static <T extends ActivityList> List<EventList> initialisePopulation(T projectInstance, int populationSize) {
-        List<Map<Activity, Integer>> uniqueSchedules = new ArrayList<>();
+    public static List<EventList> getBestSolutions(List<EventList> population) {
+        int min = population.stream().min(EventList::compareTo).get().getMakespan();
+        return population.stream().filter(e -> e.getMakespan() == min).collect(Collectors.toList());
+    }
+
+    public static <T extends Project> List<EventList> initialisePopulation(T project, int popSize) {
+        Set<Map<Activity, Integer>> uniqueSchedules = new HashSet<>();
         List<EventList> population = new ArrayList<>();
-        while (population.size() < populationSize){
-            EventList ind = Projects.asRandomEventList(projectInstance);
-            if (!uniqueSchedules.contains(ind)) {
+        int stop = 0;
+
+        while (population.size() < popSize){
+            stop++;
+            EventList ind;
+            if (project instanceof CaseStudyEventList){
+                ind = CaseStudyProject.asCaseStudyEventList();
+            } else {
+                ind = Projects.asRandomEventList(project);
+            }
+
+            if (!uniqueSchedules.contains(ind.getStartingTimes()) || stop > 10000) {
                 population.add(ind);
                 uniqueSchedules.add(ind.getStartingTimes());
             }
@@ -38,6 +52,10 @@ public class CommonOperations {
     }
 
     public static EventList eventMove(EventList el) {
+
+
+
+
         return IntStream.range(0, 5).boxed().parallel()
                 .map(i -> relocateEvent(new ArrayList<>(el.getSequence()), new ArrayList<>(el.getRandomEvent()), el.getResCapacities()))
                 .min((e1, e2) -> e1.compareTo(e2)).get();
@@ -48,10 +66,10 @@ public class CommonOperations {
             activities.remove(a);
             final int minPos = a.getPredecessors().stream().map(p -> activities.indexOf(p)).max((o1, o2) -> Integer.compare(o1, o2)).get();
             final int maxPos = a.getSuccessors().stream().map(s -> activities.indexOf(s)).min((o1, o2) -> Integer.compare(o1, o2)).get();
-            //final int randomPos = new Random().nextInt(maxPos - minPos) + minPos+1;
             final int randomPos = ThreadLocalRandom.current().nextInt(minPos, maxPos)+1;
             activities.add(randomPos, a);
         });
+
         return new SimpleEventList(activities, resources);
     }
 
@@ -96,7 +114,9 @@ public class CommonOperations {
         }
 
         p2Activities.stream().filter(a -> !childActivities.contains(a)).forEach(childActivities::add);
-        return new SimpleEventList(childActivities, p1.getResCapacities());
+
+        return p1 instanceof CaseStudyEventList ? CaseStudyProject.asCaseStudyEventList(childActivities) : new SimpleEventList(childActivities, p1.getResCapacities());
+        //return new SimpleEventList(childActivities, p1.getResCapacities());
     }
 
     private static boolean checkPredecessors(List<Activity> as, Activity a) {

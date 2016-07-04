@@ -13,15 +13,15 @@ import java.util.Map;
 public class CaseStudyProject {
     public static final int DAYS = 5;
 
-    public static CaseStudyEventList asCaseStudyActivityList(){
-        return new CaseStudyEventList(Projects.randomiseActivitySequence(getActivities()), getResCapacities(), getResEfficiencies(), getResLearnabilities());
+    public static EventList asCaseStudyEventList(){
+        return asCaseStudyEventList(Projects.randomiseActivitySequence(getActivities()));
     }
 
-    public static BenchmarkInstance asBenchmarkInstance(){
-        return new BenchmarkInstance(Projects.randomiseActivitySequence(getActivities()), getResCapacities(), "Case study");
+    public static EventList asCaseStudyEventList(List<Activity> activitySequence) {
+        return new CaseStudyEventList(activitySequence, getResCapacities(), getResEfficiencies(), getResLearnabilities());
     }
 
-    public static EventList asEventList() {
+    public static EventList asSimpleEventList() {
         return new SimpleEventList(Projects.randomiseActivitySequence(getActivities()), getResCapacities());
     }
 

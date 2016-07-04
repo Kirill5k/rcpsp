@@ -1,12 +1,16 @@
 package app.main;
 
 import app.algorithm.AlgorithmType;
+import app.algorithm.CommonOperations;
+import app.algorithm.implementations.Algorithms;
 import app.asset.BenchmarkInstance;
 import app.asset.CaseStudyEventList;
 import app.asset.EventList;
 import app.asset.SimpleEventList;
 import app.utility.CaseStudyProject;
 import app.utility.Benchmarks;
+
+import java.util.List;
 
 /**
  * Created by Kirill on 16/02/2016.
@@ -17,11 +21,14 @@ public class Main {
     private static final BenchmarkInstance BI_120 = Benchmarks.instances120.get("J12019_4.RCP");
 
     public static void main(String[] args) {
-//        Tests.testGA(AlgorithmType.NORMAL_SCGA, CaseStudyProject.asBenchmarkInstance(), 100, 1000, 0.3);
-        Tests.fullTestGA(Benchmarks.instances30.entrySet(), 100, 1000, 0.3, AlgorithmType.NORMAL_SCGA);
+//        Tests.testGA(AlgorithmType.NORMAL_SCGA, CaseStudyProject.asBenchmarkInstance());
+//        Tests.fullTestGA(AlgorithmType.NORMAL_SCGA, Benchmarks.instances30.entrySet());
 
-//        Benchmarks.instances60.entrySet().forEach((e) -> System.out.println(e.getKey() + ": " + e.getValue().getResCapacities()));
-
+        List<EventList> population = Algorithms.GA(AlgorithmType.NORMAL_GA, BI_30, 150, 1000, 0.3);
+//        List<EventList> population = Algorithms.GA(AlgorithmType.NORMAL_SCGA, CaseStudyProject.asCaseStudyEventList(), 150, 1000, 0.3);
+        System.out.println(CommonOperations.getBestSolution(population));
+        System.out.println();
+        CommonOperations.getBestSolutions(population).forEach(System.out::println);
     }
 
 }

@@ -16,7 +16,7 @@ class SpeciesConservingGeneticAlgorithm extends GeneticAlgorithm {
 
     public SpeciesConservingGeneticAlgorithm(EventList initialEL, int populationSize, int stopCriterion, double mutationRate) {
         super(initialEL, populationSize, stopCriterion, mutationRate);
-        this.speciesDistance = SpeciesConservation.getAverageSpeciesDistance(population);
+        this.speciesDistance = SpeciesConservation.getAverageSpeciesDistance(population) / 2;
     }
 
     public List<EventList> findSolution() {

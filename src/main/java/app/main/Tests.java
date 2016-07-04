@@ -15,12 +15,15 @@ import java.util.*;
  * Created by Kirill on 20/06/2016.
  */
 public class Tests {
+    public static final int POPULATION_SIZE = 150;
+    public static final double MUTATION_RATE = 0.3;
+    public static final int STOP_CRITERION = 1000;
 
-    public static EventList testGA(AlgorithmType type, BenchmarkInstance bi, int popSize, int stopCrit, double mutationRate) {
-        return CommonOperations.getBestSolution(Algorithms.GA(type, bi, popSize, stopCrit, mutationRate));
+    public static EventList testGA(AlgorithmType type, BenchmarkInstance bi) {
+        return CommonOperations.getBestSolution(Algorithms.GA(type, bi, POPULATION_SIZE, STOP_CRITERION, MUTATION_RATE));
     }
 
-    public static void fullTestGA(Set<Map.Entry<String, BenchmarkInstance>> instances, int popSize, int stopCrit, double mutationRate, AlgorithmType type) {
+    public static void fullTestGA(AlgorithmType type, Set<Map.Entry<String, BenchmarkInstance>> instances) {
         System.out.println("----- " + type + " -----");
         System.out.println();
         int solved = 0;
@@ -33,7 +36,7 @@ public class Tests {
             System.out.println("#" + (++count) + " " + name);
 
             BenchmarkInstance bi = inst.getValue();
-            EventList el = testGA(type, bi, popSize, stopCrit, mutationRate);
+            EventList el = testGA(type, bi);
             if (el.getMakespan() == Benchmarks.solutions.get(name))
                 solved++;
 
@@ -48,7 +51,7 @@ public class Tests {
         }
 
         System.out.println("Solved " + solved + " out of " + instances.size());
-        System.out.println("Average dev  " + (dev/instances.size()));
+        System.out.println("Average dev  " + (devSum/instances.size()));
     }
 
     public static BenchmarkInstance getTestBI() {

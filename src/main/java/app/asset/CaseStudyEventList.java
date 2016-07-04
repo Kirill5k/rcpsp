@@ -28,7 +28,6 @@ public class CaseStudyEventList extends EventList implements Comparable<Activity
         makespan = startingTimes.get(getDummyEndActivity());
     }
 
-
     public Map<Integer, Double> getResEfficiencies() {
         return resEfficiencies;
     }

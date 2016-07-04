@@ -54,19 +54,12 @@ public class Activity implements Comparable<Activity>{
         Activity activity = (Activity) o;
 
         if (getNumber() != activity.getNumber()) return false;
-        if (getDuration() != activity.getDuration()) return false;
-        if (getPredecessors() != null ? !getPredecessors().equals(activity.getPredecessors()) : activity.getPredecessors() != null)
-            return false;
-        if (getSuccessors() != null ? !getSuccessors().equals(activity.getSuccessors()) : activity.getSuccessors() != null)
-            return false;
         return getResReq().equals(activity.getResReq());
-
     }
 
     @Override
     public int hashCode() {
         int result = getNumber();
-        result = 31 * result + getDuration();
         result = 31 * result + getResReq().hashCode();
         return result;
     }
