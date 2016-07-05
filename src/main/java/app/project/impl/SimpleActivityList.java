@@ -1,12 +1,12 @@
-package app.asset;
+package app.project.impl;
 
+import app.project.ActivityList;
+import app.project.Activity;
 import app.utility.ScheduleType;
 import app.utility.Schedules;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
 
 /**
  * Created by Kirill on 16/02/2016.

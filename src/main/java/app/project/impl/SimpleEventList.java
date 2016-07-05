@@ -1,10 +1,12 @@
-package app.asset;
+package app.project.impl;
 
+import app.project.ActivityList;
+import app.project.EventList;
+import app.project.Activity;
 import app.utility.ScheduleType;
 import app.utility.Schedules;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by Kirill on 16/02/2016.
@@ -16,7 +18,7 @@ public class SimpleEventList extends EventList implements Comparable<ActivityLis
 
         Schedules.createSerialSchedule(this, ScheduleType.FORWARD);
         makespan = startingTimes.get(getDummyEndActivity());
-        events = Schedules.mergeIntoEvents(this);
+        Schedules.mergeIntoEvents(this);
     }
 
     @Override
@@ -28,15 +30,14 @@ public class SimpleEventList extends EventList implements Comparable<ActivityLis
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof EventList)) return false;
-
+        if (!super.equals(o)) return false;
         EventList eventList = (EventList) o;
-        if (this.getId() == eventList.getId()) return true;
-
-        return getEvents().equals(eventList.getEvents());
+        return Objects.equals(getStartingTimes(), eventList.getStartingTimes());
     }
 
     @Override
     public int hashCode() {
-        return getEvents().hashCode();
+        return Objects.hash(super.hashCode(), getStartingTimes());
     }
+
 }

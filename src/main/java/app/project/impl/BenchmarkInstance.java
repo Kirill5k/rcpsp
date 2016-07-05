@@ -1,4 +1,7 @@
-package app.asset;
+package app.project.impl;
+
+import app.project.Project;
+import app.project.Activity;
 
 import java.util.List;
 import java.util.Map;

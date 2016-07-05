@@ -1,12 +1,12 @@
-package app.algorithm.implementations;
+package app.algorithm.impl;
 
 import app.algorithm.Algorithm;
 import app.algorithm.AlgorithmType;
-import app.asset.Project;
-import app.asset.BenchmarkInstance;
-import app.asset.EventList;
-import app.asset.SimpleEventList;
-import app.exceptions.IncorrectAlgorithmTypeException;
+import app.project.EventList;
+import app.project.Project;
+import app.project.impl.BenchmarkInstance;
+import app.project.impl.SimpleEventList;
+import app.exception.IncorrectAlgorithmTypeException;
 
 import java.util.List;
 

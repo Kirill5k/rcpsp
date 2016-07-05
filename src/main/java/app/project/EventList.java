@@ -1,8 +1,6 @@
-package app.asset;
+package app.project;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -10,7 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public abstract class EventList extends ActivityList {
 
-    protected Map<Integer, List<Activity>> events;
+    protected Map<Integer, List<Activity>> events = new TreeMap<>();
 
     public EventList(List<Activity> activitySequence, Map<Integer, Integer> resCapacities) {
         super(activitySequence, resCapacities);

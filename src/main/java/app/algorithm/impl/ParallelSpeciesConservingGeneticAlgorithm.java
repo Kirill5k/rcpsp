@@ -1,12 +1,4 @@
-package app.algorithm.implementations;
-
-import app.algorithm.SpeciesConservation;
-import app.asset.BenchmarkInstance;
-import app.asset.EventList;
-
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+package app.algorithm.impl;
 
 /**
  * Created by Kirill on 18/04/2016.

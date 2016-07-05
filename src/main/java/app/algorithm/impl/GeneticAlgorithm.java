@@ -1,10 +1,9 @@
-package app.algorithm.implementations;
+package app.algorithm.impl;
 
 import app.algorithm.Algorithm;
-import app.algorithm.CommonOperations;
-import app.algorithm.SpeciesConservation;
-import app.asset.BenchmarkInstance;
-import app.asset.EventList;
+import app.project.EventList;
+import app.utility.CommonOperations;
+import app.utility.SpeciesConservation;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,7 +32,7 @@ class GeneticAlgorithm implements Algorithm {
         for (int i = 0; i < stopCriterion; i++) {
             establishPairsForSelectionBasedOnDistance();
             evolvePopulation();
-            population = population.stream().sorted().limit(populationSize).collect(Collectors.toList());
+            population = population.stream().sorted().distinct().limit(populationSize).collect(Collectors.toList());
         }
 
         return population;
@@ -43,6 +42,13 @@ class GeneticAlgorithm implements Algorithm {
     protected void evolvePopulation() {
         for (int j = 0; j < populationSize-1; j+=2)
             crossover(population.get(j), population.get(j + 1));
+    }
+
+    protected void establishPairsForSelectionBasedOnDistance2() {
+        Collections.sort(population);
+        List<EventList> pairs = new ArrayList<>();
+
+
     }
 
     protected void establishPairsForSelectionBasedOnDistance() {

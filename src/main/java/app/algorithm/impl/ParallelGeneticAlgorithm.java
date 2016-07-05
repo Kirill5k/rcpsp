@@ -1,8 +1,6 @@
-package app.algorithm.implementations;
+package app.algorithm.impl;
 
-import app.algorithm.implementations.GeneticAlgorithm;
-import app.asset.BenchmarkInstance;
-import app.asset.EventList;
+import app.project.EventList;
 
 import java.util.Collections;
 import java.util.Comparator;

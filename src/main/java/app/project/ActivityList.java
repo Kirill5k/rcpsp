@@ -1,4 +1,4 @@
-package app.asset;
+package app.project;
 
 import java.util.*;
 
@@ -42,5 +42,18 @@ public abstract class ActivityList extends Project implements Comparable<Activit
     @Override
     public int compareTo(ActivityList o) {
         return Integer.compare(this.makespan, o.makespan);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ActivityList)) return false;
+        ActivityList that = (ActivityList) o;
+        return Objects.equals(getStartingTimes(), that.getStartingTimes());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getStartingTimes());
     }
 }

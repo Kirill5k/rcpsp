@@ -1,5 +1,8 @@
-package app.asset;
+package app.project.impl;
 
+import app.project.ActivityList;
+import app.project.EventList;
+import app.project.Activity;
 import app.utility.ScheduleType;
 import app.utility.Schedules;
 
@@ -24,7 +27,7 @@ public class CaseStudyEventList extends EventList implements Comparable<Activity
         this.resLearnabilities = resLearnabilities;
 
         Schedules.createSerialSchedule(this, ScheduleType.CASE_STUDY);
-        events = Schedules.mergeIntoEvents(this);
+        Schedules.mergeIntoEvents(this);
         makespan = startingTimes.get(getDummyEndActivity());
     }
 

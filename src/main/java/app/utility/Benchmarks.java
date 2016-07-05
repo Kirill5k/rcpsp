@@ -1,6 +1,7 @@
 package app.utility;
 
-import app.asset.*;
+import app.project.*;
+import app.project.impl.BenchmarkInstance;
 
 import java.io.File;
 import java.io.FileNotFoundException;

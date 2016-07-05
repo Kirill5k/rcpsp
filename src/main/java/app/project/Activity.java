@@ -1,8 +1,9 @@
-package app.asset;
+package app.project;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by Kirill on 16/02/2016.
@@ -50,18 +51,13 @@ public class Activity implements Comparable<Activity>{
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Activity)) return false;
-
         Activity activity = (Activity) o;
-
-        if (getNumber() != activity.getNumber()) return false;
-        return getResReq().equals(activity.getResReq());
+        return getNumber() == activity.getNumber();
     }
 
     @Override
     public int hashCode() {
-        int result = getNumber();
-        result = 31 * result + getResReq().hashCode();
-        return result;
+        return Objects.hash(getNumber());
     }
 
     @Override

@@ -1,6 +1,6 @@
 package app.algorithm;
 
-import app.asset.EventList;
+import app.project.EventList;
 
 import java.util.List;
 

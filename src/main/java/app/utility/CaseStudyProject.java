@@ -1,20 +1,26 @@
 package app.utility;
 
-import app.asset.*;
+import app.project.*;
+import app.project.impl.CaseStudyEventList;
+import app.project.impl.SimpleEventList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static app.utility.CommonOperations.*;
+
 /**
  * Created by Kirill on 23/06/2016.
  */
 public class CaseStudyProject {
+    private CaseStudyProject(){}
+
     public static final int DAYS = 5;
 
     public static EventList asCaseStudyEventList(){
-        return asCaseStudyEventList(Projects.randomiseActivitySequence(getActivities()));
+        return asCaseStudyEventList(randomiseActivitySequence(getActivities()));
     }
 
     public static EventList asCaseStudyEventList(List<Activity> activitySequence) {
@@ -22,7 +28,7 @@ public class CaseStudyProject {
     }
 
     public static EventList asSimpleEventList() {
-        return new SimpleEventList(Projects.randomiseActivitySequence(getActivities()), getResCapacities());
+        return new SimpleEventList(randomiseActivitySequence(getActivities()), getResCapacities());
     }
 
     private static Map<Integer, Integer> getResCapacities(){

@@ -1,18 +1,10 @@
-package app.algorithm.implementations;
+package app.algorithm.impl;
 
-import app.algorithm.CommonOperations;
-import app.asset.BenchmarkInstance;
-import app.asset.EventList;
-import app.utility.Benchmarks;
-import org.apache.commons.math3.special.Gamma;
+import app.project.EventList;
+import app.project.impl.BenchmarkInstance;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Created by Kirill on 23/02/2016.
@@ -71,7 +63,7 @@ class CuckooSearch {
         // CREATE NEW SOLUTIONS WITH CROSSOVER
     }
 
-//    public EventList getBestSolution() {
+//    public AbstractEventList getBestSolution() {
 //        Collections.sort(population);
 //        return population.get(0);
 //    }
@@ -88,15 +80,15 @@ class CuckooSearch {
 //        return 0;
 //    }
 //
-//    private void levyFlightCuckoo(EventList el) {
+//    private void levyFlightCuckoo(AbstractEventList el) {
 //
 //    }
 //
-//    private void smartCuckoo(EventList el) {
+//    private void smartCuckoo(AbstractEventList el) {
 //        population.add(CommonOperations.eventMove(el));
 //    }
 //
-//    private void breedCuckoo(EventList el1, EventList el2) {
+//    private void breedCuckoo(AbstractEventList el1, AbstractEventList el2) {
 //        population.add(CommonOperations.eventCrossover(el1, el2));
 //    }
 }

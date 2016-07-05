@@ -1,4 +1,4 @@
-package app.asset;
+package app.project;
 
 import java.util.*;
 import java.util.stream.Collectors;

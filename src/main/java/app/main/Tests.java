@@ -1,12 +1,11 @@
 package app.main;
 
 import app.algorithm.AlgorithmType;
-import app.algorithm.implementations.Algorithms;
-import app.algorithm.CommonOperations;
-import app.asset.Activity;
-import app.asset.BenchmarkInstance;
-import app.asset.EventList;
-import app.exceptions.IncorrectAlgorithmTypeException;
+import app.algorithm.impl.Algorithms;
+import app.project.EventList;
+import app.utility.CommonOperations;
+import app.project.Activity;
+import app.project.impl.BenchmarkInstance;
 import app.utility.Benchmarks;
 
 import java.util.*;
@@ -15,12 +14,12 @@ import java.util.*;
  * Created by Kirill on 20/06/2016.
  */
 public class Tests {
-    public static final int POPULATION_SIZE = 150;
+    public static final int POPULATION_SIZE = 100;
     public static final double MUTATION_RATE = 0.3;
     public static final int STOP_CRITERION = 1000;
 
-    public static EventList testGA(AlgorithmType type, BenchmarkInstance bi) {
-        return CommonOperations.getBestSolution(Algorithms.GA(type, bi, POPULATION_SIZE, STOP_CRITERION, MUTATION_RATE));
+    public static List<EventList> testGA(AlgorithmType type, BenchmarkInstance bi) {
+        return Algorithms.GA(type, bi, POPULATION_SIZE, STOP_CRITERION, MUTATION_RATE);
     }
 
     public static void fullTestGA(AlgorithmType type, Set<Map.Entry<String, BenchmarkInstance>> instances) {
@@ -36,7 +35,7 @@ public class Tests {
             System.out.println("#" + (++count) + " " + name);
 
             BenchmarkInstance bi = inst.getValue();
-            EventList el = testGA(type, bi);
+            EventList el = CommonOperations.getBestSolution(testGA(type, bi));
             if (el.getMakespan() == Benchmarks.solutions.get(name))
                 solved++;
 

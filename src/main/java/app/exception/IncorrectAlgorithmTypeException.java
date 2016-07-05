@@ -1,4 +1,4 @@
-package app.exceptions;
+package app.exception;
 
 /**
  * Created by Kirill on 22/06/2016.
