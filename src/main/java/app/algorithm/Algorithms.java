@@ -18,7 +18,7 @@ public enum Algorithms {
     NORMAL_GA("Genetic Algorithm"),
     NORMAL_SCGA("Species Conserving Genetic Algorithm"),
     PARALLEL_GA("Parallel Genetic Algorithm"),
-    NORMAL_CS("Parallel Cuckoo Search");
+    NORMAL_CS("Cuckoo Search");
 
     Algorithms(String name) {
         this.name = name;

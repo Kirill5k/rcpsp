@@ -121,7 +121,8 @@ public class Benchmarks {
         return rows;
     }
 
-    public static List<BenchmarkInstance> getRandomInstance30(int amount) {
+/*
+    public static List<BenchmarkInstance> getRandomInstances30(int amount) {
         List<BenchmarkInstance> benchmarks = new ArrayList<>(Benchmarks.instances30.values());
         Collections.shuffle(benchmarks);
         while (benchmarks.size() > amount)
@@ -135,4 +136,5 @@ public class Benchmarks {
         Collections.shuffle(benchmarks);
         return benchmarks.get(0);
     }
+    */
 }

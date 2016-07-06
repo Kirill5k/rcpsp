@@ -21,7 +21,10 @@ public enum Schedules {
     public static <T extends Project> boolean checkFeasibility(T project){
         List<Activity> checkedActivities = new ArrayList<>();
         for (Activity a : project.getSequence()) {
-            if (a.getPredecessors().stream().filter(notContains(checkedActivities)).count()>0)
+            if (checkedActivities.isEmpty() && a.getNumber() != 0)
+                throw new StartingActivityNotFoundException("Project started with activity " + a.getNumber());
+
+            if (a.getPredecessors().stream().filter(notContainedIn(checkedActivities)).count()>0)
                 throw new InfeasibleActivitySequenceException("Could not find predecessors of activity " + a.getNumber());
 
             checkedActivities.add(a);
@@ -42,9 +45,6 @@ public enum Schedules {
 
     private static <T extends ActivityList> void scheduleActivity(Activity a, T al, Schedules type) {
         if (al.getFinishTimes().isEmpty()){
-            if (a.getNumber() != 0)
-                throw new StartingActivityNotFoundException("Project started with activity " + a.getNumber());
-
             al.getFinishTimes().put(a, 0);
             return;
         }

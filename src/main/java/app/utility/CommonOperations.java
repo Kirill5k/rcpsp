@@ -52,7 +52,7 @@ public class CommonOperations {
             EventList ind = project instanceof CaseStudyEventList
                     ? CaseStudyProject.asCaseStudyEventList() : Projects.asRandomEventList(project);
 
-            if (notContains(uniqueSchedules).test(ind.getStartingTimes()) || stop > POPULATION_INITIALISATION_BREAK) {
+            if (notContainedIn(uniqueSchedules).test(ind.getStartingTimes()) || stop > POPULATION_INITIALISATION_BREAK) {
                 population.add(ind);
                 uniqueSchedules.add(ind.getStartingTimes());
             }
@@ -92,7 +92,7 @@ public class CommonOperations {
                 .collect(Collectors.toList());
 
         List<Activity> p1Activities = p1Events.stream().flatMap(List::stream).collect(Collectors.toList());
-        List<Activity> p2Activities = p2.getSequence().stream().filter(notContains(p1Activities)).collect(Collectors.toList());
+        List<Activity> p2Activities = p2.getSequence().stream().filter(notContainedIn(p1Activities)).collect(Collectors.toList());
         List<Activity> childActivities = new ArrayList<>();
 
         for (List<Activity> event : p1Events) {
@@ -102,7 +102,7 @@ public class CommonOperations {
             predecessors.removeAll(childActivities);
 
             for (Activity a : p2Activities) {
-                if (notContains(successors).and(checkPredecessors(childActivities)).test(a)) {
+                if (notContainedIn(successors).and(checkPredecessors(childActivities)).test(a)) {
                     childActivities.add(a);
                     predecessors.remove(a);
                 }
@@ -152,7 +152,7 @@ public class CommonOperations {
         return a -> activitySequence.containsAll(a.getPredecessors());
     }
 
-    public static <T> Predicate<T> notContains(Collection<T> activitySequence) {
+    public static <T> Predicate<T> notContainedIn(Collection<T> activitySequence) {
         return a -> !activitySequence.contains(a);
     }
 

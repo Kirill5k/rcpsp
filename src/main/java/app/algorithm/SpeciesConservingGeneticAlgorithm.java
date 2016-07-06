@@ -43,7 +43,7 @@ class SpeciesConservingGeneticAlgorithm extends GeneticAlgorithm {
             if (newSpeciesSeeds.size() > populationSize) {
                 newSpeciesSeeds = newSpeciesSeeds.stream().distinct().sorted().limit(populationSize).collect(Collectors.toList());
             } else {
-                List<EventList> remainingIndividuals = population.stream().filter(CommonOperations.notContains(newSpeciesSeeds))
+                List<EventList> remainingIndividuals = population.stream().filter(CommonOperations.notContainedIn(newSpeciesSeeds))
                         .distinct().sorted().limit(populationSize-newSpeciesSeeds.size()).collect(Collectors.toList());
                 newSpeciesSeeds.addAll(remainingIndividuals);
             }
