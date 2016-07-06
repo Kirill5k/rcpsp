@@ -1,4 +1,4 @@
-package app.algorithm.impl;
+package app.algorithm;
 
 /**
  * Created by Kirill on 18/04/2016.

@@ -15,8 +15,8 @@ import static app.utility.CommonOperations.*;
 /**
  * Created by Kirill on 20/06/2016.
  */
-public class Schedules {
-    private Schedules(){}
+public enum Schedules {
+    FORWARD, BACKWARD, CRITICAL_PATH, CASE_STUDY;
 
     public static <T extends Project> boolean checkFeasibility(T project){
         List<Activity> checkedActivities = new ArrayList<>();
@@ -35,12 +35,12 @@ public class Schedules {
         el.getEvents().entrySet().stream().parallel().forEach(e -> Collections.sort(e.getValue()));
     }
 
-    public static <T extends ActivityList> void createSerialSchedule(T al, ScheduleType type) {
+    public static <T extends ActivityList> void createSerialSchedule(T al, Schedules type) {
         checkFeasibility(al);
         al.getSequence().stream().forEach(a -> scheduleActivity(a, al, type));
     }
 
-    private static <T extends ActivityList> void scheduleActivity(Activity a, T al, ScheduleType type) {
+    private static <T extends ActivityList> void scheduleActivity(Activity a, T al, Schedules type) {
         if (al.getFinishTimes().isEmpty()){
             if (a.getNumber() != 0)
                 throw new StartingActivityNotFoundException("Project started with activity " + a.getNumber());
@@ -53,9 +53,9 @@ public class Schedules {
         assignStartingTime(st, a, al, type);
     }
 
-    private static <T extends ActivityList> int getStartingTime(Activity a, T al, ScheduleType type) {
+    private static <T extends ActivityList> int getStartingTime(Activity a, T al, Schedules type) {
         int earliestStart = getEarliestPossibleStartingTime(a, al);
-        if (type == ScheduleType.CRITICAL_PATH)
+        if (type == Schedules.CRITICAL_PATH)
             return earliestStart;
 
         while (!checkSchedulability(earliestStart, a, al, type))
@@ -68,7 +68,7 @@ public class Schedules {
         return a.getPredecessors().stream().mapToInt(p -> al.getFinishTimes().get(p)).max().getAsInt();
     }
 
-    private static <T extends ActivityList> boolean checkSchedulability(int t, Activity a, T al, ScheduleType st) {
+    private static <T extends ActivityList> boolean checkSchedulability(int t, Activity a, T al, Schedules st) {
         final int d = getActivityDuration(t, a, al, st);
         return IntStream.range(t, t+d).allMatch(checkResourceAvailabilities(a, al));
     }
@@ -78,7 +78,7 @@ public class Schedules {
                 al.getResConsumptions().get(e.getKey()).getOrDefault(t, 0) + e.getValue() <= al.getResCapacities().get(e.getKey()));
     }
 
-    private static void assignStartingTime(int t, Activity a, ActivityList al, ScheduleType st){
+    private static void assignStartingTime(int t, Activity a, ActivityList al, Schedules st){
         final int d = getActivityDuration(t, a, al, st);
         al.getStartingTimes().put(a, t);
         al.getFinishTimes().put(a, t+d);
@@ -92,8 +92,8 @@ public class Schedules {
      * CASE STUDY METHODS
      */
 
-    private static <T extends ActivityList> int getActivityDuration(int t, Activity a, T al, ScheduleType type) {
-        return type == ScheduleType.CASE_STUDY && t > 0 && al instanceof CaseStudyEventList
+    private static <T extends ActivityList> int getActivityDuration(int t, Activity a, T al, Schedules type) {
+        return type == Schedules.CASE_STUDY && t > 0 && al instanceof CaseStudyEventList
                 ? getOptimisedDuration(t, a, (CaseStudyEventList) al) : a.getDuration();
     }
 

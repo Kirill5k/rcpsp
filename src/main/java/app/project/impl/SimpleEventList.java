@@ -3,7 +3,6 @@ package app.project.impl;
 import app.project.ActivityList;
 import app.project.EventList;
 import app.project.Activity;
-import app.utility.ScheduleType;
 import app.utility.Schedules;
 
 import java.util.*;
@@ -16,7 +15,7 @@ public class SimpleEventList extends EventList implements Comparable<ActivityLis
     public SimpleEventList(List<Activity> activitySequence, Map<Integer, Integer> resourceCapacities) {
         super(activitySequence, resourceCapacities);
 
-        Schedules.createSerialSchedule(this, ScheduleType.FORWARD);
+        Schedules.createSerialSchedule(this, Schedules.FORWARD);
         makespan = startingTimes.get(getDummyEndActivity());
         Schedules.mergeIntoEvents(this);
     }

@@ -2,6 +2,8 @@ package app.utility;
 
 import app.project.*;
 import app.project.impl.BenchmarkInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,6 +14,7 @@ import java.util.*;
  */
 public class Benchmarks {
     private Benchmarks() {}
+    private static final Logger LOG = LoggerFactory.getLogger(Benchmarks.class);
 
     private final static String PSPLIB_CORE_PATH = "C:\\applications/";
     private final static String PSPLIB_INSTANCES_PATH = PSPLIB_CORE_PATH + "projects/";
@@ -24,24 +27,28 @@ public class Benchmarks {
 
     static {
         try {
-            solutions = getAllSolutions();
             instances30 = getInstances(30);
             instances60 = getInstances(60);
             instances120 = getInstances(120);
+            solutions = getAllSolutions();
         } catch (FileNotFoundException e) {
             System.err.println("Solution or instance files could not be found!");
         }
     }
 
     private static Map<String, BenchmarkInstance> getInstances(int size) throws FileNotFoundException {
+        String path = PSPLIB_INSTANCES_PATH + size + "/";
+        LOG.info("Scanning {} directory for benchmark instances", path);
         Map<String, BenchmarkInstance> instances = new TreeMap<>();
-        File[] files = new File(PSPLIB_INSTANCES_PATH + size + "/").listFiles();
+        File[] files = new File(path).listFiles();
 
         for (File file : files) {
             String instanceName = file.getName();
             BenchmarkInstance benchmark = Benchmarks.get(size, instanceName);
             instances.put(instanceName, benchmark);
         }
+
+        LOG.info("Scanning complete. Found {} instances", instances.size());
         return new TreeMap<>(instances);
     }
 
@@ -90,6 +97,7 @@ public class Benchmarks {
     }
 
     private static Map<String, Integer> getSolutions(int size) throws FileNotFoundException {
+        LOG.info("Scanning solutions file in {} for J{} instances", PSPLIB_SOLUTIONS_PATH, size);
         Map<String, Integer> solutions = new HashMap<>();
         List<List<Integer>> rows = readPSPLIBfile(PSPLIB_SOLUTIONS_PATH + "j" + size + ".sm");
         rows.stream().filter(r -> r.size() >= 3).forEach(r -> solutions.put("J" + size + r.get(0) + "_" + r.get(1) + ".RCP", r.get(2)));

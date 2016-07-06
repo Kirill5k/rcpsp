@@ -1,4 +1,4 @@
-package app.algorithm.impl;
+package app.algorithm;
 
 import app.project.EventList;
 

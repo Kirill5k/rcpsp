@@ -1,12 +1,13 @@
 package app.main;
 
-import app.algorithm.AlgorithmType;
-import app.algorithm.impl.Algorithms;
+import app.algorithm.Algorithms;
 import app.project.EventList;
 import app.utility.CommonOperations;
 import app.project.Activity;
 import app.project.impl.BenchmarkInstance;
 import app.utility.Benchmarks;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -14,43 +15,34 @@ import java.util.*;
  * Created by Kirill on 20/06/2016.
  */
 public class Tests {
-    public static final int POPULATION_SIZE = 100;
-    public static final double MUTATION_RATE = 0.3;
-    public static final int STOP_CRITERION = 1000;
+    private static final Logger LOG = LoggerFactory.getLogger(Tests.class);
 
-    public static List<EventList> testGA(AlgorithmType type, BenchmarkInstance bi) {
-        return Algorithms.GA(type, bi, POPULATION_SIZE, STOP_CRITERION, MUTATION_RATE);
-    }
-
-    public static void fullTestGA(AlgorithmType type, Set<Map.Entry<String, BenchmarkInstance>> instances) {
-        System.out.println("----- " + type + " -----");
-        System.out.println();
+    public static void fullTestGA(Algorithms type, Collection<BenchmarkInstance> instances) {
+        LOG.info("Initiating full testing of {}", type);
         int solved = 0;
         int count = 0;
-        double dev = 0;
-        double devSum = 0;
+        double devOptSum = 0;
+        double devCPSum = 0;
 
-        for (Map.Entry<String, BenchmarkInstance> inst : instances) {
-            String name = inst.getKey();
-            System.out.println("#" + (++count) + " " + name);
+        for (BenchmarkInstance bi : instances) {
+            LOG.info("Test {}", ++count);
 
-            BenchmarkInstance bi = inst.getValue();
-            EventList el = CommonOperations.getBestSolution(testGA(type, bi));
-            if (el.getMakespan() == Benchmarks.solutions.get(name))
-                solved++;
+            EventList result = CommonOperations.getBestSolution(Algorithms.run(type, bi));
 
-            int optima = Benchmarks.solutions.get(name);
-            dev = CommonOperations.getDeviationFromOptima(el.getMakespan(), optima);
-            if (dev > 0) {
-                System.out.println("Received makespan: " + el.getMakespan() + " | expected makespan:  " + optima);
-                System.out.println("Deviation: " + dev);
-                devSum += dev;
-            }
-            System.out.println();
+            int optima = Benchmarks.solutions.get(bi.getName());
+            double devOpt = CommonOperations.getDeviationFromOptima(result.getMakespan(), optima);
+            double devCP = CommonOperations.getDeviationFromCriticalPath(result);
+
+            devOptSum += devOpt;
+            devCPSum += devCP;
+            if (result.getMakespan() == optima) solved++;
+
+            LOG.info("Test {} complete. Received solution {}. Deviation from optima {}, deviation from CP {}", count, result.getMakespan(), devOpt, devCP);
         }
 
-        System.out.println("Solved " + solved + " out of " + instances.size());
-        System.out.println("Average dev  " + (devSum/instances.size()));
+        LOG.info("Testing complete. Solved {} out of {} benchmark instances", solved, instances.size());
+        LOG.info("Average deviation from optima {}", devOptSum/instances.size());
+        LOG.info("Average deviation from critical path {}", devCPSum/instances.size());
     }
 
     public static BenchmarkInstance getTestBI() {

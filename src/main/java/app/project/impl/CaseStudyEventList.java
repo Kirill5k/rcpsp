@@ -3,7 +3,6 @@ package app.project.impl;
 import app.project.ActivityList;
 import app.project.EventList;
 import app.project.Activity;
-import app.utility.ScheduleType;
 import app.utility.Schedules;
 
 import java.util.HashMap;
@@ -26,7 +25,7 @@ public class CaseStudyEventList extends EventList implements Comparable<Activity
         this.resEfficiencies = resEfficiencies;
         this.resLearnabilities = resLearnabilities;
 
-        Schedules.createSerialSchedule(this, ScheduleType.CASE_STUDY);
+        Schedules.createSerialSchedule(this, Schedules.CASE_STUDY);
         Schedules.mergeIntoEvents(this);
         makespan = startingTimes.get(getDummyEndActivity());
     }

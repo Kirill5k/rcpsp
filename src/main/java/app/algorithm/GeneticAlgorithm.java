@@ -1,9 +1,10 @@
-package app.algorithm.impl;
+package app.algorithm;
 
-import app.algorithm.Algorithm;
 import app.project.EventList;
 import app.utility.CommonOperations;
 import app.utility.SpeciesConservation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +15,8 @@ import java.util.stream.Collectors;
  * Created by Kirill on 24/02/2016.
  */
 class GeneticAlgorithm implements Algorithm {
+    private static final Logger LOG = LoggerFactory.getLogger(GeneticAlgorithm.class);
+
     protected final EventList initialEL;
     protected final int populationSize;
     protected final int stopCriterion;
@@ -29,6 +32,7 @@ class GeneticAlgorithm implements Algorithm {
     }
 
     public List<EventList> findSolution() {
+        LOG.info("Population size {}, stopping criterion {}, mutation rate {}", populationSize, stopCriterion, mutationRate);
         for (int i = 0; i < stopCriterion; i++) {
             establishPairsForSelectionBasedOnDistance();
             evolvePopulation();

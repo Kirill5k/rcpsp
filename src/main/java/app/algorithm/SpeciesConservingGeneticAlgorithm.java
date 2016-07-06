@@ -1,8 +1,10 @@
-package app.algorithm.impl;
+package app.algorithm;
 
 import app.project.EventList;
 import app.utility.CommonOperations;
 import app.utility.SpeciesConservation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -11,6 +13,7 @@ import java.util.stream.Collectors;
  * Created by Kirill on 15/04/2016.
  */
 class SpeciesConservingGeneticAlgorithm extends GeneticAlgorithm {
+    private static final Logger LOG = LoggerFactory.getLogger(SpeciesConservingGeneticAlgorithm.class);
 
     protected int speciesDistance;
 
@@ -20,7 +23,10 @@ class SpeciesConservingGeneticAlgorithm extends GeneticAlgorithm {
     }
 
     public List<EventList> findSolution() {
+        LOG.info("Population size {}, stopping criterion {}, mutation rate {}, species distance {}", populationSize, stopCriterion, mutationRate, speciesDistance);
         if (speciesDistance == 0) return population;
+
+        long start = System.currentTimeMillis();
 
         for (int i = 0; i < stopCriterion; i++) {
 

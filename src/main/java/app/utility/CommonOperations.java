@@ -2,6 +2,7 @@ package app.utility;
 
 import app.project.*;
 import app.project.impl.CaseStudyEventList;
+import app.project.impl.SimpleActivityList;
 import app.project.impl.SimpleEventList;
 
 import java.util.*;
@@ -19,8 +20,19 @@ public class CommonOperations {
 
     private CommonOperations(){}
 
+    public static <T extends ActivityList> double getDeviationFromCriticalPath(T result) {
+        int ms = result.getMakespan();
+        int cp = getCriticalPathLength(result);
+        return getDeviationFromOptima(ms, cp);
+    }
+
     public static double getDeviationFromOptima(int result, int optima) {
         return (double) (result - optima) / (double) optima * 100;
+    }
+
+    public static <T extends Project> int getCriticalPathLength(T project) {
+        ActivityList cp = new SimpleActivityList(CommonOperations.randomiseActivitySequence(project.getSequence()), project.getResCapacities(), Schedules.CRITICAL_PATH);
+        return cp.getMakespan();
     }
 
     public static EventList getBestSolution(List<EventList> population) {
