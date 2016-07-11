@@ -3,7 +3,7 @@ package app.project.impl;
 import app.project.ActivityList;
 import app.project.EventList;
 import app.project.Activity;
-import app.utility.Schedules;
+import app.utility.ScheduleGenerationScheme;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,9 +25,10 @@ public class CaseStudyEventList extends EventList implements Comparable<Activity
         this.resEfficiencies = resEfficiencies;
         this.resLearnabilities = resLearnabilities;
 
-        Schedules.createSerialSchedule(this, Schedules.CASE_STUDY);
-        Schedules.mergeIntoEvents(this);
+        ScheduleGenerationScheme.createSerialSchedule(this, ScheduleGenerationScheme.CASE_STUDY);
         makespan = startingTimes.get(getDummyEndActivity());
+        ScheduleGenerationScheme.mergeIntoEvents(this);
+
     }
 
     public Map<Integer, Double> getResEfficiencies() {

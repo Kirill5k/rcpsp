@@ -1,4 +1,4 @@
-package app.utility;
+package app.factory;
 
 import app.project.*;
 import app.project.impl.BenchmarkInstance;
@@ -12,9 +12,9 @@ import java.util.*;
 /**
  * Created by Kirill on 16/02/2016.
  */
-public class Benchmarks {
-    private Benchmarks() {}
-    private static final Logger LOG = LoggerFactory.getLogger(Benchmarks.class);
+public class BenchmarkFactory {
+    private BenchmarkFactory() {}
+    private static final Logger LOG = LoggerFactory.getLogger(BenchmarkFactory.class);
 
     private final static String PSPLIB_CORE_PATH = "C:\\applications/";
     private final static String PSPLIB_INSTANCES_PATH = PSPLIB_CORE_PATH + "projects/";
@@ -44,7 +44,7 @@ public class Benchmarks {
 
         for (File file : files) {
             String instanceName = file.getName();
-            BenchmarkInstance benchmark = Benchmarks.get(size, instanceName);
+            BenchmarkInstance benchmark = BenchmarkFactory.get(size, instanceName);
             instances.put(instanceName, benchmark);
         }
 
@@ -123,7 +123,7 @@ public class Benchmarks {
 
 /*
     public static List<BenchmarkInstance> getRandomInstances30(int amount) {
-        List<BenchmarkInstance> benchmarks = new ArrayList<>(Benchmarks.instances30.values());
+        List<BenchmarkInstance> benchmarks = new ArrayList<>(BenchmarkFactory.instances30.values());
         Collections.shuffle(benchmarks);
         while (benchmarks.size() > amount)
             benchmarks.remove(0);
@@ -132,7 +132,7 @@ public class Benchmarks {
     }
 
     public static BenchmarkInstance getRandomInstance30() {
-        List<BenchmarkInstance> benchmarks = new ArrayList<>(Benchmarks.instances30.values());
+        List<BenchmarkInstance> benchmarks = new ArrayList<>(BenchmarkFactory.instances30.values());
         Collections.shuffle(benchmarks);
         return benchmarks.get(0);
     }

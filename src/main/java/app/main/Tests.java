@@ -5,7 +5,7 @@ import app.project.EventList;
 import app.utility.CommonOperations;
 import app.project.Activity;
 import app.project.impl.BenchmarkInstance;
-import app.utility.Benchmarks;
+import app.factory.BenchmarkFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +17,7 @@ import java.util.*;
 public class Tests {
     private static final Logger LOG = LoggerFactory.getLogger(Tests.class);
 
-    public static void fullTestGA(Algorithms type, Collection<BenchmarkInstance> instances) {
+    public static void fullTestAlgorithm(Algorithms type, Collection<BenchmarkInstance> instances) {
         LOG.info("Initiating full testing of {}", type);
         int solved = 0;
         int count = 0;
@@ -27,9 +27,9 @@ public class Tests {
         for (BenchmarkInstance bi : instances) {
             LOG.info("Test {}", ++count);
 
-            EventList result = CommonOperations.getBestSolution(Algorithms.run(type, bi));
+            EventList result = CommonOperations.getBestSolution(type.run(bi));
 
-            int optima = Benchmarks.solutions.get(bi.getName());
+            int optima = BenchmarkFactory.solutions.get(bi.getName());
             double devOpt = CommonOperations.getDeviationFromOptima(result.getMakespan(), optima);
             double devCP = CommonOperations.getDeviationFromCriticalPath(result);
 

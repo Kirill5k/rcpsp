@@ -19,14 +19,12 @@ class SpeciesConservingGeneticAlgorithm extends GeneticAlgorithm {
 
     public SpeciesConservingGeneticAlgorithm(EventList initialEL, int populationSize, int stopCriterion, double mutationRate) {
         super(initialEL, populationSize, stopCriterion, mutationRate);
-        this.speciesDistance = SpeciesConservation.getAverageSpeciesDistance(population)/2;
+        this.speciesDistance = (int)(SpeciesConservation.getAverageSpeciesDistance(population) / Algorithms.SPECIES_DISTANCE_DIVIDER);
     }
 
     public List<EventList> findSolution() {
         LOG.info("Population size {}, stopping criterion {}, mutation rate {}, species distance {}", populationSize, stopCriterion, mutationRate, speciesDistance);
         if (speciesDistance == 0) return population;
-
-        long start = System.currentTimeMillis();
 
         for (int i = 0; i < stopCriterion; i++) {
 
@@ -52,7 +50,8 @@ class SpeciesConservingGeneticAlgorithm extends GeneticAlgorithm {
             population.addAll(newSpeciesSeeds);
         }
 
-        return population;
+        return SpeciesConservation.getGlobalOptima(population, speciesDistance);
+        //return population;
     }
 
 

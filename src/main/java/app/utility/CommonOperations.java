@@ -1,5 +1,7 @@
 package app.utility;
 
+import app.factory.CaseStudyFactory;
+import app.factory.ProjectFactory;
 import app.project.*;
 import app.project.impl.CaseStudyEventList;
 import app.project.impl.SimpleActivityList;
@@ -31,7 +33,7 @@ public class CommonOperations {
     }
 
     public static <T extends Project> int getCriticalPathLength(T project) {
-        ActivityList cp = new SimpleActivityList(CommonOperations.randomiseActivitySequence(project.getSequence()), project.getResCapacities(), Schedules.CRITICAL_PATH);
+        ActivityList cp = new SimpleActivityList(CommonOperations.randomiseActivitySequence(project.getSequence()), project.getResCapacities(), ScheduleGenerationScheme.CRITICAL_PATH);
         return cp.getMakespan();
     }
 
@@ -41,7 +43,7 @@ public class CommonOperations {
 
     public static List<EventList> getBestSolutions(List<EventList> population) {
         int min = getBestSolution(population).getMakespan();
-        return population.stream().filter(e -> e.getMakespan() == min).collect(Collectors.toList());
+        return population.stream().filter(e -> e.getMakespan() == min).distinct().collect(Collectors.toList());
     }
 
     public static <T extends Project> List<EventList> initialisePopulation(T project, int popSize) {
@@ -50,7 +52,7 @@ public class CommonOperations {
 
         for (int stop = 0; population.size() < popSize; stop++) {
             EventList ind = project instanceof CaseStudyEventList
-                    ? CaseStudyProject.asCaseStudyEventList() : Projects.asRandomEventList(project);
+                    ? CaseStudyFactory.asCaseStudyEventList() : ProjectFactory.asRandomEventList(project);
 
             if (notContainedIn(uniqueSchedules).test(ind.getStartingTimes()) || stop > POPULATION_INITIALISATION_BREAK) {
                 population.add(ind);
@@ -62,7 +64,7 @@ public class CommonOperations {
     }
 
     public static EventList eventMove(EventList el) {
-        return IntStream.range(0, 5).boxed().parallel()
+        return IntStream.range(0, 10).boxed().parallel()
                 .map(i -> relocateEvent(el))
                 .min(ActivityList::compareTo).get();
     }
@@ -77,7 +79,7 @@ public class CommonOperations {
             newSequence.add(randomPos, a);
         });
 
-        return el instanceof CaseStudyEventList ? CaseStudyProject.asCaseStudyEventList(newSequence) : new SimpleEventList(newSequence, el.getResCapacities());
+        return el instanceof CaseStudyEventList ? CaseStudyFactory.asCaseStudyEventList(newSequence) : new SimpleEventList(newSequence, el.getResCapacities());
     }
 
     public static EventList eventCrossover(EventList p1, EventList p2) {
@@ -116,7 +118,12 @@ public class CommonOperations {
         }
 
         childActivities.addAll(p2Activities);
-        return p1 instanceof CaseStudyEventList ? CaseStudyProject.asCaseStudyEventList(childActivities) : new SimpleEventList(childActivities, p1.getResCapacities());
+        try {
+            return p1 instanceof CaseStudyEventList ? CaseStudyFactory.asCaseStudyEventList(childActivities) : new SimpleEventList(childActivities, p1.getResCapacities());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
         //return new SimpleEventList(childActivities, p1.getResCapacities());
     }
 

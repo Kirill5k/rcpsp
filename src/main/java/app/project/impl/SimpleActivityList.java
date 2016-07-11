@@ -2,7 +2,7 @@ package app.project.impl;
 
 import app.project.ActivityList;
 import app.project.Activity;
-import app.utility.Schedules;
+import app.utility.ScheduleGenerationScheme;
 
 import java.util.List;
 import java.util.Map;
@@ -12,17 +12,17 @@ import java.util.Map;
  */
 public class SimpleActivityList extends ActivityList implements Comparable<ActivityList> {
 
-    public SimpleActivityList(List<Activity> activitySequence, Map<Integer, Integer> resourceCapacities, Schedules type) {
+    public SimpleActivityList(List<Activity> activitySequence, Map<Integer, Integer> resourceCapacities, ScheduleGenerationScheme type) {
         super(activitySequence, resourceCapacities);
 
-        Schedules.createSerialSchedule(this, type);
+        ScheduleGenerationScheme.createSerialSchedule(this, type);
         makespan = startingTimes.get(getDummyEndActivity());
     }
 
     public SimpleActivityList(List<Activity> activitySequence, Map<Integer, Integer> resourceCapacities) {
         super(activitySequence, resourceCapacities);
 
-        Schedules.createSerialSchedule(this, Schedules.FORWARD);
+        ScheduleGenerationScheme.createSerialSchedule(this, ScheduleGenerationScheme.FORWARD);
         makespan = startingTimes.get(getDummyEndActivity());
     }
 

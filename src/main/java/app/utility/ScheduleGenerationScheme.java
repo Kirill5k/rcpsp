@@ -1,5 +1,6 @@
 package app.utility;
 
+import app.factory.CaseStudyFactory;
 import app.project.*;
 import app.project.impl.CaseStudyEventList;
 import app.exception.InfeasibleActivitySequenceException;
@@ -15,7 +16,7 @@ import static app.utility.CommonOperations.*;
 /**
  * Created by Kirill on 20/06/2016.
  */
-public enum Schedules {
+public enum ScheduleGenerationScheme {
     FORWARD, BACKWARD, CRITICAL_PATH, CASE_STUDY;
 
     public static <T extends Project> boolean checkFeasibility(T project){
@@ -34,16 +35,17 @@ public enum Schedules {
     }
 
     public static void mergeIntoEvents(EventList el) {
-        el.getStartingTimes().forEach((a, st) -> el.getEvents().computeIfAbsent(st, ArrayList::new).add(a));
-        el.getEvents().entrySet().stream().parallel().forEach(e -> Collections.sort(e.getValue()));
+        el.getSequence().stream().filter(a -> a.getNumber() != 0).forEach(a -> el.getEvents().computeIfAbsent(el.getStartingTimes().get(a), ArrayList::new).add(a));
+//        el.getStartingTimes().forEach((a, st) -> el.getEvents().computeIfAbsent(st, ArrayList::new).add(a));
+//        el.getEvents().entrySet().stream().parallel().forEach(e -> Collections.sort(e.getValue()));
     }
 
-    public static <T extends ActivityList> void createSerialSchedule(T al, Schedules type) {
+    public static <T extends ActivityList> void createSerialSchedule(T al, ScheduleGenerationScheme type) {
         checkFeasibility(al);
         al.getSequence().stream().forEach(a -> scheduleActivity(a, al, type));
     }
 
-    private static <T extends ActivityList> void scheduleActivity(Activity a, T al, Schedules type) {
+    private static <T extends ActivityList> void scheduleActivity(Activity a, T al, ScheduleGenerationScheme type) {
         if (al.getFinishTimes().isEmpty()){
             al.getFinishTimes().put(a, 0);
             return;
@@ -53,9 +55,9 @@ public enum Schedules {
         assignStartingTime(st, a, al, type);
     }
 
-    private static <T extends ActivityList> int getStartingTime(Activity a, T al, Schedules type) {
+    private static <T extends ActivityList> int getStartingTime(Activity a, T al, ScheduleGenerationScheme type) {
         int earliestStart = getEarliestPossibleStartingTime(a, al);
-        if (type == Schedules.CRITICAL_PATH)
+        if (type == ScheduleGenerationScheme.CRITICAL_PATH)
             return earliestStart;
 
         while (!checkSchedulability(earliestStart, a, al, type))
@@ -68,7 +70,7 @@ public enum Schedules {
         return a.getPredecessors().stream().mapToInt(p -> al.getFinishTimes().get(p)).max().getAsInt();
     }
 
-    private static <T extends ActivityList> boolean checkSchedulability(int t, Activity a, T al, Schedules st) {
+    private static <T extends ActivityList> boolean checkSchedulability(int t, Activity a, T al, ScheduleGenerationScheme st) {
         final int d = getActivityDuration(t, a, al, st);
         return IntStream.range(t, t+d).allMatch(checkResourceAvailabilities(a, al));
     }
@@ -78,7 +80,7 @@ public enum Schedules {
                 al.getResConsumptions().get(e.getKey()).getOrDefault(t, 0) + e.getValue() <= al.getResCapacities().get(e.getKey()));
     }
 
-    private static void assignStartingTime(int t, Activity a, ActivityList al, Schedules st){
+    private static void assignStartingTime(int t, Activity a, ActivityList al, ScheduleGenerationScheme st){
         final int d = getActivityDuration(t, a, al, st);
         al.getStartingTimes().put(a, t);
         al.getFinishTimes().put(a, t+d);
@@ -92,8 +94,8 @@ public enum Schedules {
      * CASE STUDY METHODS
      */
 
-    private static <T extends ActivityList> int getActivityDuration(int t, Activity a, T al, Schedules type) {
-        return type == Schedules.CASE_STUDY && t > 0 && al instanceof CaseStudyEventList
+    private static <T extends ActivityList> int getActivityDuration(int t, Activity a, T al, ScheduleGenerationScheme type) {
+        return type == ScheduleGenerationScheme.CASE_STUDY && t > 0 && al instanceof CaseStudyEventList
                 ? getOptimisedDuration(t, a, (CaseStudyEventList) al) : a.getDuration();
     }
 
@@ -112,7 +114,7 @@ public enum Schedules {
         for (int i = 0; i < t; i++) {
             work += resConsumption.getOrDefault(i, 0);
         }
-        return work / resCapacity / CaseStudyProject.DAYS;
+        return work / resCapacity / CaseStudyFactory.DAYS;
     }
 
     private static double calculateResEffectiveness(double work, double efficiency, double learnability) {

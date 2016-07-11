@@ -32,7 +32,7 @@ class CuckooSearch {
 //        Random rand = new Random();
 //
 //        for (int i = 0; i < populationSize; i++) {
-//            population.add(Benchmarks.asRandomEventList(benchmarkInstance));
+//            population.add(BenchmarkFactory.asRandomEventList(benchmarkInstance));
 //        }
 //
 //        for (int i = 0; i < stopCriterion; i++) {

@@ -1,4 +1,4 @@
-package app.utility;
+package app.factory;
 
 import app.project.*;
 import app.project.impl.SimpleActivityList;
@@ -11,10 +11,10 @@ import static app.utility.CommonOperations.*;
 /**
  * Created by Kirill on 29/06/2016.
  */
-public class Projects {
-    private Projects(){}
+public class ProjectFactory {
+    private ProjectFactory(){}
 
-    public static <T extends Project> SimpleActivityList asActivityList(T project) {
+    public static <T extends Project> ActivityList asActivityList(T project) {
         return new SimpleActivityList(new ArrayList<>(project.getSequence()), project.getResCapacities());
     }
 
@@ -22,7 +22,7 @@ public class Projects {
         return new SimpleEventList(new ArrayList<>(project.getSequence()), project.getResCapacities());
     }
 
-    public static <T extends Project> SimpleActivityList asRandomActivityList(T project) {
+    public static <T extends Project> ActivityList asRandomActivityList(T project) {
         return new SimpleActivityList(randomiseActivitySequence(project.getSequence()), project.getResCapacities());
     }
 
