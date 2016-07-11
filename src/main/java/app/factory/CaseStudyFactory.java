@@ -18,6 +18,7 @@ public class CaseStudyFactory {
     private CaseStudyFactory(){}
 
     public static final int DAYS = 5;
+    public static final boolean NEW_RESOURCES = true;
 
     public static EventList asCaseStudyEventList(){
         return asCaseStudyEventList(randomiseActivitySequence(getActivities()));
@@ -37,8 +38,8 @@ public class CaseStudyFactory {
         capacities.put(2, 9);
         capacities.put(3, 5);
         capacities.put(4, 5);
-//        capacities.put(5, 2);
-//        capacities.put(6, 1);
+        if (NEW_RESOURCES) capacities.put(5, 2);
+        if (NEW_RESOURCES) capacities.put(6, 1);
         return capacities;
     }
 
@@ -48,8 +49,8 @@ public class CaseStudyFactory {
         efficiencies.put(2, 0.35);
         efficiencies.put(3, 0.40);
         efficiencies.put(4, 0.55);
-//        efficiencies.put(5, 0.00);
-//        efficiencies.put(6, 0.00);
+        if (NEW_RESOURCES) efficiencies.put(5, 0.00);
+        if (NEW_RESOURCES) efficiencies.put(6, 0.00);
         return efficiencies;
     }
 
@@ -59,8 +60,8 @@ public class CaseStudyFactory {
         learnabilities.put(2, 15);
         learnabilities.put(3, 20);
         learnabilities.put(4, 25);
-//        learnabilities.put(5, 0);
-//        learnabilities.put(6, 0);
+        if (NEW_RESOURCES) learnabilities.put(5, 0);
+        if (NEW_RESOURCES) learnabilities.put(6, 0);
         return learnabilities;
     }
 
@@ -180,8 +181,8 @@ public class CaseStudyFactory {
         resReq19.put(2, 1);
         resReq19.put(3, 1);
         resReq19.put(4, 3);
-//        resReq19.put(5, 1);
-//        resReq19.put(6, 1);
+        if (NEW_RESOURCES) resReq19.put(5, 1);
+        if (NEW_RESOURCES) resReq19.put(6, 1);
         Activity a19 = new Activity(19, 2* DAYS, resReq19);
 
         Map<Integer, Integer> resReq20 = new HashMap<>();
@@ -193,7 +194,7 @@ public class CaseStudyFactory {
         resReq21.put(2, 3);
         resReq21.put(3, 1);
         resReq21.put(4, 2);
-//        resReq21.put(5, 1);
+        if (NEW_RESOURCES) resReq21.put(5, 1);
         Activity a21 = new Activity(21, 4* DAYS, resReq21);
 
         Map<Integer, Integer> resReq22 = new HashMap<>();
@@ -211,8 +212,8 @@ public class CaseStudyFactory {
         resReq24.put(2, 4);
         resReq24.put(3, 2);
         resReq24.put(4, 2);
-//        resReq24.put(5, 1);
-//        resReq24.put(6, 1);
+        if (NEW_RESOURCES) resReq24.put(5, 1);
+        if (NEW_RESOURCES) resReq24.put(6, 1);
         Activity a24 = new Activity(24, 9* DAYS, resReq24);
 
         Map<Integer, Integer> resReq25 = new HashMap<>();
@@ -231,15 +232,15 @@ public class CaseStudyFactory {
         resReq27.put(2, 2);
         resReq27.put(3, 2);
         resReq27.put(4, 3);
-//        resReq27.put(5, 1);
+        if (NEW_RESOURCES) resReq27.put(5, 1);
         Activity a27 = new Activity(27, 5* DAYS, resReq27);
 
         Map<Integer, Integer> resReq28 = new HashMap<>();
         resReq28.put(1, 1);
         resReq28.put(2, 1);
         resReq28.put(4, 3);
-//        resReq28.put(5, 1);
-//        resReq28.put(6, 1);
+        if (NEW_RESOURCES) resReq28.put(5, 1);
+        if (NEW_RESOURCES) resReq28.put(6, 1);
         Activity a28 = new Activity(28, 3* DAYS, resReq28);
 
         Map<Integer, Integer> resReq29 = new HashMap<>();
@@ -251,7 +252,7 @@ public class CaseStudyFactory {
         Map<Integer, Integer> resReq30 = new HashMap<>();
         resReq30.put(3, 2);
         resReq30.put(4, 4);
-//        resReq30.put(5, 1);
+        if (NEW_RESOURCES) resReq30.put(5, 1);
         Activity a30 = new Activity(30, 4* DAYS, resReq30);
 
         Map<Integer, Integer> resReq31 = new HashMap<>();
@@ -305,14 +306,14 @@ public class CaseStudyFactory {
         resReq39.put(2, 3);
         resReq39.put(3, 2);
         resReq39.put(4, 2);
-//        resReq39.put(5, 2);
+        if (NEW_RESOURCES) resReq39.put(5, 2);
         Activity a39 = new Activity(39, 7* DAYS, resReq39);
 
         Map<Integer, Integer> resReq40 = new HashMap<>();
         resReq40.put(2, 2);
         resReq40.put(4, 3);
-//        resReq40.put(5, 1);
-//        resReq40.put(6, 1);
+        if (NEW_RESOURCES) resReq40.put(5, 1);
+        if (NEW_RESOURCES) resReq40.put(6, 1);
         Activity a40 = new Activity(40, 5* DAYS, resReq40);
 
         Map<Integer, Integer> resReq41 = new HashMap<>();
@@ -356,7 +357,7 @@ public class CaseStudyFactory {
         resReq47.put(2, 1);
         resReq47.put(3, 2);
         resReq47.put(4, 2);
-//        resReq47.put(6, 1);
+        if (NEW_RESOURCES) resReq47.put(6, 1);
         Activity a47 = new Activity(47, 3* DAYS, resReq47);
 
         Map<Integer, Integer> resReq48 = new HashMap<>();
@@ -370,7 +371,7 @@ public class CaseStudyFactory {
         resReq49.put(1, 2);
         resReq49.put(2, 2);
         resReq49.put(4, 3);
-//        resReq49.put(5, 2);
+        if (NEW_RESOURCES) resReq49.put(5, 2);
         Activity a49 = new Activity(49, 2* DAYS, resReq49);
 
         Map<Integer, Integer> resReq50 = new HashMap<>();
@@ -378,7 +379,7 @@ public class CaseStudyFactory {
         resReq50.put(2, 3);
         resReq50.put(3, 2);
         resReq50.put(4, 2);
-//        resReq50.put(5, 1);
+        if (NEW_RESOURCES) resReq50.put(5, 1);
         Activity a50 = new Activity(50, 7* DAYS, resReq50);
 
         Map<Integer, Integer> resReq51 = new HashMap<>();

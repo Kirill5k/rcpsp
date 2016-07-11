@@ -5,6 +5,7 @@ import app.factory.BenchmarkFactory;
 import app.factory.CaseStudyFactory;
 import app.factory.ProjectFactory;
 import app.gui.SchedulePlot;
+import app.project.ActivityList;
 import app.project.EventList;
 import app.project.impl.BenchmarkInstance;
 import org.slf4j.Logger;
@@ -25,9 +26,6 @@ public class Main {
     public static void main(String[] args) {
 //        Tests.fullTestAlgorithm(Algorithms.NORMAL_SCGA, BenchmarkFactory.instances30.values());
 
-        EventList el = ProjectFactory.asEventList(BI_30);
-        new SchedulePlot<>(el);
-
 //        List<EventList> pop = CommonOperations.initialisePopulation(CaseStudyFactory.asSimpleEventList(), 1000);
 //        System.out.println("Min ms " + (pop.stream().mapToInt(EventList::getMakespan).min().getAsInt()/5));
 //        System.out.println("Average ms " + (pop.stream().mapToInt(EventList::getMakespan).average().getAsDouble()/5));
@@ -46,6 +44,13 @@ public class Main {
 
 //        CaseStudyEventList el = (CaseStudyEventList)CaseStudyFactory.asCaseStudyEventList();
 //        el.compareMeanVsOptimisedDurations();
+
+        EventList el = CaseStudyFactory.asSimpleEventList();
+        plot(el);
+    }
+
+    private static <T extends ActivityList> void plot(T al){
+        new SchedulePlot<>(al);
     }
 
 }
