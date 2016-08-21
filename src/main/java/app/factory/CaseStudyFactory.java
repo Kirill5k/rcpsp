@@ -28,8 +28,134 @@ public class CaseStudyFactory {
         return new CaseStudyEventList(activitySequence, getResCapacities(), getResEfficiencies(), getResLearnabilities());
     }
 
+    public static EventList asSimpleEventList(List<Activity> activitySequence) {
+        return new SimpleEventList(activitySequence, getResCapacities());
+    }
+
     public static EventList asSimpleEventList() {
-        return new SimpleEventList(randomiseActivitySequence(getActivities()), getResCapacities());
+        return asSimpleEventList(randomiseActivitySequence(getActivities()));
+    }
+
+    public static List<Activity> getOptimalSequence1(){
+        EventList el = asCaseStudyEventList();
+
+        List<Activity> newSeq = new ArrayList<>();
+        newSeq.add(el.getActivity(0));
+        newSeq.add(el.getActivity(4));
+        newSeq.add(el.getActivity(5));
+        newSeq.add(el.getActivity(2));
+        newSeq.add(el.getActivity(1));
+        newSeq.add(el.getActivity(6));
+        newSeq.add(el.getActivity(3));
+        newSeq.add(el.getActivity(7));
+        newSeq.add(el.getActivity(8));
+        newSeq.add(el.getActivity(9));
+        newSeq.add(el.getActivity(10));
+        newSeq.add(el.getActivity(12));
+        newSeq.add(el.getActivity(13));
+        newSeq.add(el.getActivity(14));
+        newSeq.add(el.getActivity(11));
+        newSeq.add(el.getActivity(17));
+        newSeq.add(el.getActivity(16));
+        newSeq.add(el.getActivity(15));
+        newSeq.add(el.getActivity(24));
+        newSeq.add(el.getActivity(31));
+        newSeq.add(el.getActivity(30));
+        newSeq.add(el.getActivity(32));
+        newSeq.add(el.getActivity(28));
+        newSeq.add(el.getActivity(18));
+        newSeq.add(el.getActivity(22));
+        newSeq.add(el.getActivity(33));
+        newSeq.add(el.getActivity(25));
+        newSeq.add(el.getActivity(34));
+        newSeq.add(el.getActivity(20));
+        newSeq.add(el.getActivity(35));
+        newSeq.add(el.getActivity(29));
+        newSeq.add(el.getActivity(19));
+        newSeq.add(el.getActivity(21));
+        newSeq.add(el.getActivity(47));
+        newSeq.add(el.getActivity(46));
+        newSeq.add(el.getActivity(36));
+        newSeq.add(el.getActivity(27));
+        newSeq.add(el.getActivity(38));
+        newSeq.add(el.getActivity(26));
+        newSeq.add(el.getActivity(23));
+        newSeq.add(el.getActivity(45));
+        newSeq.add(el.getActivity(43));
+        newSeq.add(el.getActivity(40));
+        newSeq.add(el.getActivity(41));
+        newSeq.add(el.getActivity(49));
+        newSeq.add(el.getActivity(44));
+        newSeq.add(el.getActivity(48));
+        newSeq.add(el.getActivity(42));
+        newSeq.add(el.getActivity(50));
+        newSeq.add(el.getActivity(51));
+        newSeq.add(el.getActivity(37));
+        newSeq.add(el.getActivity(39));
+        newSeq.add(el.getActivity(52));
+
+        return newSeq;
+    }
+
+    public static List<Activity> getOptimalSequence2(){
+        EventList el = asCaseStudyEventList();
+
+        List<Activity> newSeq = new ArrayList<>();
+        newSeq.add(el.getActivity(0));
+        newSeq.add(el.getActivity(4));
+        newSeq.add(el.getActivity(5));
+        newSeq.add(el.getActivity(2));
+        newSeq.add(el.getActivity(1));
+        newSeq.add(el.getActivity(6));
+        newSeq.add(el.getActivity(3));
+        newSeq.add(el.getActivity(7));
+        newSeq.add(el.getActivity(8));
+        newSeq.add(el.getActivity(9));
+        newSeq.add(el.getActivity(10));
+        newSeq.add(el.getActivity(12));
+        newSeq.add(el.getActivity(11));
+        newSeq.add(el.getActivity(13));
+        newSeq.add(el.getActivity(14));
+        newSeq.add(el.getActivity(16));
+        newSeq.add(el.getActivity(17));
+        newSeq.add(el.getActivity(15));
+        newSeq.add(el.getActivity(31));
+        newSeq.add(el.getActivity(24));
+        newSeq.add(el.getActivity(35));
+        newSeq.add(el.getActivity(32));
+        newSeq.add(el.getActivity(30));
+        newSeq.add(el.getActivity(18));
+        newSeq.add(el.getActivity(36));
+        newSeq.add(el.getActivity(28));
+        newSeq.add(el.getActivity(22));
+        newSeq.add(el.getActivity(34));
+        newSeq.add(el.getActivity(19));
+        newSeq.add(el.getActivity(21));
+        newSeq.add(el.getActivity(33));
+        newSeq.add(el.getActivity(25));
+        newSeq.add(el.getActivity(29));
+        newSeq.add(el.getActivity(47));
+        newSeq.add(el.getActivity(46));
+        newSeq.add(el.getActivity(38));
+        newSeq.add(el.getActivity(20));
+        newSeq.add(el.getActivity(27));
+        newSeq.add(el.getActivity(23));
+        newSeq.add(el.getActivity(41));
+        newSeq.add(el.getActivity(26));
+        newSeq.add(el.getActivity(45));
+        newSeq.add(el.getActivity(40));
+        newSeq.add(el.getActivity(43));
+        newSeq.add(el.getActivity(42));
+        newSeq.add(el.getActivity(48));
+        newSeq.add(el.getActivity(49));
+        newSeq.add(el.getActivity(44));
+        newSeq.add(el.getActivity(37));
+        newSeq.add(el.getActivity(50));
+        newSeq.add(el.getActivity(51));
+        newSeq.add(el.getActivity(39));
+        newSeq.add(el.getActivity(52));
+
+        return newSeq;
     }
 
     private static Map<Integer, Integer> getResCapacities(){

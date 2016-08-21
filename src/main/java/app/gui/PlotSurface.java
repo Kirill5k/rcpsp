@@ -15,9 +15,9 @@ import java.util.stream.IntStream;
  * Created by Kirill on 16/11/2015.
  */
 class PlotSurface<T extends ActivityList> extends JPanel {
-    private static final int FONT_SIZE = 7;
-    private static final int Y_COEFFICIENT = 10;
-    private static final int X_COEFFICIENT = 2;
+    private static final int FONT_SIZE = 11;
+    private static final int Y_COEFFICIENT = 20;
+    private static final int X_COEFFICIENT = 3;
 
     private T project;
     private Map<Integer, Map<Integer, Integer>> vertical = new HashMap<>();
@@ -59,7 +59,7 @@ class PlotSurface<T extends ActivityList> extends JPanel {
 
 
         project.getResCapacities().forEach((resNum, resCap) ->
-            IntStream.range(0, project.getMakespan()).boxed().filter(i -> i % 100 == 0 || i == project.getMakespan()-1).forEach(i -> drawString(g, String.valueOf(i/5), i, yBorders.get(resNum)+1)));
+            IntStream.range(0, project.getMakespan()).boxed().filter(i -> i % 100 == 0).forEach(i -> drawString(g, String.valueOf(i/5), i, yBorders.get(resNum)+1)));
 
         project.getResCapacities().forEach((resNum, resCap) -> drawString(g, String.valueOf(resCap), 0, yBorders.get(resNum)-resCap+1));
     }
@@ -75,8 +75,6 @@ class PlotSurface<T extends ActivityList> extends JPanel {
     }
 
     private void plotActivityAtXY(Activity a, Graphics2D graph, int x, int resNum, int resCap) {
-//        int s = yBorders.getOrDefault(resNum, 0);
-//        s = 0;
         int yStart = vertical.get(resNum).getOrDefault(x, 0);
         int yEnd = yStart + resCap;
 

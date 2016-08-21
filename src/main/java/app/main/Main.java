@@ -8,10 +8,15 @@ import app.gui.SchedulePlot;
 import app.project.ActivityList;
 import app.project.EventList;
 import app.project.impl.BenchmarkInstance;
+import app.project.impl.CaseStudyEventList;
+import org.apache.commons.math3.special.Gamma;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * Created by Kirill on 16/02/2016.
@@ -24,29 +29,13 @@ public class Main {
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
-//        Tests.fullTestAlgorithm(Algorithms.NORMAL_SCGA, BenchmarkFactory.instances30.values());
 
-//        List<EventList> pop = CommonOperations.initialisePopulation(CaseStudyFactory.asSimpleEventList(), 1000);
-//        System.out.println("Min ms " + (pop.stream().mapToInt(EventList::getMakespan).min().getAsInt()/5));
-//        System.out.println("Average ms " + (pop.stream().mapToInt(EventList::getMakespan).average().getAsDouble()/5));
-//        System.out.println("Max ms " + (pop.stream().mapToInt(EventList::getMakespan).max().getAsInt()/5));
-//        System.out.println("Average distance " + (SpeciesConservation.getAverageSpeciesDistance(pop)/5));
+        double beta = 3/2;
+        // sigma=(gamma(1+beta)*sin(pi*beta/2)/(gamma((1+beta)/2)*beta*2^((beta-1)/2)))^(1/beta);
+        double sigma = (Gamma.gamma(1+beta)*Math.sin(Math.PI*beta/2))/(Gamma.gamma((1+beta)/2)*beta*Math.pow(2, (beta-1)/2));
+        sigma = Math.pow(sigma, 1/beta);
 
-//        List<EventList> pop = CommonOperations.initialisePopulation(CaseStudyFactory.asCaseStudyEventList(), 10000);
-//        System.out.println("Min ms " + (pop.stream().mapToInt(EventList::getMakespan).min().getAsInt()/5));
-//        System.out.println("Average ms " + (pop.stream().mapToInt(EventList::getMakespan).average().getAsDouble()/5));
-//        System.out.println("Max ms " + (pop.stream().mapToInt(EventList::getMakespan).max().getAsInt()/5));
-//        System.out.println("Average distance " + (SpeciesConservation.getAverageSpeciesDistance(pop)/5));
-//
-
-//        List<EventList> finalPop = Algorithms.NORMAL_SCGA.run(CaseStudyFactory.asCaseStudyEventList());
-//        finalPop.stream().forEach(System.out::println);
-
-//        CaseStudyEventList el = (CaseStudyEventList)CaseStudyFactory.asCaseStudyEventList();
-//        el.compareMeanVsOptimisedDurations();
-
-        EventList el = CaseStudyFactory.asSimpleEventList();
-        plot(el);
+        System.out.println(sigma);
     }
 
     private static <T extends ActivityList> void plot(T al){

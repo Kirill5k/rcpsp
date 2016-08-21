@@ -6,6 +6,7 @@ import app.project.*;
 import app.project.impl.CaseStudyEventList;
 import app.project.impl.SimpleActivityList;
 import app.project.impl.SimpleEventList;
+import org.apache.commons.math3.special.Gamma;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -17,8 +18,13 @@ import java.util.stream.IntStream;
  * Created by Kirill on 18/02/2016.
  */
 public class CommonOperations {
-    public static final double EVENT_CROSSOVER_THRESHOLD = 0.18;
-    public static final int POPULATION_INITIALISATION_BREAK = 10000;
+    private static final double BETA = 3./2.;
+    private static final double SIGMA_PART_1 = Gamma.gamma(1+BETA)*Math.sin(Math.PI*BETA/2);
+    private static final double SIGMA_PART_2 = Gamma.gamma((1+BETA)/2)*BETA*Math.pow(2, (BETA-1)/2);
+    private static final double SIGMA = Math.pow(SIGMA_PART_1/SIGMA_PART_2, 1/BETA);
+
+    private static final double EVENT_CROSSOVER_THRESHOLD = 0.18;
+    private static final int POPULATION_INITIALISATION_BREAK = 10000;
 
     private CommonOperations(){}
 
@@ -185,5 +191,11 @@ public class CommonOperations {
 
         result.add(aEnd);
         return result;
+    }
+
+    public static double getLevyNumber() {
+        double u = ThreadLocalRandom.current().nextDouble(SIGMA);
+        double v = ThreadLocalRandom.current().nextDouble(1);
+        return u / Math.pow(Math.abs(v), 1/BETA);
     }
 }

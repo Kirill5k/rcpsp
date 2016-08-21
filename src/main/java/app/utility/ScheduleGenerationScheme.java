@@ -100,7 +100,7 @@ public enum ScheduleGenerationScheme {
     }
 
     private static int getOptimisedDuration(int t, Activity a, CaseStudyEventList csal){
-        Map<Integer, Double> resWork = a.getResReq().keySet().stream()
+        Map<Integer, Double> resWork = a.getResReq().keySet().stream().filter(k -> csal.getResLearnabilities().get(k) > 0)
                 .collect(Collectors.toMap(Integer::valueOf, k -> calculateResWork(t, csal.getResConsumptions().get(k), csal.getResCapacities().get(k))));
 
         Map<Integer, Double> resEffectiveness = resWork.entrySet().stream()
@@ -122,8 +122,8 @@ public enum ScheduleGenerationScheme {
     }
 
     private static int calculateNewDuration(Map<Integer, Double> resEffectiveness, Activity a, CaseStudyEventList csal){
-        double meanEff = a.getResReq().keySet().stream()
-                .mapToDouble(resEffectiveness::get).sum()/a.getResReq().size();
+        double meanEff = a.getResReq().keySet().stream().filter(k -> csal.getResLearnabilities().get(k) > 0)
+                .mapToDouble(resEffectiveness::get).sum()/resEffectiveness.size();
 
 
         final int d = roundUp(a.getDuration() / meanEff);

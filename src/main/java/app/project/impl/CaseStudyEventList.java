@@ -44,12 +44,13 @@ public class CaseStudyEventList extends EventList implements Comparable<Activity
     }
 
     public void compareMeanVsOptimisedDurations(){
-        System.out.println("Schedule: ");
-        System.out.println(events);
-        System.out.println("Original: ");
-        Map<Activity, Integer> m = activitySequence.stream().collect(Collectors.toMap(a -> a, Activity::getDuration));
-        System.out.println(new TreeMap<>(m));
-        System.out.println("Optimised: ");
-        System.out.println(new TreeMap<>(optimisedDurations));
+        getEvents().entrySet().stream().flatMap(e -> e.getValue().stream()).filter(a -> a.getDuration() > 0)
+                .forEach(a -> System.out.println(getStartingTimes().getOrDefault(a, 0)/5. + " - " + a.getNumber() + " - " + a.getDuration() + " - " + getOptimisedDurations().getOrDefault(a, a.getDuration()) + " - " + (100-getOptimisedDurations().getOrDefault(a, a.getDuration()) * 100 / a.getDuration())));
+
+//        getEvents().entrySet().stream().flatMap(e -> e.getValue().stream()).filter(a -> a.getDuration() > 0)
+//                .forEach(a -> System.out.print(getStartingTimes().getOrDefault(a, 0)/5. + ", "));
+
+//        getEvents().entrySet().stream().flatMap(e -> e.getValue().stream()).filter(a -> a.getDuration() > 0)
+//                .forEach(a -> System.out.print(100-getOptimisedDurations().getOrDefault(a, a.getDuration()) * 100 / a.getDuration() + ", "));
     }
 }
