@@ -26,12 +26,12 @@ public class Main {
 
     public static void main(String[] args) {
         if (args.length > 0) setParameters(args);
-//        LOG.info("Parameters: {}", Arrays.toString(args));
 //        Tests.fullTestAlgorithm(Algorithms.ICS, BenchmarkFactory.j30set().values());
 //        Tests.testAlgorithm(Algorithms.CS, BI_30);
     }
 
     private static void setParameters(String[] args){
+        LOG.info("Parameters: {}", Arrays.toString(args));
         Optional<BenchmarkInstance> bi = Optional.empty();
         for (String arg : args) {
             if (arg.startsWith("J")){

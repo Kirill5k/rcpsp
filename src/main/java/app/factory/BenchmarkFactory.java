@@ -320,6 +320,7 @@ public class BenchmarkFactory {
 
         a19.getSuccessors().add(a20);
 
+        activities.forEach(a -> a.getSuccessors().forEach(s -> s.getPredecessors().add(a)));
         return new BenchmarkInstance(activities, resources, "Test instance");
     }
 }

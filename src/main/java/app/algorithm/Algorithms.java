@@ -1,7 +1,7 @@
 package app.algorithm;
 
-import app.exception.UnsupportedAlgorithmType;
-import app.factory.BenchmarkFactory;
+import app.exception.UnexpectedAlgorithm;
+import app.exception.UnexpectedParameter;
 import app.project.ActivityList;
 import app.project.BenchmarkInstance;
 import app.project.EventList;
@@ -42,7 +42,7 @@ public enum Algorithms {
     public static double SPECIES_DISTANCE_DIVIDER = 2.5;
 
     public List<ActivityList> run(BenchmarkInstance bi) {
-        LOG.info("Running benchmark instance {} on {}. Best known solution {}. Critical path length {}", bi.getName(), this, BenchmarkFactory.solutions().get(bi.getName()), getCriticalPathLength(bi));
+        LOG.info("Running benchmark instance {} on {}. Critical path length {}", bi.getName(), this, getCriticalPathLength(bi));
         return run(ProjectFactory.asRandomEventList(bi));
     }
 
@@ -54,7 +54,7 @@ public enum Algorithms {
             case CS: alg = new CuckooSearch(el, POPULATION_SIZE, STOP_CRITERION, ABANDONMENT_RATE, MAX_AMOUNT_OF_STEPS); break;
             case GA: alg = new GeneticAlgorithm(el, POPULATION_SIZE, STOP_CRITERION, MUTATION_RATE); break;
             case FPA: alg = new FlowerPollinationAlgorithm(el, POPULATION_SIZE, STOP_CRITERION, SWITCHING_PROBABILITY, MAX_AMOUNT_OF_STEPS); break;
-            default: throw new UnsupportedAlgorithmType(this + " is not supported");
+            default: throw new UnexpectedAlgorithm(this + " is not supported");
         }
 
         return solve(alg);
@@ -72,6 +72,7 @@ public enum Algorithms {
         switch (name){
             case "m": case "s": case "stop": setParameter(name, Integer.parseInt(value)); break;
             case "pa": case "pm": case "ps": case "pc": setParameter(name, Double.parseDouble(value)); break;
+            default: throw new UnexpectedParameter();
         }
     }
 
