@@ -23,10 +23,6 @@ public class EventListUtils {
 
     private EventListUtils(){}
 
-    public static <T extends ActivityList> List<EventList> initialisePopulation(T project, int popSize) {
-        return IntStream.range(0, popSize).mapToObj(i -> asRandomEventList(project)).collect(toList());
-    }
-
     public static EventList eventMove(EventList el) {
         return relocateEvent(el);
     }

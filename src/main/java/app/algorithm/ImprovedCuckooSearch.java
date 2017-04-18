@@ -13,6 +13,7 @@ import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
+import static app.factory.ProjectFactory.asPopulationOfEventLists;
 import static app.factory.ProjectFactory.asRandomEventList;
 import static app.util.EventListUtils.eventMove;
 import static app.util.LevyFlights.calculateSteps;
@@ -41,7 +42,7 @@ class ImprovedCuckooSearch implements Algorithm {
         this.pa = (int)Math.round(pa * populationSize);
         this.pc = (int)Math.round(pc * populationSize);
         this.maxSteps = maxSteps;
-        this.population = EventListUtils.initialisePopulation(initialEL, populationSize);
+        this.population = asPopulationOfEventLists(initialEL, populationSize);
     }
 
     public List<EventList> findSolution() {

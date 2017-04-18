@@ -32,16 +32,14 @@ public enum Algorithms {
 
     public static int POPULATION_SIZE = 150;
     public static int STOP_CRITERION = 1000;
-
-    public static double SPECIES_DISTANCE_DIVIDER = 2.5;
+    public static int MAX_AMOUNT_OF_STEPS = 4;
 
     public static double ABANDONMENT_RATE = 0.25;
     public static double PORTION_OF_SMART_CUCKOOS = 0;
-    public static int MAX_AMOUNT_OF_STEPS = 4;
-
     public static double SWITCHING_PROBABILITY = 0.5;
-
     public static double MUTATION_RATE = 0.1;
+
+    public static double SPECIES_DISTANCE_DIVIDER = 2.5;
 
     public List<ActivityList> run(BenchmarkInstance bi) {
         LOG.info("Running benchmark instance {} on {}. Best known solution {}. Critical path length {}", bi.getName(), this, BenchmarkFactory.solutions().get(bi.getName()), getCriticalPathLength(bi));
@@ -55,7 +53,7 @@ public enum Algorithms {
             case ICS: alg = new ImprovedCuckooSearch(el, POPULATION_SIZE, STOP_CRITERION, ABANDONMENT_RATE, PORTION_OF_SMART_CUCKOOS, MAX_AMOUNT_OF_STEPS); break;
             case CS: alg = new CuckooSearch(el, POPULATION_SIZE, STOP_CRITERION, ABANDONMENT_RATE, MAX_AMOUNT_OF_STEPS); break;
             case GA: alg = new GeneticAlgorithm(el, POPULATION_SIZE, STOP_CRITERION, MUTATION_RATE); break;
-            case FPA: alg = new FlowerPollinationAlgorithm(el, POPULATION_SIZE, STOP_CRITERION, SWITCHING_PROBABILITY, MAX_AMOUNT_OF_STEPS);
+            case FPA: alg = new FlowerPollinationAlgorithm(el, POPULATION_SIZE, STOP_CRITERION, SWITCHING_PROBABILITY, MAX_AMOUNT_OF_STEPS); break;
             default: throw new UnsupportedAlgorithmType(this + " is not supported");
         }
 
@@ -72,12 +70,8 @@ public enum Algorithms {
 
     public static void setParameter(String name, String value) {
         switch (name){
-            case "m":
-            case "s":
-            case "stop": setParameter(name, Integer.parseInt(value)); break;
-            case "pa":
-            case "mr":
-            case "pc": setParameter(name, Double.parseDouble(value)); break;
+            case "m": case "s": case "stop": setParameter(name, Integer.parseInt(value)); break;
+            case "pa": case "pm": case "ps": case "pc": setParameter(name, Double.parseDouble(value)); break;
         }
     }
 
@@ -91,8 +85,9 @@ public enum Algorithms {
 
     public static void setParameter(String name, double parameter){
         switch (name){
+            case "ps": SWITCHING_PROBABILITY = parameter; break;
             case "pa": ABANDONMENT_RATE = parameter; break;
-            case "mr": MUTATION_RATE = parameter; break;
+            case "pm": MUTATION_RATE = parameter; break;
             case "pc": PORTION_OF_SMART_CUCKOOS = parameter; break;
         }
     }

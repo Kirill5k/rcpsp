@@ -1,19 +1,18 @@
 package app.algorithm;
 
+import app.factory.ProjectFactory;
 import app.project.ActivityList;
-import app.util.LevyFlights;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import static app.util.ActivityListUtils.initialisePopulation;
+import static app.factory.ProjectFactory.asPopulationOfActivityLists;
 import static app.util.ActivityListUtils.randShiftMove;
 import static app.util.ActivityListUtils.twoPointCrossover;
 import static app.util.LevyFlights.calculateSteps;
+import static app.util.LevyFlights.levyNumber;
 import static java.util.Comparator.comparing;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static java.util.stream.Collectors.toList;
@@ -30,14 +29,14 @@ class FlowerPollinationAlgorithm implements Algorithm {
     private final double ps;
     private final int maxSteps;
     private int schedulesCount = 0;
-    private ActivityList bestInvididual = null;
+    private ActivityList bestIndividual = null;
 
     FlowerPollinationAlgorithm(ActivityList initialAL, int populationSize, int stopCriterion, double ps, int maxSteps) {
         this.populationSize = populationSize;
         this.stopCriterion = stopCriterion;
         this.ps = ps;
         this.maxSteps = maxSteps;
-        this.population = initialisePopulation(initialAL, populationSize);
+        this.population = asPopulationOfActivityLists(initialAL, populationSize);
     }
 
     @Override
@@ -45,16 +44,16 @@ class FlowerPollinationAlgorithm implements Algorithm {
         LOG.info("Population size {}, stopping criterion {}, switching probability {}, max steps {}", populationSize, stopCriterion, ps, maxSteps);
         findBest();
         while (schedulesCount < stopCriterion){
-            population= population.stream().map(pollinationFlower()).collect(toList());
+            population= population.stream().map(pollinateFlower()).collect(toList());
         }
         return population;
     }
 
     private void findBest(){
-        bestInvididual = population.stream().min(comparing(ActivityList::makespan)).get();
+        bestIndividual = population.stream().min(comparing(ActivityList::makespan)).get();
     }
 
-    private Function<ActivityList, ActivityList> pollinationFlower(){
+    private Function<ActivityList, ActivityList> pollinateFlower(){
         return ind -> {
             ActivityList newInd = Math.random() < ps ? localPollination() : globalPollination();
             checkIfBest(newInd);
@@ -64,8 +63,7 @@ class FlowerPollinationAlgorithm implements Algorithm {
     }
 
     private ActivityList localPollination(){
-        double levyNumber = LevyFlights.levyNumber();
-        return randShiftMove(bestInvididual, calculateSteps(levyNumber, maxSteps));
+        return randShiftMove(bestIndividual, calculateSteps(levyNumber(), maxSteps));
     }
 
     private ActivityList globalPollination(){
@@ -75,8 +73,8 @@ class FlowerPollinationAlgorithm implements Algorithm {
     }
 
     private void checkIfBest(ActivityList newInd){
-        if (bestInvididual != null && bestInvididual.makespan() > newInd.makespan()){
-            bestInvididual = newInd;
+        if (bestIndividual == null || bestIndividual.makespan() > newInd.makespan()){
+            bestIndividual = newInd;
         }
     }
 }

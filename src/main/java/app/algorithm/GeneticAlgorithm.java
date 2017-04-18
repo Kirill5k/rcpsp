@@ -1,5 +1,6 @@
 package app.algorithm;
 
+import app.factory.ProjectFactory;
 import app.project.EventList;
 import app.util.EventListUtils;
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static app.factory.ProjectFactory.asPopulationOfEventLists;
 import static app.util.EventListUtils.eventCrossover;
 import static app.util.EventListUtils.eventMove;
 import static java.util.Comparator.comparing;
@@ -20,19 +22,17 @@ import static java.util.stream.Collectors.toList;
 class GeneticAlgorithm implements Algorithm {
     private static final Logger LOG = LoggerFactory.getLogger(GeneticAlgorithm.class);
 
-    protected List<EventList> population;
-    protected final EventList initialEL;
-    protected final int populationSize;
-    protected final int stopCriterion;
+    private List<EventList> population;
+    private final int populationSize;
+    private final int stopCriterion;
     private final double mutationRate;
-    protected int schedulesCount = 0;
+    private int schedulesCount = 0;
 
     GeneticAlgorithm(EventList initialEL, int populationSize, int stopCriterion, double mutationRate) {
-        this.initialEL = initialEL;
         this.populationSize = populationSize;
         this.stopCriterion = stopCriterion;
         this.mutationRate = mutationRate;
-        this.population = EventListUtils.initialisePopulation(initialEL, populationSize);
+        this.population = asPopulationOfEventLists(initialEL, populationSize);
     }
 
     @Override

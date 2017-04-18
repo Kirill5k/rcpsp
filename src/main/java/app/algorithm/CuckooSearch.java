@@ -1,9 +1,6 @@
 package app.algorithm;
 
 import app.project.ActivityList;
-import app.project.EventList;
-import app.util.ActivityListUtils;
-import app.util.EventListUtils;
 import app.util.LevyFlights;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,12 +9,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static app.factory.ProjectFactory.asPopulationOfActivityLists;
 import static app.factory.ProjectFactory.asRandomActivityList;
-import static app.factory.ProjectFactory.asRandomEventList;
-import static app.util.ActivityListUtils.initialisePopulation;
 import static app.util.ActivityListUtils.randShiftMove;
 import static app.util.ActivityListUtils.twoPointCrossover;
-import static app.util.EventListUtils.eventMove;
 import static app.util.LevyFlights.calculateSteps;
 import static java.util.Comparator.comparing;
 
@@ -41,7 +36,7 @@ class CuckooSearch implements Algorithm {
         this.stopCriterion = stopCriterion;
         this.pa = (int)Math.round(pa * populationSize);
         this.maxSteps = maxSteps;
-        this.population = initialisePopulation(initialAL, populationSize);
+        this.population = asPopulationOfActivityLists(initialAL, populationSize);
     }
 
     @Override

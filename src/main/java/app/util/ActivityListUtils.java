@@ -23,10 +23,6 @@ import static java.util.stream.Collectors.toList;
 public class ActivityListUtils {
     private ActivityListUtils(){}
 
-    public static <T extends Project> List<ActivityList> initialisePopulation(T project, int popSize) {
-        return IntStream.range(0, popSize).mapToObj(i -> asRandomActivityList(project)).collect(toList());
-    }
-
     public static ActivityList randShiftMove(ActivityList el, int amountOfActivitiesToMove) {
         ActivityList result = el;
         for (int i = 0; i < amountOfActivitiesToMove; i++) {
