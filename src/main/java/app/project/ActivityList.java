@@ -1,59 +1,97 @@
 package app.project;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.IntConsumer;
+import java.util.function.IntPredicate;
+import java.util.stream.IntStream;
+
+import static app.util.ValidationUtils.hasCorrectStartingActivity;
+import static app.util.ValidationUtils.hasFeasibleActivitySequence;
+
 
 /**
- * Created by Kirill on 01/07/2016.
+ * Created by kirillb on 07/04/2017.
  */
-public abstract class ActivityList extends Project implements Comparable<ActivityList> {
+public class ActivityList extends Project {
 
-
+    protected final Map<Activity, Integer> startingTimes = new HashMap<>();
+    protected final Map<Activity, Integer> finishTimes = new HashMap<>();
+    protected final Map<Integer, Map<Integer, Integer>> resourceConsumptions = new HashMap<>();
     protected int makespan;
-    protected Map<Activity, Integer> startingTimes = new TreeMap<>();
-    protected Map<Integer, Map<Integer, Integer>> resConsumptions = new HashMap<>();
-    protected Map<Activity, Integer> finishTimes = new HashMap<>();
 
-    public ActivityList(List<Activity> activitySequence, Map<Integer, Integer> resCapacities) {
-        super(activitySequence, resCapacities);
-        resCapacities.keySet().forEach(k -> resConsumptions.put(k, new HashMap<>()));
+    public static ActivityList of(List<Activity> activities, Map<Integer, Integer> resources){
+        return new ActivityList(activities, resources);
     }
 
-    public Map<Activity, Integer> getStartingTimes() {
+    protected ActivityList(List<Activity> activities, Map<Integer, Integer> resources) {
+        super(activities, resources);
+        resources.keySet().forEach(k -> resourceConsumptions.put(k, new HashMap<>()));
+        validate();
+        calculateMakespan();
+    }
+
+    public int makespan(){
+        return makespan;
+    }
+
+    public Map<Activity, Integer> startingTimes(){
         return startingTimes;
     }
 
-    public Map<Integer, Map<Integer, Integer>> getResConsumptions() {
-        return resConsumptions;
-    }
-
-    public Map<Activity, Integer> getFinishTimes() {
+    public Map<Activity, Integer> finishTimes(){
         return finishTimes;
     }
 
-    public int getMakespan() {
-        return makespan;
+    private void validate(){
+        hasCorrectStartingActivity(activities);
+        hasFeasibleActivitySequence(activities);
+    }
+
+    private void calculateMakespan(){
+        activities.stream().forEach(assignStartingTime);
+        makespan = startingTimes.get(endActivity());
+    }
+
+    private Consumer<Activity> assignStartingTime = activity -> {
+        int startingTime = getStartingTime(activity);
+        startingTimes.put(activity, startingTime);
+        finishTimes.put(activity, startingTime + activity.getDuration());
+        IntStream.range(startingTime, startingTime + activity.getDuration()).forEach(markResourceConsumption(activity));
+    };
+
+    private IntConsumer markResourceConsumption(Activity activity){
+        return t -> activity.getResReq().forEach((num, req) -> resourceConsumptions.get(num).put(t, resourceConsumptions.get(num).getOrDefault(t, 0) + req));
+    }
+
+    private int getStartingTime(Activity activity){
+        if (activity.getNumber() == 0){
+            return 0;
+        } else {
+            int startingTime = getEarliestPossibleStartingTime(activity);
+            while (!schedulable(startingTime, activity)){
+                startingTime++;
+            }
+            return startingTime;
+        }
+    }
+
+    private int getEarliestPossibleStartingTime(Activity activity) {
+        return activity.getPredecessors().stream().mapToInt(finishTimes::get).max().getAsInt();
+    }
+
+    private boolean schedulable(int startingTime, Activity activity) {
+        return IntStream.range(startingTime, startingTime + activity.getDuration()).allMatch(checkResourceAvailabilities(activity));
+    }
+
+    private IntPredicate checkResourceAvailabilities(Activity activity) {
+        return t -> activity.getResReq().entrySet().stream().allMatch(e -> resourceConsumptions.get(e.getKey()).getOrDefault(t, 0) + e.getValue() <= resources.get(e.getKey()));
     }
 
     @Override
     public String toString() {
         return startingTimes.toString();
-    }
-
-    @Override
-    public int compareTo(ActivityList o) {
-        return Integer.compare(this.makespan, o.makespan);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ActivityList)) return false;
-        ActivityList that = (ActivityList) o;
-        return Objects.equals(getStartingTimes(), that.getStartingTimes());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getStartingTimes());
     }
 }

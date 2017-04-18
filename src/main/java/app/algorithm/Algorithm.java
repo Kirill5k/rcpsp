@@ -1,5 +1,7 @@
 package app.algorithm;
 
+
+import app.project.ActivityList;
 import app.project.EventList;
 
 import java.util.List;
@@ -7,6 +9,6 @@ import java.util.List;
 /**
  * Created by Kirill on 18/04/2016.
  */
-public interface Algorithm {
-    List<EventList> findSolution();
+interface Algorithm<T extends ActivityList> {
+    List<T> findSolution();
 }

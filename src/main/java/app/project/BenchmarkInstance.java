@@ -1,13 +1,10 @@
-package app.project.impl;
-
-import app.project.Project;
-import app.project.Activity;
+package app.project;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Kirill on 16/02/2016.
+ * Created by kirillb on 10/04/2017.
  */
 public class BenchmarkInstance extends Project {
     private final String name;
@@ -23,10 +20,7 @@ public class BenchmarkInstance extends Project {
 
     @Override
     public String toString() {
-        String s = "BenchmarkInstance " + name + ":\r\n\tResources = "+ resCapacities;
-
-        s += "\r\n\t" + activities.toString();
-
-        return s;
+        return "BenchmarkInstance " + name;
     }
 }
+

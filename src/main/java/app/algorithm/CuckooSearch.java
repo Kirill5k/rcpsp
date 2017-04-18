@@ -1,94 +1,90 @@
 package app.algorithm;
 
+import app.project.ActivityList;
 import app.project.EventList;
-import app.project.impl.BenchmarkInstance;
+import app.util.ActivityListUtils;
+import app.util.EventListUtils;
+import app.util.LevyFlights;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
+
+import static app.factory.ProjectFactory.asRandomActivityList;
+import static app.factory.ProjectFactory.asRandomEventList;
+import static app.util.ActivityListUtils.randShiftMove;
+import static app.util.ActivityListUtils.twoPointCrossover;
+import static app.util.EventListUtils.eventMove;
+import static java.util.Comparator.comparing;
 
 /**
- * Created by Kirill on 23/02/2016.
+ * Created by Kirill on 15/04/2017.
  */
-class CuckooSearch {
+public class CuckooSearch<T extends ActivityList> implements Algorithm {
+    private static final Logger LOG = LoggerFactory.getLogger(ImprovedCuckooSearch.class);
 
+    private List<ActivityList> population;
+    private final ActivityList initialAL;
     private final int populationSize;
-    private final BenchmarkInstance benchmarkInstance;
     private final int stopCriterion;
-    private List<EventList> population = new ArrayList<>();
-    private final int pc;
     private final int pa;
+    private final int maxSteps;
+    private int schedulesCount = 0;
 
-    public CuckooSearch(BenchmarkInstance benchmarkInstance, int populationSize, int stopCriterion, double pa, double pc) {
+    public CuckooSearch(ActivityList initialAL, int populationSize, int stopCriterion, double pa, int maxSteps) {
+        this.initialAL = initialAL;
         this.populationSize = populationSize;
-        this.benchmarkInstance = benchmarkInstance;
         this.stopCriterion = stopCriterion;
-        this.pa = (int)(pa * populationSize);
-        this.pc = (int)(pc * populationSize);
-
-        findSolution();
+        this.pa = (int)Math.round(pa * populationSize);
+        this.maxSteps = maxSteps;
+        this.population = ActivityListUtils.initialisePopulation(initialAL, populationSize);
     }
 
-    private void findSolution() {
-//        Random rand = new Random();
-//
-//        for (int i = 0; i < populationSize; i++) {
-//            population.add(BenchmarkFactory.asRandomEventList(benchmarkInstance));
-//        }
-//
-//        for (int i = 0; i < stopCriterion; i++) {
-//            // LEVY FLIGHT CUCKOO
-//            Collections.sort(population);
-//            population.add(CommonOperations.eventMove(population.get(0)));
-//
-//            // SMART CUCKOOS
-//            Collections.shuffle(population);
-//            for (int j = 0; j < pc; j++) {
-//                smartCuckoo(population.get(j));
-//            }
-//
-//            // ABANDOMENT OF WORSE SOLUTIONS
-//            Collections.sort(population, Collections.reverseOrder());
-//            while (population.size() > populationSize-pa)
-//                population.remove(0);
-//
-//            // EVENT CROSSOVER
-//            for (int j = 0; j < pa; j++) {
-//                breedCuckoo(population.get(j), population.get(rand.nextInt(population.size()-1)));
-//            }
-//        }
+    @Override
+    public List<ActivityList> findSolution() {
+        LOG.info("Population size {}, stopping criterion {}, abandonment rate {}, max steps {}", populationSize, stopCriterion, pa, maxSteps);
+        while (schedulesCount < stopCriterion){
+            population.stream().min(comparing(ActivityList::makespan)).ifPresent(exploreWithLevyFlights());
+            abandonWorstNests();
+            buildNewNests();
+        }
 
-        // RANDOM EVENT MOVE ON BEST SOLUTION
-        // RANDOM EVENT MOVE
-        // DROP WORST SOLUTIONS
-        // CREATE NEW SOLUTIONS WITH CROSSOVER
+        return population;
     }
 
-//    public AbstractEventList getBestSolution() {
-//        Collections.sort(population);
-//        return population.get(0);
-//    }
-//
-//    private final double BETA = 3/2;
-//    private final double SIGMA = calculateSigma();
-//
-//    private double calculateSigma() {
-//        double result = Gamma.gamma(BETA+1)*Math.sin(Math.PI*BETA/2)/(Gamma.gamma((1+BETA)/2)*BETA*Math.pow(2, (BETA-1)/2));
-//        return Math.pow(result, 1/BETA);
-//    }
-//
-//    private double calculateLevyFlight() {
-//        return 0;
-//    }
-//
-//    private void levyFlightCuckoo(AbstractEventList el) {
-//
-//    }
-//
-//    private void smartCuckoo(AbstractEventList el) {
-//        population.add(CommonOperations.eventMove(el));
-//    }
-//
-//    private void breedCuckoo(AbstractEventList el1, AbstractEventList el2) {
-//        population.add(CommonOperations.eventCrossover(el1, el2));
-//    }
+    protected Consumer<ActivityList> exploreWithLevyFlights(){
+        return cuckoo -> {
+            double levyNumber = LevyFlights.levyNumber();
+            if (levyNumber >= 1) {
+                ActivityList cuckoo2 = population.stream().findAny().get();
+                population.add(twoPointCrossover(cuckoo, cuckoo2));
+                population.add(twoPointCrossover(cuckoo2, cuckoo));
+            } else {
+                int steps = calculateSteps(levyNumber);
+                population.add(randShiftMove(cuckoo, steps));
+            }
+            schedulesCount++;
+        };
+    }
+
+    private int calculateSteps(double levyNumber){
+        int steps = (int) (maxSteps * (levyNumber + 0.5));
+        return steps < 1 ? 1 : steps;
+    }
+
+    protected void abandonWorstNests(){
+        Collections.sort(population, comparing(ActivityList::makespan).reversed());
+        while (population.size() > pa) {
+            population.remove(0);
+        }
+    }
+
+    protected void buildNewNests(){
+        while (population.size() < populationSize){
+            population.add(asRandomActivityList(initialAL));
+            schedulesCount++;
+        }
+    }
 }

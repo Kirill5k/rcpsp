@@ -1,86 +1,71 @@
 package app.algorithm;
 
 import app.project.EventList;
-import app.utility.CommonOperations;
-import app.utility.SpeciesConservation;
+import app.util.EventListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static app.util.EventListUtils.eventCrossover;
+import static app.util.EventListUtils.eventMove;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 
 /**
- * Created by Kirill on 24/02/2016.
+ * Created by kirillb on 11/04/2017.
  */
 class GeneticAlgorithm implements Algorithm {
     private static final Logger LOG = LoggerFactory.getLogger(GeneticAlgorithm.class);
 
+    protected List<EventList> population;
     protected final EventList initialEL;
     protected final int populationSize;
     protected final int stopCriterion;
-    protected final double mutationRate;
-    protected List<EventList> population;
+    private final double mutationRate;
+    protected int schedulesCount = 0;
 
-    public GeneticAlgorithm(EventList initialEL, int populationSize, int stopCriterion, double mutationRate) {
-        this.populationSize = populationSize;
+    GeneticAlgorithm(EventList initialEL, int populationSize, int stopCriterion, double mutationRate) {
         this.initialEL = initialEL;
+        this.populationSize = populationSize;
         this.stopCriterion = stopCriterion;
         this.mutationRate = mutationRate;
-        population = CommonOperations.initialisePopulation(initialEL, populationSize);
+        this.population = EventListUtils.initialisePopulation(initialEL, populationSize);
     }
 
+    @Override
     public List<EventList> findSolution() {
         LOG.info("Population size {}, stopping criterion {}, mutation rate {}", populationSize, stopCriterion, mutationRate);
-        for (int i = 0; i < stopCriterion; i++) {
-            establishPairsForSelectionBasedOnDistance();
+        while (schedulesCount < stopCriterion){
+            arrangeInPairs();
             evolvePopulation();
-            population = population.stream().sorted().distinct().limit(populationSize).collect(Collectors.toList());
+            survivalOfTheFittest();
         }
 
         return population;
     }
 
-
-    protected void evolvePopulation() {
-        for (int j = 0; j < populationSize-1; j+=2)
-            crossover(population.get(j), population.get(j + 1));
+    private void arrangeInPairs(){
+        Collections.sort(population, comparing(EventList::makespan));
     }
 
-    protected void establishPairsForSelectionBasedOnDistance2() {
-        Collections.sort(population);
-        List<EventList> pairs = new ArrayList<>();
-
-
+    private void evolvePopulation(){
+        IntStream.iterate(0, i -> i+2).limit(populationSize).forEach(i -> generateOffspring(population.get(i), population.get(i+1)));
     }
 
-    protected void establishPairsForSelectionBasedOnDistance() {
-        Collections.sort(population);
-        List<EventList> pairs = new ArrayList<>();
-        while (population.size() > 1) {
-            EventList ind1 = population.remove(0);
-            EventList ind2 = population.stream().min((i1, i2) -> Integer.compare(SpeciesConservation.calculateDistance(i1, ind1), SpeciesConservation.calculateDistance(i2, ind1))).get();
-            pairs.add(ind1);
-            pairs.add(ind2);
-            population.remove(ind2);
-        }
-        population.clear();
-        population.addAll(pairs);
+    private void generateOffspring(EventList ind1, EventList ind2) {
+        population.add(mutate(eventCrossover(ind1, ind2)));
+        population.add(mutate(eventCrossover(ind2, ind1)));
+        schedulesCount +=2;
     }
 
-    protected void crossover(EventList p1, EventList p2) {
-        EventList o1 = CommonOperations.eventCrossover(p1, p2);
-        EventList o2 = CommonOperations.eventCrossover(p2, p1);
-
-        population.add(mutation(o1));
-        population.add(mutation(o2));
+    private EventList mutate(EventList ind){
+        return Math.random() < mutationRate ? eventMove(ind, 3) : ind;
     }
 
-    protected EventList mutation(EventList individual){
-        if(Math.random() < mutationRate)
-            return CommonOperations.eventMove(individual);
-        else
-            return individual;
+    private void survivalOfTheFittest(){
+        population = population.stream().sorted(comparing(EventList::makespan)).limit(populationSize).collect(toList());
     }
 }

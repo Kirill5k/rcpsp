@@ -6,9 +6,7 @@ import app.project.ActivityList;
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.stream.IntStream;
 
 /**
@@ -25,7 +23,7 @@ class PlotSurface<T extends ActivityList> extends JPanel {
 
     public PlotSurface(T project) {
         this.project = project;
-        project.getResCapacities().keySet().forEach(k -> vertical.put(k, new HashMap<>()));
+        project.resources().keySet().forEach(k -> vertical.put(k, new HashMap<>()));
     }
 
     @Override
@@ -42,8 +40,8 @@ class PlotSurface<T extends ActivityList> extends JPanel {
 
         graph.setRenderingHints(rh);
 
-        IntStream.range(0, project.getResCapacities().size()).boxed().forEach(i -> yBorders.put(i+1, 1 + yBorders.getOrDefault(i, 0) + project.getResCapacities().get(i+1)));
-        project.getSequence().stream().filter(a -> !a.equals(project.getDummyEndActivity()) && !a.equals(project.getDummyStartActivity()))
+        IntStream.range(0, project.resources().size()).boxed().forEach(i -> yBorders.put(i+1, 1 + yBorders.getOrDefault(i, 0) + project.resources().get(i+1)));
+        project.activities().stream().filter(a -> !a.equals(project.endActivity()) && !a.equals(project.startActivity()))
                 .forEach(a -> plotActivity(a, graph));
 
         drawAxis(graph);
@@ -51,22 +49,22 @@ class PlotSurface<T extends ActivityList> extends JPanel {
 
     private void drawAxis(Graphics2D g) {
         g.setColor(Color.black);
-        project.getResCapacities().forEach((resNum, resCap) -> drawLine(g, 0, project.getMakespan(), yBorders.get(resNum), yBorders.get(resNum)));
-        project.getResCapacities().forEach((resNum, resCap) -> drawLine(g, 0, 0, yBorders.get(resNum), yBorders.get(resNum)-resCap));
+        project.resources().forEach((resNum, resCap) -> drawLine(g, 0, project.makespan(), yBorders.get(resNum), yBorders.get(resNum)));
+        project.resources().forEach((resNum, resCap) -> drawLine(g, 0, 0, yBorders.get(resNum), yBorders.get(resNum)-resCap));
 
-        project.getResCapacities().forEach((resNum, resCap) -> drawLine(g, 0, project.getMakespan(), yBorders.get(resNum)-resCap, yBorders.get(resNum)-resCap));
-        project.getResCapacities().forEach((resNum, resCap) -> drawLine(g, project.getMakespan(), project.getMakespan(), yBorders.get(resNum), yBorders.get(resNum)-resCap));
+        project.resources().forEach((resNum, resCap) -> drawLine(g, 0, project.makespan(), yBorders.get(resNum)-resCap, yBorders.get(resNum)-resCap));
+        project.resources().forEach((resNum, resCap) -> drawLine(g, project.makespan(), project.makespan(), yBorders.get(resNum), yBorders.get(resNum)-resCap));
 
 
-        project.getResCapacities().forEach((resNum, resCap) ->
-            IntStream.range(0, project.getMakespan()).boxed().filter(i -> i % 100 == 0).forEach(i -> drawString(g, String.valueOf(i/5), i, yBorders.get(resNum)+1)));
+        project.resources().forEach((resNum, resCap) ->
+            IntStream.range(0, project.makespan()).boxed().filter(i -> i % 100 == 0).forEach(i -> drawString(g, String.valueOf(i/5), i, yBorders.get(resNum)+1)));
 
-        project.getResCapacities().forEach((resNum, resCap) -> drawString(g, String.valueOf(resCap), 0, yBorders.get(resNum)-resCap+1));
+        project.resources().forEach((resNum, resCap) -> drawString(g, String.valueOf(resCap), 0, yBorders.get(resNum)-resCap+1));
     }
 
     private void plotActivity(Activity a, Graphics2D graph){
-        int x_start = project.getStartingTimes().get(a);
-        int x_end = project.getFinishTimes().get(a);
+        int x_start = project.startingTimes().get(a);
+        int x_end = project.finishTimes().get(a);
         IntStream.range(x_start, x_end).boxed().forEach(x -> plotActivityAtX(a, graph, x));
     }
 
@@ -83,7 +81,6 @@ class PlotSurface<T extends ActivityList> extends JPanel {
         vertical.get(resNum).put(x, yEnd);
 
         drawRect(graph, x, y, resCap, a.getNumber());
-//        drawString(graph, String.valueOf(a.getNumber()), x, y+1);
     }
 
 

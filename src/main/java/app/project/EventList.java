@@ -1,30 +1,39 @@
 package app.project;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static java.util.stream.Collectors.groupingBy;
+
 /**
- * Created by Kirill on 01/07/2016.
+ * Created by kirillb on 10/04/2017.
  */
-public abstract class EventList extends ActivityList {
+public class EventList extends ActivityList {
+    private final Map<Integer, List<Activity>> events = new TreeMap<>();
 
-    protected Map<Integer, List<Activity>> events = new TreeMap<>();
-
-    public EventList(List<Activity> activitySequence, Map<Integer, Integer> resCapacities) {
-        super(activitySequence, resCapacities);
+    public static EventList of(List<Activity> activities, Map<Integer, Integer> resources){
+        return new EventList(activities, resources);
     }
 
-    public Map<Integer, List<Activity>> getEvents() {
+    private EventList(List<Activity> activities, Map<Integer, Integer> resources) {
+        super(activities, resources);
+        events.putAll(activities.stream().collect(groupingBy(startingTimes::get)));
+    }
+
+    public Map<Integer, List<Activity>> events() {
         return events;
     }
 
-    public List<Activity> getRandomEvent() {
+    public List<Activity> randomEvent() {
         int randNum = ThreadLocalRandom.current().nextInt(1, events.size()-1);
         int randKey = new ArrayList<>(events.keySet()).get(randNum);
         return events.get(randKey);
     }
 
-    public int getEventsAmount() {
+    public int eventsAmount() {
         return events.size();
     }
 

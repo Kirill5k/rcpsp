@@ -1,12 +1,16 @@
 package app.factory;
 
-import app.project.*;
-import app.project.impl.SimpleActivityList;
-import app.project.impl.SimpleEventList;
+
+import app.project.ActivityList;
+import app.project.EventList;
+import app.project.Project;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
 
-import static app.utility.CommonOperations.*;
+import static app.util.CommonUtils.*;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Created by Kirill on 29/06/2016.
@@ -15,18 +19,18 @@ public class ProjectFactory {
     private ProjectFactory(){}
 
     public static <T extends Project> ActivityList asActivityList(T project) {
-        return new SimpleActivityList(new ArrayList<>(project.getSequence()), project.getResCapacities());
+        return  ActivityList.of(project.activities(), project.resources());
     }
 
     public static <T extends Project> EventList asEventList(T project) {
-        return new SimpleEventList(new ArrayList<>(project.getSequence()), project.getResCapacities());
+        return EventList.of(project.activities(), project.resources());
     }
 
     public static <T extends Project> ActivityList asRandomActivityList(T project) {
-        return new SimpleActivityList(randomiseActivitySequence(project.getSequence()), project.getResCapacities());
+        return ActivityList.of(randomiseActivitySequence(project.activities()), project.resources());
     }
 
     public static <T extends Project> EventList asRandomEventList(T project) {
-        return new SimpleEventList(randomiseActivitySequence(project.getSequence()), project.getResCapacities());
+        return EventList.of(randomiseActivitySequence(project.activities()), project.resources());
     }
 }

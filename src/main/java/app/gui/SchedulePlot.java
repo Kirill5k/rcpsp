@@ -1,10 +1,9 @@
 package app.gui;
 
+
 import app.project.ActivityList;
 
 import javax.swing.*;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Kirill on 16/11/2015.

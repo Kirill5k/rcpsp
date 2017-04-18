@@ -1,7 +1,13 @@
 package app.project;
 
+import app.project.Activity;
+
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Function;
+
+import static java.util.concurrent.ThreadLocalRandom.current;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * Created by Kirill on 16/02/2016.
@@ -9,16 +15,16 @@ import java.util.stream.Collectors;
 public abstract class Project {
     protected static long COUNTER = 0;
 
-    protected final Map<Integer, Integer> resCapacities;
-    protected final Map<Integer, Activity> activities;
-    protected final List<Activity> activitySequence;
+    protected final Map<Integer, Integer> resources;
+    protected final Map<Integer, Activity> activityMap;
+    protected final List<Activity> activities;
     protected final long id;
 
-    public Project(List<Activity> activitySequence, Map<Integer, Integer> resCapacities) {
+    Project(List<Activity> activities, Map<Integer, Integer> resources) {
         this.id = COUNTER++;
-        this.resCapacities = resCapacities;
-        this.activities = activitySequence.stream().collect(Collectors.toMap(a -> a.getNumber(), a -> a));
-        this.activitySequence = activitySequence;
+        this.resources = resources;
+        this.activities = activities;
+        this.activityMap = activities.stream().collect(toMap(Activity::getNumber, Function.identity()));
     }
 
     public long getId() {
@@ -29,27 +35,23 @@ public abstract class Project {
         return activities.size();
     }
 
-    public Activity getDummyStartActivity(){
-        return activities.get(0);
+    public Activity startActivity(){
+        return activityMap.get(0);
     }
 
-    public Activity getDummyEndActivity(){
-        return activities.get(activities.size()-1);
+    public Activity endActivity(){
+        return activityMap.get(activities.size()-1);
     }
 
-    public Map<Integer, Activity> getActivities() {
+    public Activity randomActivity() {
+        return activityMap.get(current().nextInt(1, activities.size()-2));
+    }
+
+    public List<Activity> activities() {
         return activities;
     }
 
-    public List<Activity> getSequence() {
-        return activitySequence;
-    }
-
-    public Activity getActivity(int number) {
-        return activities.get(number);
-    }
-
-    public Map<Integer, Integer> getResCapacities() {
-        return resCapacities;
+    public Map<Integer, Integer> resources() {
+        return resources;
     }
 }
