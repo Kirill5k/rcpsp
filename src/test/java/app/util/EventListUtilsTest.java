@@ -6,6 +6,7 @@ import app.project.BenchmarkInstance;
 import app.project.EventList;
 import org.junit.Test;
 
+import static app.factory.BenchmarkFactory.TEST_BI;
 import static app.factory.ProjectFactory.asRandomEventList;
 import static org.junit.Assert.*;
 
@@ -14,17 +15,15 @@ import static org.junit.Assert.*;
  */
 public class EventListUtilsTest {
 
-    private BenchmarkInstance testBI = BenchmarkFactory.TEST_BI;
-
     @Test
     public void testEventMove() throws Exception {
-        EventList result = EventListUtils.eventMove(asRandomEventList(testBI));
+        EventList result = EventListUtils.eventMove(asRandomEventList(TEST_BI));
         assertNotNull(result);
     }
 
     @Test
     public void testEventCrossover() throws Exception {
-        EventList result = EventListUtils.eventCrossover(asRandomEventList(testBI), asRandomEventList(testBI));
+        EventList result = EventListUtils.eventCrossover(asRandomEventList(TEST_BI), asRandomEventList(TEST_BI));
         assertNotNull(result);
     }
 

@@ -9,6 +9,7 @@ import org.junit.runners.Parameterized;
 import java.util.Arrays;
 import java.util.Collection;
 
+import static app.factory.BenchmarkFactory.TEST_BI;
 import static org.junit.Assert.*;
 
 /**
@@ -25,35 +26,33 @@ public class AlgorithmsTest {
     @Parameterized.Parameter
     public String parameter;
 
-    private BenchmarkInstance testBI = BenchmarkFactory.TEST_BI;
+    @Test
+    public void testSetParameter() throws Exception {
+        Algorithms.setParameter(parameter.split("=")[0].substring(2), parameter.split("=")[1]);
+    }
 
     @Test
     public void testCuckooSearch() throws Exception {
-        assertFalse(Algorithms.CS.run(testBI).isEmpty());
+        assertFalse(Algorithms.CS.run(TEST_BI).isEmpty());
     }
 
     @Test
     public void testImprovedCuckooSearch() throws Exception {
-        assertFalse(Algorithms.ICS.run(testBI).isEmpty());
+        assertFalse(Algorithms.ICS.run(TEST_BI).isEmpty());
     }
 
     @Test
     public void testSpeciesConservingCuckooSearch() throws Exception {
-        assertFalse(Algorithms.SCCS.run(testBI).isEmpty());
+        assertFalse(Algorithms.SCCS.run(TEST_BI).isEmpty());
     }
 
     @Test
     public void testFlowerPollinationAlgorithm() throws Exception {
-        assertFalse(Algorithms.FPA.run(testBI).isEmpty());
+        assertFalse(Algorithms.FPA.run(TEST_BI).isEmpty());
     }
 
     @Test
     public void testGeneticAlgorithm() throws Exception {
-        assertFalse(Algorithms.GA.run(testBI).isEmpty());
-    }
-
-    @Test
-    public void testSetParameter() throws Exception {
-        Algorithms.setParameter(parameter.split("=")[0].substring(2), parameter.split("=")[1]);
+        assertFalse(Algorithms.GA.run(TEST_BI).isEmpty());
     }
 }

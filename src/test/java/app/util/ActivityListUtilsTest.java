@@ -6,6 +6,7 @@ import app.project.ActivityList;
 import app.project.BenchmarkInstance;
 import org.junit.Test;
 
+import static app.factory.BenchmarkFactory.TEST_BI;
 import static app.factory.ProjectFactory.asRandomActivityList;
 import static org.junit.Assert.*;
 
@@ -14,17 +15,15 @@ import static org.junit.Assert.*;
  */
 public class ActivityListUtilsTest {
 
-    private BenchmarkInstance testBI = BenchmarkFactory.TEST_BI;
-
     @Test
     public void testRandShiftMove() throws Exception {
-        ActivityList result = ActivityListUtils.randShiftMove(asRandomActivityList(testBI));
+        ActivityList result = ActivityListUtils.randShiftMove(asRandomActivityList(TEST_BI));
         assertNotNull(result);
     }
 
     @Test
     public void testTwoPointCrossover() throws Exception {
-        ActivityList result = ActivityListUtils.twoPointCrossover(asRandomActivityList(testBI), asRandomActivityList(testBI));
+        ActivityList result = ActivityListUtils.twoPointCrossover(asRandomActivityList(TEST_BI), asRandomActivityList(TEST_BI));
         assertNotNull(result);
     }
 
