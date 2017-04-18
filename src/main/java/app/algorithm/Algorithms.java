@@ -20,6 +20,7 @@ public enum Algorithms {
     SCCS("Species Conserving Cuckoo Search"),
     ICS("Improved Cuckoo Search"),
     CS("Cuckoo Search"),
+    FPA("Flower Pollination Algorithm"),
     GA("Genetic Algorithm");
 
     Algorithms(String name) {
@@ -38,7 +39,36 @@ public enum Algorithms {
     public static double PORTION_OF_SMART_CUCKOOS = 0;
     public static int MAX_AMOUNT_OF_STEPS = 4;
 
+    public static double SWITCHING_PROBABILITY = 0.5;
+
     public static double MUTATION_RATE = 0.1;
+
+    public List<ActivityList> run(BenchmarkInstance bi) {
+        LOG.info("Running benchmark instance {} on {}. Best known solution {}. Critical path length {}", bi.getName(), this, BenchmarkFactory.solutions().get(bi.getName()), getCriticalPathLength(bi));
+        return run(ProjectFactory.asRandomEventList(bi));
+    }
+
+    public List<ActivityList> run(EventList el) {
+        Algorithm alg;
+        switch (this){
+            case SCCS: alg = new SpeciesConservingCuckooSearch(el, POPULATION_SIZE, STOP_CRITERION, ABANDONMENT_RATE, PORTION_OF_SMART_CUCKOOS, MAX_AMOUNT_OF_STEPS); break;
+            case ICS: alg = new ImprovedCuckooSearch(el, POPULATION_SIZE, STOP_CRITERION, ABANDONMENT_RATE, PORTION_OF_SMART_CUCKOOS, MAX_AMOUNT_OF_STEPS); break;
+            case CS: alg = new CuckooSearch(el, POPULATION_SIZE, STOP_CRITERION, ABANDONMENT_RATE, MAX_AMOUNT_OF_STEPS); break;
+            case GA: alg = new GeneticAlgorithm(el, POPULATION_SIZE, STOP_CRITERION, MUTATION_RATE); break;
+            case FPA: alg = new FlowerPollinationAlgorithm(el, POPULATION_SIZE, STOP_CRITERION, SWITCHING_PROBABILITY, MAX_AMOUNT_OF_STEPS);
+            default: throw new UnsupportedAlgorithmType(this + " is not supported");
+        }
+
+        return solve(alg);
+    }
+
+    private List<ActivityList> solve(Algorithm alg) {
+        final long start = System.currentTimeMillis();
+        List<ActivityList> finalPopulation = alg.findSolution();
+        final long end = System.currentTimeMillis();
+        LOG.info("Operation complete. Took {}s", (end-start)/1000.);
+        return finalPopulation;
+    }
 
     public static void setParameter(String name, String value) {
         switch (name){
@@ -65,32 +95,6 @@ public enum Algorithms {
             case "mr": MUTATION_RATE = parameter; break;
             case "pc": PORTION_OF_SMART_CUCKOOS = parameter; break;
         }
-    }
-
-    public List<ActivityList> run(BenchmarkInstance bi) {
-        LOG.info("Running benchmark instance {} on {}. Best known solution {}. Critical path length {}", bi.getName(), this, BenchmarkFactory.solutions().get(bi.getName()), getCriticalPathLength(bi));
-        return run(ProjectFactory.asRandomEventList(bi));
-    }
-
-    public List<ActivityList> run(EventList el) {
-        Algorithm alg;
-        switch (this){
-            case SCCS: alg = new SpeciesConservingCuckooSearch(el, POPULATION_SIZE, STOP_CRITERION, ABANDONMENT_RATE, PORTION_OF_SMART_CUCKOOS, MAX_AMOUNT_OF_STEPS); break;
-            case ICS: alg = new ImprovedCuckooSearch(el, POPULATION_SIZE, STOP_CRITERION, ABANDONMENT_RATE, PORTION_OF_SMART_CUCKOOS, MAX_AMOUNT_OF_STEPS); break;
-            case CS: alg = new CuckooSearch(el, POPULATION_SIZE, STOP_CRITERION, ABANDONMENT_RATE, MAX_AMOUNT_OF_STEPS); break;
-            case GA: alg = new GeneticAlgorithm(el, POPULATION_SIZE, STOP_CRITERION, MUTATION_RATE); break;
-            default: throw new UnsupportedAlgorithmType(this + " is not supported");
-        }
-
-        return solve(alg);
-    }
-
-    private List<ActivityList> solve(Algorithm alg) {
-        final long start = System.currentTimeMillis();
-        List<ActivityList> finalPopulation = alg.findSolution();
-        final long end = System.currentTimeMillis();
-        LOG.info("Operation complete. Took {}s", (end-start)/1000.);
-        return finalPopulation;
     }
 
     @Override

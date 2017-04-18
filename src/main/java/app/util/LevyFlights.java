@@ -20,4 +20,9 @@ public class LevyFlights {
         double v = ThreadLocalRandom.current().nextDouble(1);
         return u / Math.pow(Math.abs(v), 1/BETA);
     }
+
+    public static int calculateSteps(double levyNumber, int maxSteps) {
+        int steps = (int) (maxSteps * (levyNumber + 0.5));
+        return steps < 1 ? 1 : steps;
+    }
 }

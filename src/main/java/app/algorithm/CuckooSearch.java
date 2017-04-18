@@ -14,15 +14,17 @@ import java.util.function.Consumer;
 
 import static app.factory.ProjectFactory.asRandomActivityList;
 import static app.factory.ProjectFactory.asRandomEventList;
+import static app.util.ActivityListUtils.initialisePopulation;
 import static app.util.ActivityListUtils.randShiftMove;
 import static app.util.ActivityListUtils.twoPointCrossover;
 import static app.util.EventListUtils.eventMove;
+import static app.util.LevyFlights.calculateSteps;
 import static java.util.Comparator.comparing;
 
 /**
  * Created by Kirill on 15/04/2017.
  */
-public class CuckooSearch<T extends ActivityList> implements Algorithm {
+class CuckooSearch implements Algorithm {
     private static final Logger LOG = LoggerFactory.getLogger(ImprovedCuckooSearch.class);
 
     private List<ActivityList> population;
@@ -33,13 +35,13 @@ public class CuckooSearch<T extends ActivityList> implements Algorithm {
     private final int maxSteps;
     private int schedulesCount = 0;
 
-    public CuckooSearch(ActivityList initialAL, int populationSize, int stopCriterion, double pa, int maxSteps) {
+    CuckooSearch(ActivityList initialAL, int populationSize, int stopCriterion, double pa, int maxSteps) {
         this.initialAL = initialAL;
         this.populationSize = populationSize;
         this.stopCriterion = stopCriterion;
         this.pa = (int)Math.round(pa * populationSize);
         this.maxSteps = maxSteps;
-        this.population = ActivityListUtils.initialisePopulation(initialAL, populationSize);
+        this.population = initialisePopulation(initialAL, populationSize);
     }
 
     @Override
@@ -62,16 +64,10 @@ public class CuckooSearch<T extends ActivityList> implements Algorithm {
                 population.add(twoPointCrossover(cuckoo, cuckoo2));
                 population.add(twoPointCrossover(cuckoo2, cuckoo));
             } else {
-                int steps = calculateSteps(levyNumber);
-                population.add(randShiftMove(cuckoo, steps));
+                population.add(randShiftMove(cuckoo, calculateSteps(levyNumber, maxSteps)));
             }
             schedulesCount++;
         };
-    }
-
-    private int calculateSteps(double levyNumber){
-        int steps = (int) (maxSteps * (levyNumber + 0.5));
-        return steps < 1 ? 1 : steps;
     }
 
     protected void abandonWorstNests(){

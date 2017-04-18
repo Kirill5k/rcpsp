@@ -15,6 +15,7 @@ import java.util.stream.IntStream;
 
 import static app.factory.ProjectFactory.asRandomEventList;
 import static app.util.EventListUtils.eventMove;
+import static app.util.LevyFlights.calculateSteps;
 import static app.util.SpeciesConservationUtils.calculateDistance;
 import static java.util.Comparator.comparing;
 
@@ -63,16 +64,10 @@ class ImprovedCuckooSearch implements Algorithm {
                 population.add(EventListUtils.eventCrossover(cuckoo, cuckoo2));
                 population.add(EventListUtils.eventCrossover(cuckoo2, cuckoo));
             } else {
-                int steps = calculateSteps(levyNumber);
-                population.add(eventMove(cuckoo, steps));
+                population.add(eventMove(cuckoo, calculateSteps(levyNumber, maxSteps)));
             }
             schedulesCount++;
         };
-    }
-
-    private int calculateSteps(double levyNumber){
-        int steps = (int) (maxSteps * (levyNumber + 0.5));
-        return steps < 1 ? 1 : steps;
     }
 
     private BinaryOperator<EventList> findFurthestCuckoo(EventList cuckoo){
